@@ -15,7 +15,6 @@
       --text-muted: #64748b;
       --text-light: #94a3b8;
       
-      /* Colores de marca y estados */
       --color-primary: #0f172a;
       --color-primary-hover: #1e293b;
       --color-info: #0284c7;
@@ -40,25 +39,20 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-    
     body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
-    
     .app { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
     
-    /* Progreso del formulario */
     .step-lbl { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
     .prog-wrap { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
     .prog-fill { height: 100%; background: var(--color-info); transition: width .4s ease; }
     
     .step { display: none; }
     .step.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-    
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     
     h2 { font-size: 22px; font-weight: 700; color: var(--color-primary); margin-bottom: 1.75rem; border-bottom: 2px solid var(--bg-app); padding-bottom: 10px; }
     h3 { font-size: 15px; font-weight: 600; color: var(--color-primary); }
     
-    /* Formularios e Inputs */
     .field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
     input[type=text], input[type=date], textarea, select { width: 100%; font-size: 14px; background: var(--bg-input); color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; transition: all .2s; outline: none; }
     input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--color-info); background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
@@ -67,14 +61,11 @@
     .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .fw { margin-bottom: 16px; }
     
-    /* Tarjetas de Atributos y Secciones */
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem; transition: box-shadow .2s; }
     .card:hover { box-shadow: var(--shadow); }
     .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    
     .sec-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); margin: 2.5rem 0 1rem; border-left: 3px solid var(--text-light); padding-left: 8px; }
     
-    /* Badges / Etiquetas */
     .badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.02em; display: inline-flex; align-items: center; }
     .b-ok { background: var(--color-success-bg); color: var(--color-success-text); }
     .b-mid { background: var(--color-warning-bg); color: var(--color-warning-text); }
@@ -82,7 +73,6 @@
     .b-info { background: var(--color-info-bg); color: var(--color-info); }
     .b-neu { background: var(--bg-app); color: var(--text-muted); }
 
-    /* Rúbricas e Ítems */
     .rubric-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); cursor: pointer; transition: background .15s; border-radius: var(--radius-sm); }
     .rubric-item:hover { background: var(--bg-input); }
     .rubric-item:last-of-type { border-bottom: none; }
@@ -95,7 +85,6 @@
     .rcheck-label { font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
     .rcheck-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
     
-    /* Pill de Puntaje */
     .score-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-app); border-radius: var(--radius-md); margin-top: 14px; border: 1px dashed var(--border-color); }
     .score-pill-lbl { font-size: 13px; font-weight: 500; color: var(--text-muted); flex: 1; }
     .score-pill-val { font-size: 14px; font-weight: 700; }
@@ -103,29 +92,25 @@
     .mini-dots { display: flex; gap: 5px; align-items: center; }
     .mdot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--border-color); transition: all .2s; }
 
-    /* Botones de Selección Sí / No */
     .yn-wrap { display: flex; gap: 8px; }
     .yn-btn { flex: 1; border: 1.5px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: var(--radius-md); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
     .yn-btn:hover { background: var(--bg-input); border-color: var(--text-light); }
     .yn-btn.y { background: var(--color-success-bg); color: var(--color-success-text); border-color: var(--color-success); }
     .yn-btn.n { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: var(--color-danger); }
 
-    /* Botones de Navegación */
     .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
     .btn-p { background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
     .btn-p:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
     .btn-s { background: transparent; color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
     .btn-s:hover { background: var(--bg-app); border-color: var(--text-light); }
 
-    /* VISTA DE DEVOLUCIÓN (PASO 3) */
+    /* SECCIÓN DE DEVOLUCIÓN (PASO 3) */
     .dev-outer { width: 100%; display: flex; flex-direction: column; align-items: center; }
     .dev-doc { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; overflow: hidden; box-shadow: var(--shadow); }
-    
     .dev-hbar { background: var(--color-primary); color: #fff; padding: 2rem; }
     .dev-logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
     .dev-logo-txt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); }
     .dev-asesor-row { display: flex; align-items: center; gap: 18px; }
-    
     .dev-av { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; }
     
     .dev-body { padding: 2rem; background: #fff; }
@@ -137,7 +122,6 @@
     .met-val { font-size: 24px; font-weight: 700; color: var(--color-primary); }
     .met-lbl { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
     
-    /* Filas de Atributo en Devolución */
     .dattr { padding: 14px 0; border-bottom: 1px solid var(--bg-app); }
     .dattr:last-child { border-bottom: none; }
     .dattr-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
@@ -153,22 +137,25 @@
     .cond-tag.no { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: rgba(239, 68, 68, 0.1); }
     
     .dattr-fb { font-size: 13px; color: var(--text-muted); margin-top: 8px; padding: 8px 12px; background: var(--bg-input); border-left: 3px solid var(--text-light); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; line-height: 1.5; }
-    
     .op-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg-app); font-size: 13px; }
     .op-row:last-child { border-bottom: none; }
     
     .plan-li { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--bg-app); line-height: 1.4; }
     .plan-li:last-child { border-bottom: none; }
     .plan-n { font-weight: 700; color: var(--color-info); min-width: 16px; }
-    
     .txt-blk { font-size: 13px; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; padding: 10px 14px; background: var(--bg-input); border-radius: var(--radius-md); border: 1px solid var(--border-color); }
     
-    .err-bar { border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
+    .err-bar { border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     
     .copy-row { display: flex; justify-content: center; gap: 12px; margin-top: 1.5rem; width: 100%; flex-wrap: wrap; }
     .copy-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--color-info); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
     .copy-btn:hover { background: #0274be; transform: translateY(-1px); }
     .copy-btn.copied { background: var(--color-success); color: white; }
+    
+    /* Botón exclusivo para Drive */
+    .drive-btn { display: inline-flex; align-items: center; gap: 8px; background: #1e8e3e; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
+    .drive-btn:hover { background: #166e2f; transform: translateY(-1px); }
+    .drive-btn.done { background: var(--color-primary); color: white; cursor: default; transform: none; }
   </style>
 </head>
 <body>
@@ -230,7 +217,8 @@
     <div class="dev-outer">
       <div class="dev-doc" id="dev-doc"></div>
       <div class="copy-row">
-        <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy" style="font-size:15px" aria-hidden="true"></i> Copiar devolución</button>
+        <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
+        <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
         <button class="btn-s" onclick="go(2)" style="font-size:13px;padding:8px 16px"><i class="ti ti-edit"></i> Editar</button>
         <button class="btn-p" onclick="go(1)" style="font-size:13px;padding:8px 16px"><i class="ti ti-plus"></i> Nueva evaluación</button>
       </div>
@@ -240,12 +228,12 @@
 
 <script>
 const ATTRS=[
-  {k:'ind', l:'Indagación y diferenciales',
+  {k:'ind', l:'Indagación y differentials',
    conds:[
     {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación, situación laboral o expectativas del lead'},
     {id:'B', l:'Demostró escucha activa', s:'Retomó o parafraseó lo que el lead dijo durante la conversación'},
     {id:'C', l:'Identificó la necesidad principal del lead de forma explícita', s:'Nombró o resumió la necesidad detectada antes de presentar la propuesta'},
-    {id:'D', l:'Presentó diferenciales específicos alineados a esa necesidad', s:'No entregó una lista genérica; eligió los más relevantes según el lead'},
+    {id:'D', l:'Presentó differentials específicos alineados a esa necesidad', s:'No entregó una lista genérica; eligió los más relevantes según el lead'},
     {id:'E', l:'Mantuvo el foco en el lead durante toda la llamada', s:'La conversación giró en torno al lead, no al producto en abstracto'},
   ]},
   {k:'reb', l:'Rebate de objeciones',
@@ -299,7 +287,6 @@ const OV={};
 
 function getScore(k){return Object.values(checks[k]).filter(Boolean).length*4}
 function getCount(k){return Object.values(checks[k]).filter(Boolean).length}
-
 function dotColor(s){return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)'}
 
 function buildAttrs(){
@@ -308,21 +295,17 @@ function buildAttrs(){
       <div class="card-head">
         <h3>${a.l}</h3>
         <div style="display:flex;align-items:center;gap:12px">
-          <div class="mini-dots" id="dots-${a.k}">${a.conds.map(c=>`<div class="mdot" id="dot-${a.k}-${c.id}" style="background:var(--bg-app);"></div>`).join('')}</div>
+          <div class="mini-dots" id="dots-${a.k}">${a.conds.map(c=>`<div class="mdot" id="dot-${a.k}-${c.id}"></div>`).join('')}</div>
           <span class="badge b-neu" id="sc-${a.k}">0%</span>
         </div>
       </div>
       ${a.conds.map(c=>`
-        <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')" id="ri-${a.k}-${c.id}">
+        <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')">
           <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
         </div>`).join('')}
-      <div class="score-pill">
-        <span class="score-pill-lbl">Condiciones cumplidas</span>
-        <span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de 5 → 0%</span>
-      </div>
-      <div class="field-label" style="margin-top:14px">Observaciones específicas</div>
-      <textarea id="fb-${a.k}" placeholder="¿Qué hizo bien? ¿Qué le faltó específicamente para validar la sección?"></textarea>
+      <div class="score-pill"><span class="score-pill-lbl">Condiciones cumplidas</span><span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de 5 → 0%</span></div>
+      <div class="field-label" style="margin-top:14px">Observaciones específicas</div><textarea id="fb-${a.k}" placeholder="Detalles de lo observado..."></textarea>
     </div>`).join('');
 }
 
@@ -340,26 +323,17 @@ function buildOps(){
 buildAttrs();buildOps();
 (function(){const d=new Date();document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})();
 
-function toggle(k,cid){
-  checks[k][cid]=!checks[k][cid];
-  document.getElementById('rc-'+k+'-'+cid).classList.toggle('on',checks[k][cid]);
-  updateUI(k);
-}
+function toggle(k,cid){checks[k][cid]=!checks[k][cid];document.getElementById('rc-'+k+'-'+cid).classList.toggle('on',checks[k][cid]);updateUI(k)}
 
 function updateUI(k){
-  const s=getScore(k);const n=getCount(k);
-  const color=dotColor(s);
-  const attr=ATTRS.find(a=>a.k===k);
-  attr.conds.forEach(c=>{
+  const s=getScore(k);const n=getCount(k);const color=dotColor(s);
+  ATTRS.find(a=>a.k===k).conds.forEach(c=>{
     const dot=document.getElementById('dot-'+k+'-'+c.id);
     dot.style.background=checks[k][c.id]?color:'var(--bg-app)';
     dot.style.borderColor=checks[k][c.id]?color:'var(--border-color)';
   });
-  const badge=document.getElementById('sc-'+k);
-  badge.textContent=s+'%';
-  badge.className='badge '+(s===20?'b-ok':s>0?'b-mid':'b-neu');
-  const sp=document.getElementById('sp-'+k);
-  sp.textContent=n+' de 5 → '+s+'%';
+  const badge=document.getElementById('sc-'+k);badge.textContent=s+'%';badge.className='badge '+(s===20?'b-ok':s>0?'b-mid':'b-neu');
+  const sp=document.getElementById('sp-'+k);sp.textContent=n+' de 5 → '+s+'%';
   sp.style.color=s===20?'var(--color-success-text)':s>0?'var(--color-warning-text)':'var(--text-light)';
 }
 
@@ -377,14 +351,9 @@ function go(n){
 }
 
 function initials(n){if(!n)return'?';return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}
+function svgRing(pct,color){const r=26,circ=2*Math.PI*r,dash=Math.round((pct/100)*circ);return`<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`}
 
-function svgRing(pct,color){
-  const r=26,circ=2*Math.PI*r,dash=Math.round((pct/100)*circ);
-  return`<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/>
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
-  </svg>`;
-}
+let textReportCache = ""; 
 
 function buildDev(){
   const asesor=document.getElementById('asesor').value||'Asesor';
@@ -403,6 +372,11 @@ function buildDev(){
   const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
   const estadoCls=final>=70?'b-ok':final>=40?'b-mid':'b-no';
 
+  const dBtn = document.getElementById('drive-btn');
+  dBtn.className = "drive-btn";
+  dBtn.innerHTML = '<i class="ti ti-brand-google-drive"></i> Guardar en Google Drive';
+  dBtn.onclick = sendToDrive;
+
   let errBars='';
   if(E.respeto==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
   if(E.fraude==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
@@ -411,13 +385,12 @@ function buildDev(){
   const attrRows=ATTRS.map(a=>{
     const s=getScore(a.k);const n=getCount(a.k);
     const barColor=s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
-    const barW=s*5;
     const fb=document.getElementById('fb-'+a.k).value;
     const tags=a.conds.map(c=>`<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="10" height="10" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
     return`<div class="dattr">
       <div class="dattr-top">
         <span class="dattr-name">${a.l}</span>
-        <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${barColor}"></div></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${s*5}%;background:${barColor}"></div></div>
         <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/5)</span></span>
       </div>
       <div class="cond-grid">${tags}</div>
@@ -427,8 +400,7 @@ function buildDev(){
 
   const opsRows=OPS.map(o=>{
     const v=OV[o.k];
-    const badge=v==='SI'?`<span class="badge b-ok">Sí</span>`:v==='NO'?`<span class="badge b-no">No</span>`:`<span class="badge b-neu">—</span>`;
-    return`<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${badge}</div>`;
+    return`<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${v==='SI'?`<span class="badge b-ok">Sí</span>`:v==='NO'?`<span class="badge b-no">No</span>`:`<span class="badge b-neu">—</span>`}</div>`;
   }).join('');
 
   const fortalezas=document.getElementById('fortalezas').value;
@@ -437,10 +409,7 @@ function buildDev(){
 
   document.getElementById('dev-doc').innerHTML=`
     <div class="dev-hbar">
-      <div class="dev-logo-row">
-        <span class="dev-logo-txt">Reporte de Calidad Operativa</span>
-        <span class="badge b-info">${tipo}</span>
-      </div>
+      <div class="dev-logo-row"><span class="dev-logo-txt">Reporte de Calidad Operativa</span><span class="badge b-info">${tipo}</span></div>
       <div class="dev-asesor-row">
         <div class="dev-av">${initials(asesor)}</div>
         <div style="flex:1">
@@ -451,9 +420,7 @@ function buildDev(){
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
           <div style="position:relative;width:64px;height:64px">
             ${svgRing(final,ringColor)}
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:14px;font-weight:700;color:#fff">${final}%</span>
-            </div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:14px;font-weight:700;color:#fff">${final}%</span></div>
           </div>
           <span class="badge ${estadoCls}" style="border:1px solid rgba(255,255,255,0.1)">${estadoTxt}</span>
         </div>
@@ -469,32 +436,12 @@ function buildDev(){
           <div class="met"><div class="met-val" style="display:flex;justify-content:center;align-items:center;height:28px;"><span class="badge ${estadoCls}">${estadoTxt}</span></div><div class="met-lbl">Estado General</div></div>
         </div>
       </div>
-      <div class="dsec">
-        <div class="dsec-title">Alineación de Criterios (Estructura de Bloques)</div>
-        ${attrRows}
-      </div>
+      <div class="dsec"><div class="dsec-title">Alineación de Criterios (Estructura de Bloques)</div>${attrRows}</div>
       ${fortalezas?`<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${fortalezas}</div></div>`:''}
       ${mejoras?`<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${mejoras}</div></div>`:''}
       ${acciones?`<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos Próximos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><span class="plan-n">${i+1}.</span><span>${l}</span></div>`).join('')}</div>`:''}
-      <div class="dsec">
-        <div class="dsec-title">Gestión de Procesos y Sistemas</div>
-        ${opsRows}
-      </div>
+      <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
-}
-
-function copyDev(){
-  const asesor=document.getElementById('asesor').value||'Asesor';
-  const fechaRaw=document.getElementById('fecha').value;
-  const fechaFmt=fechaRaw?new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'}):'—';
-  const depto=document.getElementById('depto').value||'—';
-  const sup=document.getElementById('super').value||'—';
-  const tipo=document.getElementById('tipo').value||'—';
-  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
-  const arancelado=OV['lead']==='SI';
-  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
-  let final=hasCrit?0:arancelado?100:Math.round(total);
-  const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
 
   let lines=[];
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -505,38 +452,68 @@ function copyDev(){
   lines.push(`Depto:       ${depto}`);
   lines.push(`Supervisor:  ${sup}`);
   lines.push(`Tipo:        ${tipo}`);
+  lines.push(`NOTA FINAL:  ${final}% — ${estadoTxt}`);
+  lines.push(`Puntaje Técnico: ${Math.round(total)}%`);
   lines.push('');
-  lines.push(`NOTA FINAL: ${final}% — ${estadoTxt}`);
-  lines.push(`Puntaje técnico: ${Math.round(total)}%`);
-  lines.push('');
-  if(E.respeto==='SI')lines.push('⚠ Error crítico: falta de respeto — nota 0%');
-  if(E.fraude==='SI')lines.push('⚠ Error crítico: venta fraudulenta — nota 0%');
-  if(arancelado&&!hasCrit)lines.push('★ Lead arancelado — nota 100%');
-  if(hasCrit||(arancelado&&!hasCrit))lines.push('');
-  lines.push('── ATRIBUTOS ──────────────────');
+  if(E.respeto==='SI')lines.push('⚠ Error crítico: falta de respeto — nota penalizada 0%');
+  if(E.fraude==='SI')lines.push('⚠ Error crítico: venta fraudulenta — nota penalizada 0%');
+  if(arancelado&&!hasCrit)lines.push('★ Cierre Efectivo: Lead arancelado — nota 100%');
+  lines.push('── CRITERIOS EVALUADOS ────────');
   ATTRS.forEach(a=>{
-    const s=getScore(a.k);const n=getCount(a.k);
-    const fb=document.getElementById('fb-'+a.k).value;
-    lines.push(`${a.l}: ${s}% (${n}/5 condiciones)`);
+    lines.push(`${a.l}: ${getScore(a.k)}%`);
     a.conds.forEach(c=>lines.push(`  ${checks[a.k][c.id]?'✓':'✗'} ${c.l}`));
-    if(fb)lines.push(`  → ${fb}`);
+    const fb=document.getElementById('fb-'+a.k).value;
+    if(fb)lines.push(`  → Obs: ${fb}`);
     lines.push('');
   });
-  const fort=document.getElementById('fortalezas').value;
-  const mej=document.getElementById('mejoras').value;
-  const acc=document.getElementById('acciones').value;
-  if(fort){lines.push('── FORTALEZAS ─────────────────');lines.push(fort);lines.push('')}
-  if(mej){lines.push('── ÁREAS DE MEJORA ────────────');lines.push(mej);lines.push('')}
-  if(acc){lines.push('── ACCIONES COMPROMETIDAS ─────');acc.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`));lines.push('')}
+  if(fortalezas){lines.push('── FORTALEZAS ─────────────────');lines.push(fortalezas);lines.push('')}
+  if(mejoras){lines.push('── OPORTUNIDADES DE MEJORA ────');lines.push(mejoras);lines.push('')}
+  if(acciones){lines.push('── COMPROMISOS ASUMIDOS ───────');acciones.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`));lines.push('')}
   lines.push('── GESTIÓN OPERATIVA ──────────');
   OPS.forEach(o=>lines.push(`${o.l}: ${OV[o.k]||'—'}`));
-  lines.push('');lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  textReportCache = lines.join('\n');
+}
 
-  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+function copyDev(){
+  navigator.clipboard.writeText(textReportCache).then(()=>{
     const btn=document.getElementById('copy-btn');
     btn.className='copy-btn copied';
-    btn.innerHTML='<i class="ti ti-check" style="font-size:15px" aria-hidden="true"></i> Copiado con éxito';
-    setTimeout(()=>{btn.className='copy-btn';btn.innerHTML='<i class="ti ti-copy" style="font-size:15px" aria-hidden="true"></i> Copiar devolución'},2500);
+    btn.innerHTML='<i class="ti ti-check"></i> Copiado con éxito';
+    setTimeout(()=>{btn.className='copy-btn';btn.innerHTML='<i class="ti ti-copy"></i> Copiar devolución'},2500);
+  });
+}
+
+// CONEXIÓN AUTOMÁTICA CON GOOGLE DRIVE
+function sendToDrive() {
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9LufkrLXLDx39FkfoPcpSNkNSPVaheC72QBX8z07Bu8xKQUVLfTfaCgc2ieMeHHJ7/exec"; 
+
+  const btn = document.getElementById('drive-btn');
+  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando en Drive...';
+  btn.onclick = null; 
+
+  const payload = {
+    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
+    fecha: document.getElementById('fecha').value || 'Sin-Fecha',
+    tipo: document.getElementById('tipo').value || 'General',
+    reporteTexto: textReportCache
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors", 
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    btn.className = "drive-btn done";
+    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en su Carpeta!';
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Hubo un error al conectar con Google Drive.");
+    btn.innerHTML = '<i class="ti ti-brand-google-drive"></i> Reintentar guardado';
+    btn.onclick = sendToDrive;
   });
 }
 </script>
