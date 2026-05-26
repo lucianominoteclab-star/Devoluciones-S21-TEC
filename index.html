@@ -346,8 +346,60 @@ function go(n){
   const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución al asesor'];
   document.getElementById('step-lbl').textContent=labels[n];
   document.getElementById('prog').style.width=(n*33.3)+'%';
-  if(n===3)buildDev();
+  
+  if(n===1 && textReportCache !== "") {
+    // Si vuelve al paso 1 desde el botón "Nueva evaluación", reseteamos todo a cero
+    resetForm();
+  } else if(n===3) {
+    buildDev();
+  }
   window.scrollTo(0,0);
+}
+
+function resetForm() {
+  // 1. Limpiar inputs de texto y selectores del Paso 1
+  document.getElementById('asesor').value = '';
+  document.getElementById('depto').value = '';
+  document.getElementById('tipo').value = '';
+  // Dejamos la fecha de hoy por comodidad
+  const d = new Date();
+  document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+  // 2. Resetear el objeto de condiciones (Atributos al 0%)
+  ATTRS.forEach(a => {
+    a.conds.forEach(c => {
+      checks[a.k][c.id] = false;
+      // Quitar la clase visual de activo a los checks de la rúbrica
+      const rc = document.getElementById(`rc-${a.k}-${c.id}`);
+      if(rc) rc.classList.remove('on');
+    });
+    // Actualizar la interfaz visual de cada bloque
+    updateUI(a.k);
+    // Limpiar comentarios específicos
+    const fb = document.getElementById(`fb-${a.k}`);
+    if(fb) fb.value = '';
+  });
+
+  // 3. Resetear gestión operativa (Botones Sí/No)
+  OPS.forEach(o => {
+    delete OV[o.k];
+  });
+  // Resetear errores críticos
+  E.respeto = null;
+  E.fraude = null;
+
+  // Quitar el color activo (y/n) de todos los botones de la pantalla
+  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => {
+    b.className = 'yn-btn';
+  });
+
+  // 4. Limpiar los cuadros de texto del plan de acción
+  document.getElementById('fortalezas').value = '';
+  document.getElementById('mejoras').value = '';
+  document.getElementById('acciones').value = '';
+
+  // 5. Limpiar el cache del reporte de texto
+  textReportCache = "";
 }
 
 function initials(n){if(!n)return'?';return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}
