@@ -3,122 +3,542 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoría de Calidad - Gestión Ejecutiva</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Evaluación de Calidad — Universidad Siglo 21</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
-    /* Estilos base personalizados para mantener la sobriedad */
-    body {
-      background-color: #f8fafc; /* bg-slate-50 */
-      color: #1e293b; /* text-slate-800 */
+    :root {
+      --bg-app: #f4f6f9;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+      --border-color: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      /* Colores de marca y estados */
+      --color-primary: #0f172a;
+      --color-primary-hover: #1e293b;
+      --color-info: #0284c7;
+      --color-info-bg: #e0f2fe;
+      
+      --color-success: #10b981;
+      --color-success-bg: #ecfdf5;
+      --color-success-text: #065f46;
+      
+      --color-warning: #f59e0b;
+      --color-warning-bg: #fffbe6;
+      --color-warning-text: #92400e;
+      
+      --color-danger: #ef4444;
+      --color-danger-bg: #fef2f2;
+      --color-danger-text: #991b1b;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     }
-    input[type=text], input[type=date], textarea, select {
-      transition: all 0.2s ease-in-out;
-    }
-    input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #475569; /* border-slate-600 */
-      box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.1);
-    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+    
+    body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
+    
+    .app { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+    
+    /* Progreso del formulario */
+    .step-lbl { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+    .prog-wrap { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--color-info); transition: width .4s ease; }
+    
+    .step { display: none; }
+    .step.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    h2 { font-size: 22px; font-weight: 700; color: var(--color-primary); margin-bottom: 1.75rem; border-bottom: 2px solid var(--bg-app); padding-bottom: 10px; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+    
+    /* Formularios e Inputs */
+    .field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+    input[type=text], input[type=date], textarea, select { width: 100%; font-size: 14px; background: var(--bg-input); color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; transition: all .2s; outline: none; }
+    input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--color-info); background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    textarea { resize: vertical; min-height: 80px; }
+    
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .fw { margin-bottom: 16px; }
+    
+    /* Tarjetas de Atributos y Secciones */
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem; transition: box-shadow .2s; }
+    .card:hover { box-shadow: var(--shadow); }
+    .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    
+    .sec-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); margin: 2.5rem 0 1rem; border-left: 3px solid var(--text-light); padding-left: 8px; }
+    
+    /* Badges / Etiquetas */
+    .badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.02em; display: inline-flex; align-items: center; }
+    .b-ok { background: var(--color-success-bg); color: var(--color-success-text); }
+    .b-mid { background: var(--color-warning-bg); color: var(--color-warning-text); }
+    .b-no { background: var(--color-danger-bg); color: var(--color-danger-text); }
+    .b-info { background: var(--color-info-bg); color: var(--color-info); }
+    .b-neu { background: var(--bg-app); color: var(--text-muted); }
+
+    /* Rúbricas e Ítems */
+    .rubric-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); cursor: pointer; transition: background .15s; border-radius: var(--radius-sm); }
+    .rubric-item:hover { background: var(--bg-input); }
+    .rubric-item:last-of-type { border-bottom: none; }
+    
+    .rcheck { width: 20px; height: 20px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: all .2s; }
+    .rcheck.on { background: var(--color-success); border-color: var(--color-success); }
+    .rcheck svg { display: none; }
+    .rcheck.on svg { display: block; }
+    
+    .rcheck-label { font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
+    .rcheck-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+    
+    /* Pill de Puntaje */
+    .score-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-app); border-radius: var(--radius-md); margin-top: 14px; border: 1px dashed var(--border-color); }
+    .score-pill-lbl { font-size: 13px; font-weight: 500; color: var(--text-muted); flex: 1; }
+    .score-pill-val { font-size: 14px; font-weight: 700; }
+    
+    .mini-dots { display: flex; gap: 5px; align-items: center; }
+    .mdot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--border-color); transition: all .2s; }
+
+    /* Botones de Selección Sí / No */
+    .yn-wrap { display: flex; gap: 8px; }
+    .yn-btn { flex: 1; border: 1.5px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: var(--radius-md); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
+    .yn-btn:hover { background: var(--bg-input); border-color: var(--text-light); }
+    .yn-btn.y { background: var(--color-success-bg); color: var(--color-success-text); border-color: var(--color-success); }
+    .yn-btn.n { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: var(--color-danger); }
+
+    /* Botones de Navegación */
+    .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+    .btn-p { background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
+    .btn-p:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
+    .btn-s { background: transparent; color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
+    .btn-s:hover { background: var(--bg-app); border-color: var(--text-light); }
+
+    /* VISTA DE DEVOLUCIÓN (PASO 3) */
+    .dev-outer { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .dev-doc { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; overflow: hidden; box-shadow: var(--shadow); }
+    
+    .dev-hbar { background: var(--color-primary); color: #fff; padding: 2rem; }
+    .dev-logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .dev-logo-txt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); }
+    .dev-asesor-row { display: flex; align-items: center; gap: 18px; }
+    
+    .dev-av { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+    
+    .dev-body { padding: 2rem; background: #fff; }
+    .dsec-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; padding-bottom: 6px; border-bottom: 2px solid var(--bg-app); }
+    .dsec { margin-bottom: 2rem; }
+    
+    .mrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .met { background: var(--bg-app); border-radius: var(--radius-md); padding: 1rem; text-align: center; border: 1px solid var(--border-color); }
+    .met-val { font-size: 24px; font-weight: 700; color: var(--color-primary); }
+    .met-lbl { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
+    
+    /* Filas de Atributo en Devolución */
+    .dattr { padding: 14px 0; border-bottom: 1px solid var(--bg-app); }
+    .dattr:last-child { border-bottom: none; }
+    .dattr-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .dattr-name { font-size: 14px; font-weight: 600; color: var(--color-primary); flex: 1; }
+    .dattr-pct { font-size: 14px; font-weight: 700; min-width: 45px; text-align: right; }
+    
+    .bar-bg { flex: 1; height: 6px; background: var(--bg-app); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width .3s ease; }
+    
+    .cond-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .cond-tag { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; }
+    .cond-tag.ok { background: var(--color-success-bg); color: var(--color-success-text); border-color: rgba(16, 185, 129, 0.15); }
+    .cond-tag.no { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: rgba(239, 68, 68, 0.1); }
+    
+    .dattr-fb { font-size: 13px; color: var(--text-muted); margin-top: 8px; padding: 8px 12px; background: var(--bg-input); border-left: 3px solid var(--text-light); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; line-height: 1.5; }
+    
+    .op-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg-app); font-size: 13px; }
+    .op-row:last-child { border-bottom: none; }
+    
+    .plan-li { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--bg-app); line-height: 1.4; }
+    .plan-li:last-child { border-bottom: none; }
+    .plan-n { font-weight: 700; color: var(--color-info); min-width: 16px; }
+    
+    .txt-blk { font-size: 13px; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; padding: 10px 14px; background: var(--bg-input); border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+    
+    .err-bar { border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
+    
+    .copy-row { display: flex; justify-content: center; gap: 12px; margin-top: 1.5rem; width: 100%; flex-wrap: wrap; }
+    .copy-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--color-info); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
+    .copy-btn:hover { background: #0274be; transform: translateY(-1px); }
+    .copy-btn.copied { background: var(--color-success); color: white; }
   </style>
 </head>
-<body class="font-sans antialiased">
+<body>
 
-  <header class="bg-slate-900 text-white py-6 shadow-md border-b border-slate-700">
-    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div>
-        <h1 class="text-xl font-bold tracking-tight">EVALUACIÓN DE CALIDAD OPERATIVA</h1>
-        <p class="text-xs text-slate-400 mt-1 font-medium tracking-wide uppercase">Fundación Cenedudes · Universidad Siglo 21 / Teclab</p>
+<div class="app">
+  <div class="step-lbl" id="step-lbl">Paso 1 de 3 — Datos del asesor</div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:33%"></div></div>
+
+  <div class="step active" id="step1">
+    <h2>Datos de la evaluación</h2>
+    <div class="g2">
+      <div class="fw"><div class="field-label">Nombre del asesor</div><input type="text" id="asesor" placeholder="Ej: Lucas Fernández"></div>
+      <div class="fw"><div class="field-label">Fecha</div><input type="date" id="fecha"></div>
+    </div>
+    <div class="g2">
+      <div class="fw"><div class="field-label">Departamento / equipo</div><input type="text" id="depto" placeholder="Ej: Ventas Siglo 21"></div>
+      <div class="fw"><div class="field-label">Supervisor evaluador</div><input type="text" id="super" placeholder="Tu nombre"></div>
+    </div>
+    <div class="fw"><div class="field-label">Tipo de llamada</div>
+      <select id="tipo"><option value="">— Seleccionar —</option><option>New Lead</option><option>Remarketing</option></select>
+    </div>
+    <div class="btn-row"><button class="btn-p" onclick="go(2)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+  </div>
+
+  <div class="step" id="step2">
+    <h2>Evaluación de la llamada</h2>
+    <div class="sec-title">Atributos cuantitativos — cada condición cumplida vale 4%</div>
+    <div id="attrs-container"></div>
+
+    <div class="sec-title">Gestión operativa</div>
+    <div class="card" id="ops-card"></div>
+
+    <div class="sec-title">Errores críticos</div>
+    <div class="card">
+      <div style="margin-bottom:18px">
+        <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo falta de respeto o ironía?</div>
+        <div class="yn-wrap"><button class="yn-btn" onclick="err('respeto','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('respeto','NO',this)">No</button></div>
       </div>
-      <div class="text-right">
-        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1.5 rounded-md border border-slate-700 font-mono">Módulo de Auditoría v2.1</span>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo venta fraudulenta?</div>
+        <div class="yn-wrap"><button class="yn-btn" onclick="err('fraude','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('fraude','NO',this)">No</button></div>
       </div>
     </div>
-  </header>
 
-  <main class="max-w-6xl mx-auto px-6 py-8">
-    <form id="auditForm" class="space-y-8">
-      
-      <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-        <h2 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-6 pb-2 border-b border-slate-100 flex items-center gap-2">
-          <span class="w-2 h-4 bg-slate-700 rounded-sm"></span> Datos de Identificación
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Auditor / Coordinador</label>
-            <input type="text" id="auditor" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-md p-2.5 text-slate-800 font-medium" placeholder="Ej: Luciano Miño">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Asesor Evaluado</label>
-            <input type="text" id="asesor" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-md p-2.5 text-slate-800 font-medium" placeholder="Nombre del asesor">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Fecha de Auditoría</label>
-            <input type="date" id="fecha" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-md p-2.5 text-slate-800 font-medium">
-          </div>
-        </div>
-      </section>
+    <div class="sec-title">Plan de acción</div>
+    <div class="card">
+      <div class="fw"><div class="field-label">Fortalezas identificadas</div><textarea id="fortalezas" placeholder="¿Qué hace bien este asesor?"></textarea></div>
+      <div class="fw"><div class="field-label">Áreas de mejora prioritarias</div><textarea id="mejoras" placeholder="¿En qué debe enfocarse?"></textarea></div>
+      <div class="fw"><div class="field-label">Acciones concretas / compromisos (una por línea)</div><textarea id="acciones" placeholder="Ej: Practicar escucha activa en las próximas 5 llamadas&#10;Seguimiento el dd/mm a las xx:xx"></textarea></div>
+    </div>
 
-      <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-        <h2 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-6 pb-2 border-b border-slate-100 flex items-center gap-2">
-          <span class="w-2 h-4 bg-slate-700 rounded-sm"></span> Criterios del Proceso de Ventas
-        </h2>
-        
-        <div class="space-y-6">
-          <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            <div class="md:col-span-2">
-              <h3 class="text-sm font-semibold text-slate-800">1. Indagación de Necesidades y Escucha Activa</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">El asesor detecta las motivaciones reales de estudio del aspirante, realiza preguntas abiertas y no interrumpe el relato del lead.</p>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Calificación</label>
-              <select class="w-full text-sm bg-white border border-slate-200 rounded-md p-2 font-medium text-slate-700">
-                <option value="100">Cumple Totalmente (100%)</option>
-                <option value="50">Cumple Parcialmente (50%)</option>
-                <option value="0">No Cumple (0%)</option>
-              </select>
-            </div>
-          </div>
+    <div class="btn-row">
+      <button class="btn-s" onclick="go(1)"><i class="ti ti-arrow-left"></i> Volver</button>
+      <button class="btn-p" onclick="go(3)">Ver devolución <i class="ti ti-eye"></i></button>
+    </div>
+  </div>
 
-          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-md flex items-start gap-3">
-            <div class="w-2 h-2 mt-1.5 rounded-full bg-emerald-500 shrink-0"></div>
-            <p class="text-xs text-emerald-800 font-medium leading-relaxed">
-              <strong class="font-semibold">Métrica Parcial:</strong> El bloque introductorio de la llamada mantiene un estándar óptimo de contactabilidad y encuadre legal.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-        <h2 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-6 pb-2 border-b border-slate-100 flex items-center gap-2">
-          <span class="w-2 h-4 bg-slate-700 rounded-sm"></span> Conclusiones de la Auditoría
-        </h2>
-        <div class="space-y-6">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Fortalezas Detectadas</label>
-            <textarea id="fortalezas" rows="3" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-md p-3 text-slate-800" placeholder="Describa los puntos fuertes observados en la gestión del asesor..."></textarea>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Áreas de Mejora</label>
-            <textarea id="mejoras" rows="3" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-md p-3 text-slate-800" placeholder="Detalles de desvíos o aspectos técnicos a corregir..."></textarea>
-          </div>
-        </div>
-      </section>
-
-      <div class="flex justify-end gap-4 pt-4">
-        <button type="button" class="px-5 py-2.5 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-md hover:bg-slate-50 shadow-sm uppercase tracking-wider transition-colors">
-          Limpiar Formulario
-        </button>
-        <button type="submit" class="px-6 py-2.5 text-xs font-semibold text-white bg-slate-800 rounded-md hover:bg-slate-700 shadow-sm uppercase tracking-wider transition-colors">
-          Finalizar y Generar Reporte
-        </button>
+  <div class="step" id="step3">
+    <div class="dev-outer">
+      <div class="dev-doc" id="dev-doc"></div>
+      <div class="copy-row">
+        <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy" style="font-size:15px" aria-hidden="true"></i> Copiar devolución</button>
+        <button class="btn-s" onclick="go(2)" style="font-size:13px;padding:8px 16px"><i class="ti ti-edit"></i> Editar</button>
+        <button class="btn-p" onclick="go(1)" style="font-size:13px;padding:8px 16px"><i class="ti ti-plus"></i> Nueva evaluación</button>
       </div>
+    </div>
+  </div>
+</div>
 
-    </form>
-  </main>
+<script>
+const ATTRS=[
+  {k:'ind', l:'Indagación y diferenciales',
+   conds:[
+    {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación, situación laboral o expectativas del lead'},
+    {id:'B', l:'Demostró escucha activa', s:'Retomó o parafraseó lo que el lead dijo durante la conversación'},
+    {id:'C', l:'Identificó la necesidad principal del lead de forma explícita', s:'Nombró o resumió la necesidad detectada antes de presentar la propuesta'},
+    {id:'D', l:'Presentó diferenciales específicos alineados a esa necesidad', s:'No entregó una lista genérica; eligió los más relevantes según el lead'},
+    {id:'E', l:'Mantuvo el foco en el lead durante toda la llamada', s:'La conversación giró en torno al lead, no al producto en abstracto'},
+  ]},
+  {k:'reb', l:'Rebate de objeciones',
+   conds:[
+    {id:'A', l:'Detectó la objeción correctamente sin ignorarla ni desviar el tema', s:'Reconoció la objeción de forma explícita antes de responder'},
+    {id:'B', l:'Validó la preocupación del lead con empatía', s:'Mostró comprensión genuina antes de argumentar'},
+    {id:'C', l:'Respondió con un argumento concreto de Siglo 21 alineado a esa objeción', s:'El argumento fue específico, no una respuesta de lista genérica'},
+    {id:'D', l:'Verificó que el lead quedó conforme con la respuesta', s:'Preguntó o chequeó si la objeción quedó resuelta antes de continuar'},
+    {id:'E', l:'Usó la objeción como puente para reforzar la propuesta de valor', s:'Convirtió la objeción en una oportunidad para destacar un diferencial'},
+  ]},
+  {k:'arancel', l:'Información de aranceles',
+   conds:[
+    {id:'A', l:'Ofreció primero el pago semestral con tarjeta como opción principal', s:'Presentó el semestral como la mejor alternativa desde el inicio'},
+    {id:'B', l:'Mencionó los beneficios: descuento y cuotas sin interés', s:'Explicó claramente por qué conviene el semestral'},
+    {id:'C', l:'Preguntó por la tarjeta del lead antes de ofrecer alternativas', s:'Indagó disponibilidad de tarjeta antes de pasar a bimestral o suscripción'},
+    {id:'D', l:'Respetó el orden: semestral → bimestral → suscripción', s:'No saltó pasos ni adelantó opciones inferiores sin manejar objeciones'},
+    {id:'E', l:'No entregó todas las opciones juntas sin manejar objeciones primero', s:'Presentó las opciones de forma escalonada según la respuesta del lead'},
+  ]},
+  {k:'urgencia', l:'Sentido de urgencia',
+   conds:[
+    {id:'A', l:'Mencionó al menos un elemento de urgencia real', s:'Cupos limitados, vencimiento de beca, inicio de clases o beneficio por tiempo limitado'},
+    {id:'B', l:'Lo presentó de forma natural, sin sonar forzado o agresivo', s:'La urgencia fluyó dentro de la conversación sin generar rechazo'},
+    {id:'C', l:'Vinculó la urgencia a un beneficio concreto que el lead pierde si no actúa hoy', s:'Dejó claro qué se pierde específicamente al postergar la decisión'},
+    {id:'D', l:'Propuso una acción inmediata: cerrar, preinscribir o reservar', s:'La urgencia terminó en un llamado a la acción concreto'},
+    {id:'E', l:'Reforzó la urgencia al cierre de la llamada', s:'No solo al inicio; volvió a mencionarla al despedirse o al acordar agenda'},
+  ]},
+  {k:'agenda', l:'Agenda precisa',
+   conds:[
+    {id:'A', l:'Tomó la iniciativa de proponer el próximo contacto', s:'No esperó que el lead lo pidiera; fue proactivo'},
+    {id:'B', l:'Propuso una fecha específica dentro de las 48 horas', s:'No un "te llamo pronto" o "la semana que viene"'},
+    {id:'C', l:'Acordó una hora exacta, no un rango amplio', s:'No "a la tarde" o "mañana" sino una hora concreta'},
+    {id:'D', l:'Generó compromiso del lead con ese horario', s:'El lead confirmó o aceptó explícitamente el horario propuesto'},
+    {id:'E', l:'Mencionó el motivo del recontacto para dar sentido de continuidad', s:'Explicó para qué será la próxima llamada, no solo cuándo'},
+  ]},
+];
 
-  <footer class="text-center py-8 text-xs text-slate-400 font-medium">
-    Sistema de Control de Calidad Interno · Fundación Cenedudes © 2026
-  </footer>
+const OPS=[
+  {k:'lead',l:'Lead arancelado',d:'¿Se cerró la venta en la llamada?'},
+  {k:'preinscripcion',l:'Ofrece preinscripción',d:'¿Intentó cargar datos para asegurar el cupo?'},
+  {k:'metodos',l:'Pregunta métodos de pago',d:'¿Pregunta por tarjeta antes de ofrecer financiación?'},
+  {k:'convenios',l:'Convenios con empresas',d:'¿Pregunta por empresa del lead y ofrece convenio?'},
+  {k:'ganchos',l:'Ganchos comerciales',d:'¿Mencionó cursos extras (Excel, Power BI, Autoliderazgo)?'},
+  {k:'sistemas',l:'Registro en sistemas',d:'¿Dejó nota, tarea y fin de gestión en Tomi/Hubspot?'},
+  {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'},
+];
 
+const checks={};
+ATTRS.forEach(a=>{checks[a.k]={};a.conds.forEach(c=>{checks[a.k][c.id]=false})});
+const E={respeto:null,fraude:null};
+const OV={};
+
+function getScore(k){return Object.values(checks[k]).filter(Boolean).length*4}
+function getCount(k){return Object.values(checks[k]).filter(Boolean).length}
+
+function dotColor(s){return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)'}
+
+function buildAttrs(){
+  document.getElementById('attrs-container').innerHTML=ATTRS.map(a=>`
+    <div class="card">
+      <div class="card-head">
+        <h3>${a.l}</h3>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="mini-dots" id="dots-${a.k}">${a.conds.map(c=>`<div class="mdot" id="dot-${a.k}-${c.id}" style="background:var(--bg-app);"></div>`).join('')}</div>
+          <span class="badge b-neu" id="sc-${a.k}">0%</span>
+        </div>
+      </div>
+      ${a.conds.map(c=>`
+        <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')" id="ri-${a.k}-${c.id}">
+          <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
+        </div>`).join('')}
+      <div class="score-pill">
+        <span class="score-pill-lbl">Condiciones cumplidas</span>
+        <span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de 5 → 0%</span>
+      </div>
+      <div class="field-label" style="margin-top:14px">Observaciones específicas</div>
+      <textarea id="fb-${a.k}" placeholder="¿Qué hizo bien? ¿Qué le faltó específicamente para validar la sección?"></textarea>
+    </div>`).join('');
+}
+
+function buildOps(){
+  document.getElementById('ops-card').innerHTML=OPS.map(o=>`
+    <div class="op-row">
+      <div><div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div><div style="font-size:12px;color:var(--text-muted)">${o.d}</div></div>
+      <div class="yn-wrap" style="flex-shrink:0;margin-left:16px">
+        <button class="yn-btn" onclick="opv('${o.k}','SI',this)">Sí</button>
+        <button class="yn-btn" onclick="opv('${o.k}','NO',this)">No</button>
+      </div>
+    </div>`).join('');
+}
+
+buildAttrs();buildOps();
+(function(){const d=new Date();document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})();
+
+function toggle(k,cid){
+  checks[k][cid]=!checks[k][cid];
+  document.getElementById('rc-'+k+'-'+cid).classList.toggle('on',checks[k][cid]);
+  updateUI(k);
+}
+
+function updateUI(k){
+  const s=getScore(k);const n=getCount(k);
+  const color=dotColor(s);
+  const attr=ATTRS.find(a=>a.k===k);
+  attr.conds.forEach(c=>{
+    const dot=document.getElementById('dot-'+k+'-'+c.id);
+    dot.style.background=checks[k][c.id]?color:'var(--bg-app)';
+    dot.style.borderColor=checks[k][c.id]?color:'var(--border-color)';
+  });
+  const badge=document.getElementById('sc-'+k);
+  badge.textContent=s+'%';
+  badge.className='badge '+(s===20?'b-ok':s>0?'b-mid':'b-neu');
+  const sp=document.getElementById('sp-'+k);
+  sp.textContent=n+' de 5 → '+s+'%';
+  sp.style.color=s===20?'var(--color-success-text)':s>0?'var(--color-warning-text)':'var(--text-light)';
+}
+
+function err(a,v,btn){E[a]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');btn.classList.add(v==='SI'?'y':'n')}
+function opv(k,v,btn){OV[k]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');btn.classList.add(v==='SI'?'y':'n')}
+
+function go(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución al asesor'];
+  document.getElementById('step-lbl').textContent=labels[n];
+  document.getElementById('prog').style.width=(n*33.3)+'%';
+  if(n===3)buildDev();
+  window.scrollTo(0,0);
+}
+
+function initials(n){if(!n)return'?';return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}
+
+function svgRing(pct,color){
+  const r=26,circ=2*Math.PI*r,dash=Math.round((pct/100)*circ);
+  return`<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/>
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function buildDev(){
+  const asesor=document.getElementById('asesor').value||'Asesor';
+  const fechaRaw=document.getElementById('fecha').value;
+  const fechaFmt=fechaRaw?new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'}):'—';
+  const depto=document.getElementById('depto').value||'—';
+  const sup=document.getElementById('super').value||'—';
+  const tipo=document.getElementById('tipo').value||'—';
+
+  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
+  const arancelado=OV['lead']==='SI';
+  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
+  let final=hasCrit?0:arancelado?100:Math.round(total);
+
+  const ringColor=final>=70?'#10b981':final>=40?'#f59e0b':'#ef4444';
+  const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
+  const estadoCls=final>=70?'b-ok':final>=40?'b-mid':'b-no';
+
+  let errBars='';
+  if(E.respeto==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
+  if(E.fraude==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
+  if(arancelado&&!hasCrit)errBars=`<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text)"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Lead arancelado en llamada — Calificación: 100%</div>`;
+
+  const attrRows=ATTRS.map(a=>{
+    const s=getScore(a.k);const n=getCount(a.k);
+    const barColor=s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
+    const barW=s*5;
+    const fb=document.getElementById('fb-'+a.k).value;
+    const tags=a.conds.map(c=>`<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="10" height="10" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
+    return`<div class="dattr">
+      <div class="dattr-top">
+        <span class="dattr-name">${a.l}</span>
+        <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${barColor}"></div></div>
+        <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/5)</span></span>
+      </div>
+      <div class="cond-grid">${tags}</div>
+      ${fb?`<div class="dattr-fb">${fb}</div>`:''}
+    </div>`;
+  }).join('');
+
+  const opsRows=OPS.map(o=>{
+    const v=OV[o.k];
+    const badge=v==='SI'?`<span class="badge b-ok">Sí</span>`:v==='NO'?`<span class="badge b-no">No</span>`:`<span class="badge b-neu">—</span>`;
+    return`<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${badge}</div>`;
+  }).join('');
+
+  const fortalezas=document.getElementById('fortalezas').value;
+  const mejoras=document.getElementById('mejoras').value;
+  const acciones=document.getElementById('acciones').value;
+
+  document.getElementById('dev-doc').innerHTML=`
+    <div class="dev-hbar">
+      <div class="dev-logo-row">
+        <span class="dev-logo-txt">Reporte de Calidad Operativa</span>
+        <span class="badge b-info">${tipo}</span>
+      </div>
+      <div class="dev-asesor-row">
+        <div class="dev-av">${initials(asesor)}</div>
+        <div style="flex:1">
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:2px">${asesor}</div>
+          <div style="font-size:13px;color:var(--text-light)">${depto}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px"><i class="ti ti-calendar"></i> ${fechaFmt} · <i class="ti ti-user-check"></i> Auditado por ${sup}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="position:relative;width:64px;height:64px">
+            ${svgRing(final,ringColor)}
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+              <span style="font-size:14px;font-weight:700;color:#fff">${final}%</span>
+            </div>
+          </div>
+          <span class="badge ${estadoCls}" style="border:1px solid rgba(255,255,255,0.1)">${estadoTxt}</span>
+        </div>
+      </div>
+    </div>
+    <div class="dev-body">
+      ${errBars?`<div style="margin-bottom:1.5rem">${errBars}</div>`:''}
+      <div class="dsec">
+        <div class="dsec-title">Métricas de Desempeño</div>
+        <div class="mrow">
+          <div class="met"><div class="met-val">${final}%</div><div class="met-lbl">Nota Final</div></div>
+          <div class="met"><div class="met-val">${Math.round(total)}%</div><div class="met-lbl">Puntaje Técnico</div></div>
+          <div class="met"><div class="met-val" style="display:flex;justify-content:center;align-items:center;height:28px;"><span class="badge ${estadoCls}">${estadoTxt}</span></div><div class="met-lbl">Estado General</div></div>
+        </div>
+      </div>
+      <div class="dsec">
+        <div class="dsec-title">Alineación de Criterios (Estructura de Bloques)</div>
+        ${attrRows}
+      </div>
+      ${fortalezas?`<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${fortalezas}</div></div>`:''}
+      ${mejoras?`<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${mejoras}</div></div>`:''}
+      ${acciones?`<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos Próximos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><span class="plan-n">${i+1}.</span><span>${l}</span></div>`).join('')}</div>`:''}
+      <div class="dsec">
+        <div class="dsec-title">Gestión de Procesos y Sistemas</div>
+        ${opsRows}
+      </div>
+    </div>`;
+}
+
+function copyDev(){
+  const asesor=document.getElementById('asesor').value||'Asesor';
+  const fechaRaw=document.getElementById('fecha').value;
+  const fechaFmt=fechaRaw?new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'}):'—';
+  const depto=document.getElementById('depto').value||'—';
+  const sup=document.getElementById('super').value||'—';
+  const tipo=document.getElementById('tipo').value||'—';
+  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
+  const arancelado=OV['lead']==='SI';
+  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
+  let final=hasCrit?0:arancelado?100:Math.round(total);
+  const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
+
+  let lines=[];
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push('EVALUACIÓN DE CALIDAD — SIGLO 21');
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push(`Asesor:      ${asesor}`);
+  lines.push(`Fecha:       ${fechaFmt}`);
+  lines.push(`Depto:       ${depto}`);
+  lines.push(`Supervisor:  ${sup}`);
+  lines.push(`Tipo:        ${tipo}`);
+  lines.push('');
+  lines.push(`NOTA FINAL: ${final}% — ${estadoTxt}`);
+  lines.push(`Puntaje técnico: ${Math.round(total)}%`);
+  lines.push('');
+  if(E.respeto==='SI')lines.push('⚠ Error crítico: falta de respeto — nota 0%');
+  if(E.fraude==='SI')lines.push('⚠ Error crítico: venta fraudulenta — nota 0%');
+  if(arancelado&&!hasCrit)lines.push('★ Lead arancelado — nota 100%');
+  if(hasCrit||(arancelado&&!hasCrit))lines.push('');
+  lines.push('── ATRIBUTOS ──────────────────');
+  ATTRS.forEach(a=>{
+    const s=getScore(a.k);const n=getCount(a.k);
+    const fb=document.getElementById('fb-'+a.k).value;
+    lines.push(`${a.l}: ${s}% (${n}/5 condiciones)`);
+    a.conds.forEach(c=>lines.push(`  ${checks[a.k][c.id]?'✓':'✗'} ${c.l}`));
+    if(fb)lines.push(`  → ${fb}`);
+    lines.push('');
+  });
+  const fort=document.getElementById('fortalezas').value;
+  const mej=document.getElementById('mejoras').value;
+  const acc=document.getElementById('acciones').value;
+  if(fort){lines.push('── FORTALEZAS ─────────────────');lines.push(fort);lines.push('')}
+  if(mej){lines.push('── ÁREAS DE MEJORA ────────────');lines.push(mej);lines.push('')}
+  if(acc){lines.push('── ACCIONES COMPROMETIDAS ─────');acc.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`));lines.push('')}
+  lines.push('── GESTIÓN OPERATIVA ──────────');
+  OPS.forEach(o=>lines.push(`${o.l}: ${OV[o.k]||'—'}`));
+  lines.push('');lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.className='copy-btn copied';
+    btn.innerHTML='<i class="ti ti-check" style="font-size:15px" aria-hidden="true"></i> Copiado con éxito';
+    setTimeout(()=>{btn.className='copy-btn';btn.innerHTML='<i class="ti ti-copy" style="font-size:15px" aria-hidden="true"></i> Copiar devolución'},2500);
+  });
+}
+</script>
 </body>
 </html>
