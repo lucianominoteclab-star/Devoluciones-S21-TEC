@@ -538,17 +538,52 @@ function copyDev(){
 
 // CONEXIÓN AUTOMÁTICA CON GOOGLE DRIVE
 function sendToDrive() {
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9LufkrLXLDx39FkfoPcpSNkNSPVaheC72QBX8z07Bu8xKQUVLfTfaCgc2ieMeHHJ7/exec"; 
+  const SCRIPT_URL = "TU_NUEVO_ENLACE_DE_APPS_SCRIPT_AQUÍ"; 
 
   const btn = document.getElementById('drive-btn');
-  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando en Drive...';
+  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando registros...';
   btn.onclick = null; 
 
+  // Calculamos las variables exactas para enviar al Excel centralizado
+  const hasCrit = E.respeto==='SI'||E.fraude==='SI';
+  const arancelado = OV['lead']==='SI';
+  let total = 0; ATTRS.forEach(a=>{total+=getScore(a.k)});
+  let final = hasCrit ? 0 : arancelado ? 100 : Math.round(total);
+
+  // Armamos el paquete de datos estructurados
   const payload = {
-    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
     fecha: document.getElementById('fecha').value || 'Sin-Fecha',
+    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
     tipo: document.getElementById('tipo').value || 'General',
-    reporteTexto: textReportCache
+    supervisor: document.getElementById('super').value || '—',
+    departamento: document.getElementById('depto').value || '—',
+    notaFinal: final,
+    puntajeTecnico: Math.round(total),
+    
+    // Puntajes de cada bloque de métricas
+    met_ind: getScore('ind'),
+    met_reb: getScore('reb'),
+    met_aran: getScore('arancel'),
+    met_urg: getScore('urgencia'),
+    met_agen: getScore('agenda'),
+    
+    // Gestión operativa
+    op_arancelado: OV['lead'] || '—',
+    op_preinscr: OV['preinscripcion'] || '—',
+    op_metodos: OV['metodos'] || '—',
+    op_convenios: OV['convenios'] || '—',
+    op_ganchos: OV['ganchos'] || '—',
+    op_sistemas: OV['sistemas'] || '—',
+    op_descuentos: OV['descuentos'] || '—',
+    
+    // Errores críticos
+    crit_respeto: E.respeto || 'NO',
+    crit_fraude: E.fraude || 'NO',
+    
+    // Plan de acción textual
+    fortalezas: document.getElementById('fortalezas').value || '',
+    mejoras: document.getElementById('mejoras').value || '',
+    acciones: document.getElementById('acciones').value || ''
   };
 
   fetch(SCRIPT_URL, {
@@ -559,7 +594,7 @@ function sendToDrive() {
   })
   .then(() => {
     btn.className = "drive-btn done";
-    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en su Carpeta!';
+    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en Base de Datos y Drive!';
   })
   .catch(err => {
     console.error(err);
@@ -568,6 +603,3 @@ function sendToDrive() {
     btn.onclick = sendToDrive;
   });
 }
-</script>
-</body>
-</html>
