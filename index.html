@@ -538,28 +538,64 @@ function copyDev(){
 
 // CONEXIÓN AUTOMÁTICA CON GOOGLE DRIVE
 function sendToDrive() {
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9LufkrLXLDx39FkfoPcpSNkNSPVaheC72QBX8z07Bu8xKQUVLfTfaCgc2ieMeHHJ7/exec"; 
+  const SCRIPT_URL = "TU_URL_DEL_APP_SCRIPT_ACÁ";
 
   const btn = document.getElementById('drive-btn');
   btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando en Drive...';
-  btn.onclick = null; 
+  btn.onclick = null;
+
+  // Calcular métricas para enviar al sheet
+  const hasCrit = E.respeto === 'SI' || E.fraude === 'SI';
+  const arancelado = OV['lead'] === 'SI';
+  let total = 0;
+  ATTRS.forEach(a => { total += getScore(a.k) });
+  const notaFinal = hasCrit ? 0 : arancelado ? 100 : Math.round(total);
+  const estadoGeneral = notaFinal >= 70 ? 'Aprobado' : notaFinal >= 40 ? 'En desarrollo' : 'Requiere mejora';
 
   const payload = {
-    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
-    fecha: document.getElementById('fecha').value || 'Sin-Fecha',
-    tipo: document.getElementById('tipo').value || 'General',
-    reporteTexto: textReportCache
+    // Datos básicos
+    asesor:      document.getElementById('asesor').value || 'Asesor Anónimo',
+    fecha:       document.getElementById('fecha').value  || 'Sin-Fecha',
+    tipo:        document.getElementById('tipo').value   || 'General',
+    depto:       document.getElementById('depto').value  || '—',
+    supervisor:  document.getElementById('super').value  || '—',
+    reporteTexto: textReportCache,
+
+    // Métricas generales
+    notaFinal,
+    puntajeTecnico: Math.round(total),
+    estadoGeneral,
+
+    // Scores por atributo
+    scoreInd:      getScore('ind'),
+    scoreReb:      getScore('reb'),
+    scoreArancel:  getScore('arancel'),
+    scoreUrgencia: getScore('urgencia'),
+    scoreAgenda:   getScore('agenda'),
+
+    // Gestión operativa
+    opLead:       OV['lead']          || '—',
+    opPreins:     OV['preinscripcion']|| '—',
+    opMetodos:    OV['metodos']       || '—',
+    opConvenios:  OV['convenios']     || '—',
+    opGanchos:    OV['ganchos']       || '—',
+    opSistemas:   OV['sistemas']      || '—',
+    opDescuentos: OV['descuentos']    || '—',
+
+    // Errores críticos
+    errRespeto: E.respeto === 'SI' ? 'Sí' : 'No',
+    errFraude:  E.fraude  === 'SI' ? 'Sí' : 'No',
   };
 
   fetch(SCRIPT_URL, {
     method: "POST",
-    mode: "no-cors", 
+    mode: "no-cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
   .then(() => {
     btn.className = "drive-btn done";
-    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en su Carpeta!';
+    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en Drive!';
   })
   .catch(err => {
     console.error(err);
@@ -568,6 +604,3 @@ function sendToDrive() {
     btn.onclick = sendToDrive;
   });
 }
-</script>
-</body>
-</html>
