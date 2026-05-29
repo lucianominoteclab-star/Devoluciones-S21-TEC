@@ -50,7 +50,7 @@ textarea{resize:vertical;min-height:64px}
 .rcheck svg{display:none}.rcheck.on svg{display:block}
 .rcheck-label{font-size:13px;color:var(--color-text-primary);line-height:1.5;flex:1}
 .rcheck-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.4}
-.score-pill{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-top:10px}
+.score-pill">display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-top:10px}
 .score-pill-lbl{font-size:12px;color:var(--color-text-secondary);flex:1}
 .score-pill-val{font-size:13px;font-weight:500}
 .mini-dots{display:flex;gap:4px;align-items:center}
@@ -178,10 +178,8 @@ textarea{resize:vertical;min-height:64px}
 </div>
 
 <script>
-// PEGA EL ENLACE DE TU GOOGLE APPS SCRIPT ACÁ:
+// PEGA TU NUEVA URL DE GOOGLE APPS SCRIPT ACÁ:
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgwkv3pdGTvmyBQGHxYa33tPp9mQ3EtfE5F-BTdVB6DZdRvL1pSR1jmu9KREc1Bwsk/exec";
-
-let textReportCache = "";
 
 const ATTRS=[
   {k:'ind', l:'Indagación y diferenciales',
@@ -241,10 +239,9 @@ ATTRS.forEach(a=>{checks[a.k]={};a.conds.forEach(c=>{checks[a.k][c.id]=false})})
 const E={respeto:null,fraude:null};
 const OV={};
 
-function getScore(k){return Object.values(checks[k]).filter(Boolean).length*4}
+function getScore(k){return Object.values(checks[k]).filter(Boolean).length*20}
 function getCount(k){return Object.values(checks[k]).filter(Boolean).length}
-
-function dotColor(s){return s===20?'#1D9E75':s>=12?'#BA7517':'#E24B4A'}
+function dotColor(s){return s===100?'#1D9E75':s>=60?'#BA7517':'#E24B4A'}
 
 function buildAttrs(){
   document.getElementById('attrs-container').innerHTML=ATTRS.map(a=>`
@@ -262,7 +259,7 @@ function buildAttrs(){
           <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
         </div>`).join('')}
       <div class="score-pill">
-        <span class="score-pill-lbl">Conditions fulfilled</span>
+        <span class="score-pill-lbl">Condiciones cumplidas</span>
         <span class="score-pill-val" id="sp-${a.k}" style="color:var(--color-text-tertiary)">0 de 5 → 0%</span>
       </div>
       <div class="field-label" style="margin-top:10px">Observaciones</div>
@@ -304,12 +301,12 @@ function updateUI(k){
   const badge=document.getElementById('sc-'+k);
   if(badge) {
     badge.textContent=s+'%';
-    badge.className='badge '+(s===20?'b-ok':s>0?'b-mid':'b-neu');
+    badge.className='badge '+(s===100?'b-ok':s>=60?'b-mid':'b-no');
   }
   const sp=document.getElementById('sp-'+k);
   if(sp) {
     sp.textContent=n+' de 5 → '+s+'%';
-    sp.style.color=s===20?'#085041':s>0?'#633806':'var(--color-text-tertiary)';
+    sp.style.color=s===100?'#085041':s>=60?'#633806':'#791F1F';
   }
 }
 
@@ -325,7 +322,6 @@ function go(n){
       return;
     }
   }
-
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step'+n).classList.add('active');
   const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución'];
@@ -346,6 +342,18 @@ function svgRing(pct,color){
   </svg>`;
 }
 
+function calcularResultados() {
+  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
+  const arancelado=OV['lead']==='SI';
+  
+  let sumaPorcentajes=0;
+  ATTRS.forEach(a=>{ sumaPorcentajes += getScore(a.k); });
+  let promedioTecnico = Math.round(sumaPorcentajes / ATTRS.length);
+  let final = hasCrit ? 0 : arancelado ? 100 : promedioTecnico;
+
+  return { hasCrit, arancelado, puntajeTecnico: promedioTecnico, final };
+}
+
 function buildDev(){
   const asesor=document.getElementById('asesor').value||'Asesor';
   const fechaRaw=document.getElementById('fecha').value;
@@ -354,30 +362,26 @@ function buildDev(){
   const sup=document.getElementById('super').value||'—';
   const tipo=document.getElementById('tipo').value||'—';
 
-  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
-  const arancelado=OV['lead']==='SI';
-  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
-  let final=hasCrit?0:arancelado?100:Math.round(total);
+  const res = calcularResultados();
 
-  const ringColor=final>=70?'#1D9E75':final>=40?'#BA7517':'#E24B4A';
-  const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
-  const estadoCls=final>=70?'b-ok':final>=40?'b-mid':'b-no';
+  const ringColor=res.final>=70?'#1D9E75':res.final>=40?'#BA7517':'#E24B4A';
+  const estadoTxt=res.final>=70?'Aprobado':res.final>=40?'En desarrollo':'Requiere mejora';
+  const estadoCls=res.final>=70?'b-ok':res.final>=40?'b-mid':'b-no';
 
   let errBars='';
   if(E.respeto==='SI')errBars+=`<div class="err-bar" style="background:#FCEBEB;border:.5px solid #F09595;color:#791F1F"><i class="ti ti-alert-triangle" style="font-size:16px" aria-hidden="true"></i>Error crítico: falta de respeto — nota baja a 0%</div>`;
   if(E.fraude==='SI')errBars+=`<div class="err-bar" style="background:#FCEBEB;border:.5px solid #F09595;color:#791F1F"><i class="ti ti-alert-triangle" style="font-size:16px" aria-hidden="true"></i>Error crítico: venta fraudulenta — nota baja a 0%</div>`;
-  if(arancelado&&!hasCrit)errBars=`<div class="err-bar" style="background:#E1F5EE;border:.5px solid #5DCAA5;color:#085041"><i class="ti ti-star" style="font-size:16px" aria-hidden="true"></i>Lead arancelado — la venta se cerró en la llamada. Nota: 100%</div>`;
+  if(res.arancelado&&!res.hasCrit)errBars=`<div class="err-bar" style="background:#E1F5EE;border:.5px solid #5DCAA5;color:#085041"><i class="ti ti-star" style="font-size:16px" aria-hidden="true"></i>Lead arancelado — la venta se cerró en la llamada. Nota: 100%</div>`;
 
   const attrRows=ATTRS.map(a=>{
     const s=getScore(a.k);const n=getCount(a.k);
-    const barColor=s===20?'#1D9E75':s>=12?'#BA7517':'#E24B4A';
-    const barW=s*5;
+    const barColor=s===100?'#1D9E75':s>=60?'#BA7517':'#E24B4A';
     const fb=document.getElementById('fb-'+a.k).value;
     const tags=a.conds.map(c=>`<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="9" height="9" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
     return`<div class="dattr">
       <div class="dattr-top">
         <span class="dattr-name">${a.l}</span>
-        <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${barColor}"></div></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${s}%;background:${barColor}"></div></div>
         <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:11px;font-weight:400;color:var(--color-text-tertiary)">(${n}/5)</span></span>
       </div>
       <div class="cond-grid">${tags}</div>
@@ -410,9 +414,9 @@ function buildDev(){
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
           <div style="position:relative;width:64px;height:64px">
-            ${svgRing(final,ringColor)}
+            ${svgRing(res.final,ringColor)}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:15px;font-weight:500;color:var(--color-text-primary)">${final}%</span>
+              <span style="font-size:15px;font-weight:500;color:var(--color-text-primary)">${res.final}%</span>
             </div>
           </div>
           <span class="badge ${estadoCls}">${estadoTxt}</span>
@@ -424,8 +428,8 @@ function buildDev(){
       <div class="dsec">
         <div class="dsec-title">Resultado general</div>
         <div class="mrow">
-          <div class="met"><div class="met-val">${final}%</div><div class="met-lbl">Nota final</div></div>
-          <div class="met"><div class="met-val">${Math.round(total)}%</div><div class="met-lbl">Puntaje técnico</div></div>
+          <div class="met"><div class="met-val">${res.final}%</div><div class="met-lbl">Nota final</div></div>
+          <div class="met"><div class="met-val">${res.puntajeTecnico}%</div><div class="met-lbl">Puntaje técnico</div></div>
           <div class="met"><div class="met-val"><span class="badge ${estadoCls}" style="font-size:12px">${estadoTxt}</span></div><div class="met-lbl">Estado</div></div>
         </div>
       </div>
@@ -450,11 +454,9 @@ function copyDev(){
   const depto=document.getElementById('depto').value||'—';
   const sup=document.getElementById('super').value||'—';
   const tipo=document.getElementById('tipo').value||'—';
-  const hasCrit=E.respeto==='SI'||E.fraude==='SI';
-  const arancelado=OV['lead']==='SI';
-  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
-  let final=hasCrit?0:arancelado?100:Math.round(total);
-  const estadoTxt=final>=70?'Aprobado':final>=40?'En desarrollo':'Requiere mejora';
+  
+  const res = calcularResultados();
+  const estadoTxt=res.final>=70?'Aprobado':res.final>=40?'En desarrollo':'Requiere mejora';
 
   let lines=[];
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -466,13 +468,13 @@ function copyDev(){
   lines.push(`Supervisor:  ${sup}`);
   lines.push(`Tipo:        ${tipo}`);
   lines.push('');
-  lines.push(`NOTA FINAL: ${final}% — ${estadoTxt}`);
-  lines.push(`Puntaje técnico: ${Math.round(total)}%`);
+  lines.push(`NOTA FINAL: ${res.final}% — ${estadoTxt}`);
+  lines.push(`Puntaje técnico: ${res.puntajeTecnico}%`);
   lines.push('');
   if(E.respeto==='SI')lines.push('⚠ Error crítico: falta de respeto — nota 0%');
   if(E.fraude==='SI')lines.push('⚠ Error crítico: venta fraudulenta — nota 0%');
-  if(arancelado&&!hasCrit)lines.push('★ Lead arancelado — nota 100%');
-  if(hasCrit||(arancelado&&!hasCrit))lines.push('');
+  if(res.arancelado&&!res.hasCrit)lines.push('★ Lead arancelado — nota 100%');
+  if(res.hasCrit||(res.arancelado&&!res.hasCrit))lines.push('');
   lines.push('── ATRIBUTOS ──────────────────');
   ATTRS.forEach(a=>{
     const s=getScore(a.k);const n=getCount(a.k);
@@ -501,121 +503,90 @@ function copyDev(){
 }
 
 function sendToDrive() {
-  if(SCRIPT_URL === "AQUÍ_VA_TU_NUEVA_URL_DE_APPS_SCRIPT") {
+  if(!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxweyObPqyWTAJIjiOUMPxNxBTZpfVSjFVitjvbjNpJrtVlSzBO4mlIrAx50aKSbwt-/exec")) {
     alert("Por favor, configura tu URL de Google Apps Script en la variable SCRIPT_URL al inicio del código javascript.");
     return;
   }
 
   const btn = document.getElementById('drive-btn');
-  const oldText = btn.innerHTML;
-  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando registros...';
-  btn.onclick = null; 
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader animate-spin" style="font-size:15px"></i> Guardando...';
 
-  const hasCrit = E.respeto==='SI'||E.fraude==='SI';
-  const arancelado = OV['lead']==='SI';
-  let total = 0; ATTRS.forEach(a=>{total+=getScore(a.k)});
-  let final = hasCrit ? 0 : arancelado ? 100 : Math.round(total);
+  const res = calcularResultados();
 
+  // Mapeo exacto de nombres de propiedades requeridos por Código.gs
   const payload = {
-    fecha: document.getElementById('fecha').value || 'Sin-Fecha',
-    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
-    tipo: document.getElementById('tipo').value || 'General',
-    supervisor: document.getElementById('super').value || '—',
-    departamento: document.getElementById('depto').value || '—',
-    notaFinal: final,
-    puntajeTecnico: Math.round(total),
-    
+    fecha: document.getElementById('fecha').value,
+    asesor: document.getElementById('asesor').value.trim(),
+    tipo: document.getElementById('tipo').value,
+    supervisor: document.getElementById('super').value.trim() || 'Luciano',
+    departamento: document.getElementById('depto').value.trim() || 'Ventas',
+    notaFinal: res.final,
+    puntajeTecnico: res.puntajeTecnico,
     met_ind: getScore('ind'),
     met_reb: getScore('reb'),
     met_aran: getScore('arancel'),
     met_urg: getScore('urgencia'),
     met_agen: getScore('agenda'),
-    
-    op_arancelado: OV['lead'] || '—',
-    op_preinscr: OV['preinscripcion'] || '—',
-    op_metodos: OV['metodos'] || '—',
-    op_convenios: OV['convenios'] || '—',
-    op_ganchos: OV['ganchos'] || '—',
-    op_sistemas: OV['sistemas'] || '—',
-    op_descuentos: OV['descuentos'] || '—',
-    
-    crit_respeto: E.respeto || 'NO',
-    crit_fraude: E.fraude || 'NO',
-    
-    fortalezas: document.getElementById('fortalezas').value || '',
-    mejoras: document.getElementById('mejoras').value || '',
-    acciones: document.getElementById('acciones').value || ''
+    op_arancelado: OV['lead'] || 'NO',
+    op_preinscr: OV['preinscripcion'] || 'NO',
+    op_metodos: OV['metodos'] || 'NO',
+    op_convenios: OV['convenios'] || 'NO',
+    op_ganchos: OV['ganchos'] || 'NO',
+    op_sistemas: OV['sistemas'] || 'NO',
+    op_descuentos: OV['descuentos'] || 'NO',
+    crit_respeto: E['respeto'] || 'NO',
+    crit_fraude: E['fraude'] || 'NO',
+    fortalezas: document.getElementById('fortalezas').value.trim(),
+    mejoras: document.getElementById('mejoras').value.trim(),
+    acciones: document.getElementById('acciones').value.trim()
   };
 
   fetch(SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors", 
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    mode: 'no-cors', // Evita errores cors al ejecutar localmente
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
   .then(() => {
-    btn.className = "drive-btn done";
-    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en Base de Datos y Drive!';
+    btn.className = 'drive-btn done';
+    btn.innerHTML = '<i class="ti ti-check" style="font-size:15px"></i> ¡Guardado!';
     setTimeout(() => {
-      btn.className = "drive-btn";
-      btn.innerHTML = oldText;
-      btn.onclick = sendToDrive;
-    }, 4000);
+      btn.disabled = false;
+      btn.className = 'drive-btn';
+      btn.innerHTML = '<i class="ti ti-brand-google-drive" style="font-size:15px"></i> Guardar en Google Drive';
+    }, 3000);
   })
   .catch(err => {
-    console.error(err);
-    alert("Hubo un error al conectar con Google Drive.");
-    btn.innerHTML = '<i class="ti ti-brand-google-drive"></i> Reintentar guardado';
-    btn.onclick = sendToDrive;
+    console.error("Error de red o de envío:", err);
+    alert("No se pudo completar el guardado en Drive. Verifica la consola.");
+    btn.disabled = false;
+    btn.className = 'drive-btn';
+    btn.innerHTML = '<i class="ti ti-brand-google-drive" style="font-size:15px"></i> Guardar en Google Drive';
   });
 }
 
 function resetForm() {
-  // 1. Limpiar inputs de texto y selectores del Paso 1
   document.getElementById('asesor').value = '';
   document.getElementById('depto').value = '';
+  document.getElementById('super').value = '';
   document.getElementById('tipo').value = '';
-  const d = new Date();
-  document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-
-  // 2. Resetear el objeto de condiciones (Atributos al 0%)
-  ATTRS.forEach(a => {
-    a.conds.forEach(c => {
-      checks[a.k][c.id] = false;
-      const rc = document.getElementById(`rc-${a.k}-${c.id}`);
-      if(rc) rc.classList.remove('on');
-    });
-    updateUI(a.k);
-    const fb = document.getElementById(`fb-${a.k}`);
-    if(fb) fb.value = '';
-  });
-
-  // 3. Resetear gestión operativa (Botones Sí/No)
-  OPS.forEach(o => {
-    delete OV[o.k];
-  });
-  E.respeto = null;
-  E.fraude = null;
-
-  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => {
-    b.className = 'yn-btn';
-  });
-
-  // 4. Limpiar los cuadros de texto del plan de acción
   document.getElementById('fortalezas').value = '';
   document.getElementById('mejoras').value = '';
   document.getElementById('acciones').value = '';
+  
+  // Limpiar observaciones y checks
+  ATTRS.forEach(a=>{
+    document.getElementById('fb-'+a.k).value = '';
+    a.conds.forEach(c=>{ checks[a.k][c.id] = false; document.getElementById('rc-'+a.k+'-'+c.id).classList.remove('on'); });
+    updateUI(a.k);
+  });
 
-  // 5. Limpiar el cache del reporte de texto y reiniciar botones visuales
-  textReportCache = "";
-  const dbtn = document.getElementById('drive-btn');
-  if(dbtn) {
-    dbtn.className = "drive-btn";
-    dbtn.innerHTML = '<i class="ti ti-brand-google-drive" aria-hidden="true"></i> Guardar en Google Drive';
-    dbtn.onclick = sendToDrive;
-  }
+  // Limpiar estados operativos y críticos
+  E.respeto = null; E.fraude = null;
+  OPS.forEach(o=>{ delete OV[o.k]; });
+  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b=>b.className='yn-btn');
 }
 </script>
-
 </body>
 </html>
