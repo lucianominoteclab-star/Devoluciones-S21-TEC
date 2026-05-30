@@ -355,7 +355,33 @@ function go(n){
   }
   window.scrollTo(0,0);
 }
+function go(n){
+  // 1. Validar si intentamos pasar al Paso 2 sin completar los datos básicos (Opcional pero recomendado)
+  if(n === 2) {
+    const asesor = document.getElementById('asesor').value.trim();
+    const tipo = document.getElementById('tipo').value;
+    if(!asesor || !tipo) {
+      alert("Por favor, completa el nombre del asesor y el tipo de llamada antes de continuar.");
+      return;
+    }
+  }
 
+  // 2. Cambiar de pestaña visualmente
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  
+  // 3. Actualizar etiquetas y barra de progreso
+  const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución'];
+  document.getElementById('step-lbl').textContent=labels[n];
+  document.getElementById('prog').style.width=(n*33.3)+'%';
+  
+  // 4. Controlar acciones específicas según el paso
+  if(n===3) {
+    buildDev();
+  }
+  
+  window.scrollTo(0,0);
+}
 function resetForm() {
   // 1. Limpiar inputs de texto y selectores del Paso 1
   document.getElementById('asesor').value = '';
