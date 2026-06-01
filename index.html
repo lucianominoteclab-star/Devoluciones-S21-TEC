@@ -167,7 +167,33 @@
   <div class="step active" id="step1">
     <h2>Datos de la evaluación</h2>
     <div class="g2">
-      <div class="fw"><div class="field-label">Nombre del asesor</div><input type="text" id="asesor" placeholder="Ej: Lucas Fernández"></div>
+      <div class="fw">
+  <div class="field-label">Nombre del asesor</div>
+  <div style="position: relative; display: flex; align-items: center;">
+    <!-- Icono de lupa de Tabler Icons dentro del input -->
+    <i class="ti ti-search" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
+    <input type="text" id="asesor" list="lista-asesores" placeholder="Buscar asesor..." style="padding-left: 36px;">
+  </div>
+  
+  <!-- Lista oficial de asesores -->
+  <datalist id="lista-asesores">
+    <option value="ANTONELLA BONAFFINI"></option>
+    <option value="AYLEN BERZA"></option>
+    <option value="CANDELA ESPINOSA"></option>
+    <option value="CECILIA OLMOS"></option>
+    <option value="CIELO LOZANO"></option>
+    <option value="GABRIELA LEAL"></option>
+    <option value="JOAQUIN SITTNER"></option>
+    <option value="LOURDES ORTIZ"></option>
+    <option value="LUANA LOPEZ"></option>
+    <option value="MAGALÍ ABDELHAY"></option>
+    <option value="MAKARENA ANDRADE"></option>
+    <option value="MICAELA GONZALEZ"></option>
+    <option value="MILAGROS SALAS"></option>
+    <option value="MILENA VARGAS"></option>
+    <option value="NATASHA IBAÑEZ"></option>
+  </datalist>
+</div>
       <div class="fw"><div class="field-label">Fecha</div><input type="date" id="fecha"></div>
     </div>
     <div class="g2">
