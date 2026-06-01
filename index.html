@@ -268,8 +268,9 @@
 </div>
 
 <script>
-const ATTRS=[
-  {k:'ind', l:'Indagación y differentials',
+// RÚBRICA EXCLUSIVA PARA NEW LEAD
+const ATTRS_NEW_LEAD = [
+  {k:'ind', l:'Indagación y differentials (New Lead)',
    conds:[
     {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación, situación laboral o expectativas del lead'},
     {id:'B', l:'Demostró escucha activa', s:'Retomó o parafraseó lo que el lead dijo durante la conversación'},
@@ -311,6 +312,53 @@ const ATTRS=[
   ]},
 ];
 
+// RÚBRICA EXCLUSIVA PARA REMARKETING
+const ATTRS_REMARKETING = [
+  {k:'ind', l:'Indagación del contacto previo (Remarketing)',
+   conds:[
+    {id:'A', l:'Retomó la conversación anterior con contexto claro', s:'Demostró saber en qué estado quedó el contacto anterior (ej: "habías hablado con...")'},
+    {id:'B', l:'Indagó específicamente qué cambió desde la última llamada', s:'Preguntó de forma abierta qué le impidió avanzar o si pudo analizar la info'},
+    {id:'C', l:'Detectó el "freno de mano" real del lead', s:'Identificó si el problema actual es económico, de tiempos, dudas de la carrera, etc.'},
+    {id:'D', l:'Validó la situación actual del lead con empatía activa', s:'No presionó de entrada; se mostró como un asesor dispuesto a ayudar a destrabar'},
+    {id:'E', l:'Mantuvo una postura resolutiva y ágil', s:'Evitó repetir todo el speech inicial e fue directo al grano según el historial'},
+  ]},
+  {k:'reb', l:'Destrabe y Manejo de Objeciones complejas',
+   conds:[
+    {id:'A', l:'Alineó el argumento de destrabe al problema específico detectado', s:'Si el freno era económico, atacó por ahí; si era por dudas, fue al plan de estudios'},
+    {id:'B', l:'Explicó las alternativas de cursado y flexibilidad de Siglo 21', s:'Usó la modalidad ED o EDH como solución a la falta de tiempo si aplicaba'},
+    {id:'C', l:'Derribó mitos o miedos sobre la educación online', s:'Dio seguridad sobre el acompañamiento de los tutores y los CAU'},
+    {id:'D', l:'Confirmó que el freno quedó resuelto antes de pasar al precio', s:'Chequeó si conceptualmente el lead se visualiza arrancando'},
+    {id:'E', l:'Elevó el valor de la carrera por encima del costo percibido', s:'Recordó el impacto del título profesional en su salida laboral'},
+  ]},
+  {k:'arancel', l:'Estrategia de Cierre Económico',
+   conds:[
+    {id:'A', l:'Presentó la propuesta económica como una oportunidad de ahorro vigente', s:'Habló de la beca o el arancel actual frente a los aumentos de IPC'},
+    {id:'B', l:'Ofreció el pago semestral remarcando el congelamiento de precio', s:'Explicó que con tarjeta se olvida de los ajustes por el resto del período'},
+    {id:'C', l:'Indagó sobre la disponibilidad de nuevas tarjetas (propias o de terceros)', s:'Buscó alternativas de pago antes de bajar la categoría del plan'},
+    {id:'D', l:'Aplicó de forma escalonada las opciones (Semestral → Bimestral → Suscripción)', s:'No quemó cartuchos; defendió el valor del pack completo'},
+    {id:'E', l:'Transparentó la estructura de pagos sin dejar dudas administrativas', s:'Dejó claro qué incluye la matrícula y los plazos de cuotas'},
+  ]},
+  {k:'urgencia', l:'Re-enfoque de Urgencia Operativa',
+   conds:[
+    {id:'A', l:'Apalancó el cierre en una fecha límite real y cercana', s:'Fin de inscripciones, vencimiento de beneficio de reinscripción, etc.'},
+    {id:'B', l:'Hizo énfasis en el tiempo perdido por postergar el inicio', s:'"Si arrancás ahora, en X meses ya metés el primer cuatrimestre"'},
+    {id:'C', l:'Planteó el beneficio exclusivo de resolver la inscripción HOY', s:'Asegurar el cupo en el CAU elegido o congelar el valor de matrícula'},
+    {id:'D', l:'Llamó a la acción de forma directa y asertiva', s:'Pidió los datos para la preinscripción de forma inmediata'},
+    {id:'E', l:'Sostuvo la firmeza comercial sin caer en una postura pasiva', s:'No se quedó con un "pensalo y avisame"; guió al lead al paso siguiente'},
+  ]},
+  {k:'agenda', l:'Agenda de seguimiento estricto',
+   conds:[
+    {id:'A', l:'Estableció el próximo paso de forma clara y unívoca', s:'Definió qué documentos o gestiones quedan pendientes para el recontacto'},
+    {id:'B', l:'Pactó el llamado dentro de las 24 a 48 horas máximo', s:'Al ser remarketing, el tiempo de enfriamiento debe ser corto'},
+    {id:'C', l:'Fijó hora y minutos exactos para la llamada', s:'Compromiso de agenda cerrada (ej: "mañana a las 10:15")'},
+    {id:'D', l:'Consiguió una confirmación verbal explícita del lead', s:'El lead se comprometió activamente a atender en ese horario'},
+    {id:'E', l:'Explicó el objetivo del próximo llamado (ej: verificar impacto del pago)', s:'Le dio un sentido útil a la llamada, evitando que parezca persecución'},
+  ]},
+];
+
+// Dejamos esta variable vacía, ya que se va a llenar sola según lo que elijan
+let ATTRS = [];
+
 const OPS=[
   {k:'lead',l:'Lead arancelado',d:'¿Se cerró la venta en la llamada?'},
   {k:'preinscripcion',l:'Ofrece preinscripción',d:'¿Intentó cargar datos para asegurar el cupo?'},
@@ -321,8 +369,16 @@ const OPS=[
   {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'},
 ];
 
-const checks={};
-ATTRS.forEach(a=>{checks[a.k]={};a.conds.forEach(c=>{checks[a.k][c.id]=false})});
+const checks = {};
+
+function inicializarChecks() {
+  ATTRS.forEach(a => {
+    checks[a.k] = {};
+    a.conds.forEach(c => {
+      checks[a.k][c.id] = false;
+    });
+  });
+}
 const E={respeto:null,fraude:null};
 const OV={};
 
@@ -382,6 +438,26 @@ function err(a,v,btn){E[a]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn')
 function opv(k,v,btn){OV[k]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');btn.classList.add(v==='SI'?'y':'n')}
 
 function go(n){
+  // Si intenta pasar al paso 2, validamos qué tipo de llamada eligió
+  if (n === 2) {
+    const tipoSeleccionado = document.getElementById('tipo').value;
+    if (!tipoSeleccionado) {
+      alert("Por favor, seleccioná el Tipo de llamada primero.");
+      return; // No lo deja avanzar si no seleccionó tipo
+    }
+    
+    // CAMBIO DE FORMULARIO DINÁMICO
+    if (tipoSeleccionado === "Remarketing") {
+      ATTRS = ATTRS_REMARKETING;
+    } else {
+      ATTRS = ATTRS_NEW_LEAD;
+    }
+    
+    // Reinicializamos los estados y volvemos a renderizar la pantalla
+    inicializarChecks();
+    buildAttrs();
+  }
+
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step'+n).classList.add('active');
   const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución al asesor'];
