@@ -244,12 +244,13 @@
   </div> <!-- Cierre del segundo .g2 -->
 
   <!-- TERCERA FILA: TIPO DE LLAMADA ANCHO COMPLETO -->
- <div class="fw">
-    <div class="field-label">Tipo de llamada</div>
-    <select id="tipo">
+<div class="fw">
+    <div class="field-label">Canal / Tipo de gestión</div>
+    <select id="tipo" onchange="seleccionarPlantilla(this.value)">
       <option value="">— Seleccionar —</option>
-      <option value="New Lead">New Lead</option>
-      <option value="Remarketing">Remarketing</option>
+      <option value="New Lead">Llamada - New Lead</option>
+      <option value="Remarketing">Llamada - Remarketing</option>
+      <option value="WhatsApp">Auditoría - WhatsApp</option>
     </select>
   </div>
 
@@ -285,7 +286,17 @@
         <div class="yn-wrap"><button class="yn-btn" onclick="err('fraude','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('fraude','NO',this)">No</button></div>
       </div>
     </div>
-
+<div id="rubrica-whatsapp" style="display: none; margin-top: 20px;">
+  <div class="card-title" style="margin-bottom: 15px;"><i class="ti ti-brand-whatsapp"></i> Rúbrica de Evaluación — WhatsApp</div>
+  
+  <div class="rubric-grid" id="grid-whatsapp">
+    </div>
+  
+  <div style="margin-top: 20px;">
+    <div class="field-label">Comentarios específicos de la gestión de WhatsApp</div>
+    <textarea id="fb-whatsapp" rows="4" placeholder="Escribe aquí observaciones puntuales del chat analizado..."></textarea>
+  </div>
+</div>
     <div class="sec-title">Plan de acción</div>
     <div class="card">
       <div class="fw"><div class="field-label">Fortalezas identificadas</div><textarea id="fortalezas" placeholder="¿Qué hace bien este asesor?"></textarea></div>
@@ -370,7 +381,7 @@ const ATTRS_REMARKETING = [
   {k:'reb', l:'Destrabe y Manejo de Objeciones complejas',
    conds:[
     {id:'A', l:'Alineó el argumento de destrabe al problema específico detectado', s:'Si el freno era económico, atacó por ahí; si era por dudas, fue al plan de estudios'},
-    {id:'B', l:'Explicó las alternativas de cursado y flexibilidad de Siglo 21', s:'Usó la modalidad ED o EDH como solución a la falta de tiempo si aplicaba'},
+    {id:'B', l:'Explicó las alternativas de cursado y flexibilidad de Siglo 21', s:'Usó la modalid ED o EDH como solución a la falta de tiempo si aplicaba'},
     {id:'C', l:'Derribó mitos o miedos sobre la educación online', s:'Dio seguridad sobre el acompañamiento de los tutores y los CAU'},
     {id:'D', l:'Confirmó que el freno quedó resuelto antes de pasar al precio', s:'Chequeó si conceptualmente el lead se visualiza arrancando'},
     {id:'E', l:'Elevó el valor de la carrera por encima del costo percibido', s:'Recordó el impacto del título profesional en su salida laboral'},
@@ -401,11 +412,34 @@ const ATTRS_REMARKETING = [
   ]},
 ];
 
-// Dejamos esta variable vacía, ya que se va a llenar sola según lo que elijan
+// NUEVA RÚBRICA EXCLUSIVA PARA WHATSAPP (16 Indicadores de 6.25% c/u)
+const ATTRS_WHATSAPP = [
+  {k:'wa_gestion', l:'Indicadores de Gestión Estratégica — WhatsApp',
+   conds:[
+    {id:'1', l:'1. Presentación', s:'Se presenta correctamente, estableciendo un tono cordial y profesional.'},
+    {id:'2', l:'2. Indagación', s:'Realiza preguntas abiertas para entender el contexto del lead.'},
+    {id:'3', l:'3. Detección de necesidades', s:'Identificó la necesidad principal del lead de forma explícita.'},
+    {id:'4', l:'4. Personalización', s:'Presentó diferenciales específicos de la universidad alineados a la necesidad detectada.'},
+    {id:'5', l:'5. Claridad', s:'Aclara consultas de manera precisa.'},
+    {id:'6', l:'6. Manejo de Objeciones', s:'Detectó la objeción correctamente sin ignorarla ni desviar el tema.'},
+    {id:'7', l:'7. Validación', s:'Verificó que el lead quedó conforme con la respuesta dada.'},
+    {id:'8', l:'8. Escalonamiento', s:'Respetó el orden de oferta (semestral → bimestral).'},
+    {id:'9', l:'9. Dosificación', s:'No entregó toda la información de golpe.'},
+    {id:'10', l:'10. Cierre y Seguimiento', s:'Realiza cierres parciales a lo largo de la conversación.'},
+    {id:'11', l:'11. Sentido de urgencia', s:'Mencionó al menos un elemento de urgencia real (cupos, tiempo, promociones).'},
+    {id:'12', l:'12. Call to Action (CTA)', s:'Propuso una acción inmediata clara (cerrar, preinscribir o reservar).'},
+    {id:'13', l:'13. Próximos pasos', s:'Tomó la iniciativa de proponer el próximo contacto o seguimiento.'},
+    {id:'14', l:'14. Redacción', s:'Mantuvo una ortografía y gramática impecables.'},
+    {id:'15', l:'15. Naturalidad', s:'El tono fue empático y evitó sonar como un "robot" (adaptó las plantillas).'},
+    {id:'16', l:'16. Uso apropiado', s:'Aplicó el uso correcto de notas y etiquetas.'}
+  ]}
+];
+
+// Variables reactivas iniciales
 let ATTRS = [];
 
-const OPS=[
-  {k:'lead',l:'Lead arancelado',d:'¿Se cerró la venta en la llamada?'},
+const OPS = [
+  {k:'lead',l:'Lead arancelado',d:'¿Se cerró la venta en la gestión?'},
   {k:'preinscripcion',l:'Ofrece preinscripción',d:'¿Intentó cargar datos para asegurar el cupo?'},
   {k:'metodos',l:'Pregunta métodos de pago',d:'¿Pregunta por tarjeta antes de ofrecer financiación?'},
   {k:'convenios',l:'Convenios con empresas',d:'¿Pregunta por empresa del lead y ofrece convenio?'},
@@ -427,11 +461,28 @@ function inicializarChecks() {
 const E={respeto:null,fraude:null};
 const OV={};
 
-function getScore(k){return Object.values(checks[k]).filter(Boolean).length*4}
+// MODIFICACIÓN PASO 4: Soporte matemático diferenciado (4% llamadas, 6.25% WhatsApp)
+function getScore(k){
+  const tipoSeleccionado = document.getElementById('tipo').value;
+  const marcados = Object.values(checks[k]).filter(Boolean).length;
+  if(tipoSeleccionado === "WhatsApp") {
+    return Math.round(marcados * 6.25);
+  }
+  return marcados * 4;
+}
+
 function getCount(k){return Object.values(checks[k]).filter(Boolean).length}
-function dotColor(s){return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)'}
+function dotColor(s, totalConds){
+  if(totalConds === 16) {
+    return s===100?'var(--color-success)':s>=60?'var(--color-warning)':'var(--color-danger)';
+  }
+  return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
+}
 
 function buildAttrs(){
+  const tipoSeleccionado = document.getElementById('tipo').value;
+  const esWA = (tipoSeleccionado === "WhatsApp");
+
   document.getElementById('attrs-container').innerHTML=ATTRS.map(a=>`
     <div class="card">
       <div class="card-head">
@@ -441,12 +492,14 @@ function buildAttrs(){
           <span class="badge b-neu" id="sc-${a.k}">0%</span>
         </div>
       </div>
-      ${a.conds.map(c=>`
-        <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')">
-          <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
-        </div>`).join('')}
-      <div class="score-pill"><span class="score-pill-lbl">Condiciones cumplidas</span><span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de 5 → 0%</span></div>
+      <div style="${esWA ? 'display:grid; grid-template-columns:1fr 1fr; gap:10px;' : ''}">
+        ${a.conds.map(c=>`
+          <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')" style="${esWA ? 'border:1px solid var(--border-color); padding:10px;' : ''}">
+            <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
+          </div>`).join('')}
+      </div>
+      <div class="score-pill"><span class="score-pill-lbl">Condiciones cumplidas</span><span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de ${a.conds.length} → 0%</span></div>
       <div class="field-label" style="margin-top:14px">Observaciones específicas</div><textarea id="fb-${a.k}" placeholder="Detalles de lo observado..."></textarea>
     </div>`).join('');
 }
@@ -462,43 +515,63 @@ function buildOps(){
     </div>`).join('');
 }
 
-buildAttrs();buildOps();
+buildOps();
+// Captura el cambio de canal para esconder dinámicamente el cargador de audio si es WhatsApp
+document.getElementById('tipo').addEventListener('change', function() {
+  const audioField = document.getElementById('audio-llamada')?.closest('.fw');
+  if(this.value === "WhatsApp") {
+    if(audioField) audioField.style.display = 'none';
+  } else {
+    if(audioField) audioField.style.display = 'block';
+  }
+});
+
 (function(){const d=new Date();document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})();
 
 function toggle(k,cid){checks[k][cid]=!checks[k][cid];document.getElementById('rc-'+k+'-'+cid).classList.toggle('on',checks[k][cid]);updateUI(k)}
 
 function updateUI(k){
-  const s=getScore(k);const n=getCount(k);const color=dotColor(s);
-  ATTRS.find(a=>a.k===k).conds.forEach(c=>{
+  const aRef = ATTRS.find(a=>a.k===k);
+  const totalConds = aRef.conds.length;
+  const s=getScore(k);const n=getCount(k);const color=dotColor(s, totalConds);
+  
+  aRef.conds.forEach(c=>{
     const dot=document.getElementById('dot-'+k+'-'+c.id);
-    dot.style.background=checks[k][c.id]?color:'var(--bg-app)';
-    dot.style.borderColor=checks[k][c.id]?color:'var(--border-color)';
+    if(dot) {
+      dot.style.background=checks[k][c.id]?color:'var(--bg-app)';
+      dot.style.borderColor=checks[k][c.id]?color:'var(--border-color)';
+    }
   });
-  const badge=document.getElementById('sc-'+k);badge.textContent=s+'%';badge.className='badge '+(s===20?'b-ok':s>0?'b-mid':'b-neu');
-  const sp=document.getElementById('sp-'+k);sp.textContent=n+' de 5 → '+s+'%';
-  sp.style.color=s===20?'var(--color-success-text)':s>0?'var(--color-warning-text)':'var(--text-light)';
+  
+  const badge=document.getElementById('sc-'+k);badge.textContent=s+'%';
+  const esMax = (totalConds === 16 ? s===100 : s===20);
+  badge.className='badge '+(esMax ? 'b-ok' : s>0 ? 'b-mid' : 'b-neu');
+  
+  const sp=document.getElementById('sp-'+k);sp.textContent=n+' de '+totalConds+' → '+s+'%';
+  sp.style.color=esMax ? 'var(--color-success-text)' : s>0 ? 'var(--color-warning-text)' : 'var(--text-light)';
 }
 
 function err(a,v,btn){E[a]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');btn.classList.add(v==='SI'?'y':'n')}
 function opv(k,v,btn){OV[k]=v;btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');btn.classList.add(v==='SI'?'y':'n')}
 
 function go(n){
-  // Si intenta pasar al paso 2, validamos qué tipo de llamada eligió
   if (n === 2) {
     const tipoSeleccionado = document.getElementById('tipo').value;
     if (!tipoSeleccionado) {
-      alert("Por favor, seleccioná el Tipo de llamada primero.");
-      return; // No lo deja avanzar si no seleccionó tipo
+      alert("Por favor, seleccioná el Canal / Tipo de gestión primero.");
+      return;
     }
     
-    // CAMBIO DE FORMULARIO DINÁMICO
+    // CARGA DE PLANTILLA DINÁMICA INCLUYENDO WHATSAPP
     if (tipoSeleccionado === "Remarketing") {
       ATTRS = ATTRS_REMARKETING;
+    } else if (tipoSeleccionado === "WhatsApp") {
+      ATTRS = ATTRS_WHATSAPP;
     } else {
       ATTRS = ATTRS_NEW_LEAD;
     }
-    
-    // Reinicializamos los estados y volvemos a renderizar la pantalla
+    // Limpiamos el contenedor visual antes de reinicializar los nuevos checks
+    document.getElementById('attrs-container').innerHTML = '';
     inicializarChecks();
     buildAttrs();
   }
@@ -510,7 +583,6 @@ function go(n){
   document.getElementById('prog').style.width=(n*33.3)+'%';
   
   if(n===1 && textReportCache !== "") {
-    // Si vuelve al paso 1 desde el botón "Nueva evaluación", reseteamos todo a cero
     resetForm();
   } else if(n===3) {
     buildDev();
@@ -519,62 +591,46 @@ function go(n){
 }
 
 function resetForm() {
-  // 1. Limpiar inputs de texto y selectores del Paso 1
   document.getElementById('asesor').value = '';
   document.getElementById('depto').value = '';
-  if (document.getElementById('super')) document.getElementById('super').value = ''; // Limpia el Supervisor
+  if (document.getElementById('super')) document.getElementById('super').value = ''; 
   document.getElementById('tipo').value = '';
   
-  // TRUCO CLAVE: Limpiar el campo de subida de audio
-  if (document.getElementById('audio-llamada')) {
-    document.getElementById('audio-llamada').value = '';
-  }
+  const audioField = document.getElementById('audio-llamada')?.closest('.fw');
+  if (audioField) audioField.style.display = 'block';
+  if (document.getElementById('audio-llamada')) document.getElementById('audio-llamada').value = '';
 
-  // Dejamos la fecha de hoy por comodidad
   const d = new Date();
   document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
-  // 2. Resetear el objeto de condiciones (Atributos al 0%)
   ATTRS.forEach(a => {
     a.conds.forEach(c => {
       checks[a.k][c.id] = false;
-      // Quitar la clase visual de activo a los checks de la rúbrica
       const rc = document.getElementById(`rc-${a.k}-${c.id}`);
       if(rc) rc.classList.remove('on');
     });
-    // Actualizar la interfaz visual de cada bloque
     updateUI(a.k);
-    // Limpiar comentarios específicos
     const fb = document.getElementById(`fb-${a.k}`);
     if(fb) fb.value = '';
   });
 
-  // 3. Resetear gestión operativa (Botones Sí/No)
-  OPS.forEach(o => {
-    delete OV[o.k];
-  });
-  // Resetear errores críticos
+  OPS.forEach(o => { delete OV[o.k]; });
   E.respeto = null;
   E.fraude = null;
 
-  // Quitar el color activo (y/n) de todos los botones de la pantalla
-  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => {
-    b.className = 'yn-btn';
-  });
-
-  // 4. Limpiar los cuadros de texto del plan de acción
+  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => { b.className = 'yn-btn'; });
   document.getElementById('fortalezas').value = '';
   document.getElementById('mejoras').value = '';
   document.getElementById('acciones').value = '';
-
-  // 5. Limpiar el cache del reporte de texto
   textReportCache = "";
 }
+
 function initials(n){if(!n)return'?';return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}
 function svgRing(pct,color){const r=26,circ=2*Math.PI*r,dash=Math.round((pct/100)*circ);return`<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`}
 
 let textReportCache = ""; 
 
+// PASO 4 CONTINUACIÓN: Armado visual de la devolución interactiva y reporte raw de texto
 function buildDev(){
   const asesor=document.getElementById('asesor').value||'Asesor';
   const fechaRaw=document.getElementById('fecha').value;
@@ -585,7 +641,8 @@ function buildDev(){
 
   const hasCrit=E.respeto==='SI'||E.fraude==='SI';
   const arancelado=OV['lead']==='SI';
-  let total=0;ATTRS.forEach(a=>{total+=getScore(a.k)});
+  
+  let total=0; ATTRS.forEach(a=>{total+=getScore(a.k)});
   let final=hasCrit?0:arancelado?100:Math.round(total);
 
   const ringColor=final>=70?'#10b981':final>=40?'#f59e0b':'#ef4444';
@@ -600,18 +657,20 @@ function buildDev(){
   let errBars='';
   if(E.respeto==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
   if(E.fraude==='SI')errBars+=`<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
-  if(arancelado&&!hasCrit)errBars=`<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text)"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Lead arancelado en llamada — Calificación: 100%</div>`;
+  if(arancelado&&!hasCrit)errBars=`<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text)"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Gestión arancelada — Calificación: 100%</div>`;
 
   const attrRows=ATTRS.map(a=>{
     const s=getScore(a.k);const n=getCount(a.k);
-    const barColor=s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
+    const totalConds = a.conds.length;
+    const barColor= (totalConds === 16) ? (s===100?'var(--color-success)':s>=60?'var(--color-warning)':'var(--color-danger)') : (s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)');
     const fb=document.getElementById('fb-'+a.k).value;
     const tags=a.conds.map(c=>`<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="10" height="10" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
+    
     return`<div class="dattr">
       <div class="dattr-top">
         <span class="dattr-name">${a.l}</span>
-        <div class="bar-bg"><div class="bar-fill" style="width:${s*5}%;background:${barColor}"></div></div>
-        <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/5)</span></span>
+        <div class="bar-bg"><div class="bar-fill" style="width:${(totalConds === 16)? s : s*5}%;background:${barColor}"></div></div>
+        <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/${totalConds})</span></span>
       </div>
       <div class="cond-grid">${tags}</div>
       ${fb?`<div class="dattr-fb">${fb}</div>`:''}
@@ -665,7 +724,7 @@ function buildDev(){
 
   let lines=[];
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push('EVALUACIÓN DE CALIDAD — SIGLO 21');
+  lines.push(`EVALUACIÓN DE CALIDAD — ${tipo === 'WhatsApp' ? 'WHATSAPP' : 'SIGLO 21'}`);
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   lines.push(`Asesor:      ${asesor}`);
   lines.push(`Fecha:       ${fechaFmt}`);
@@ -709,50 +768,48 @@ function sendToDrive() {
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec"; 
 
   const btn = document.getElementById('drive-btn');
-  btn.innerHTML = '<i class=\"ti ti-loader animate-spin\"></i> Guardando datos y audio...';
+  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando datos...';
   btn.onclick = null; 
 
   const fileInput = document.getElementById('audio-llamada');
   const file = fileInput ? fileInput.files[0] : null;
+  const tipoGestion = document.getElementById('tipo').value || 'General';
 
   const payload = {
     asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
     fecha: document.getElementById('fecha').value || 'Sin-Fecha',
-    tipo: document.getElementById('tipo').value || 'General',
+    tipo: tipoGestion,
     reporteTexto: textReportCache,
     fileData: null,
     fileName: null
   };
 
-  // Si el supervisor adjuntó un audio, lo procesamos primero
-  if (file) {
+  // Solo procesamos audio si no es WhatsApp y el archivo existe
+  if (tipoGestion !== "WhatsApp" && file) {
     const reader = new FileReader();
     reader.onload = function(e) {
       const base64Parts = e.target.result.split(',');
-      payload.fileData = base64Parts[1]; // Los bytes puros del audio
+      payload.fileData = base64Parts[1]; 
       payload.fileName = `${payload.fecha}_${payload.asesor}_${payload.tipo}_llamada.${file.name.split('.').pop()}`;
-      
       ejecutarEnvio(SCRIPT_URL, payload, btn);
     };
     reader.readAsDataURL(file);
   } else {
-    // Si no cargó audio, manda solo el reporte de texto como antes
     ejecutarEnvio(SCRIPT_URL, payload, btn);
   }
 }
 
-// Función interna para hacer el envío real por POST
 function ejecutarEnvio(url, payload, btn) {
   fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, // Evita problemas de CORS con Apps Script
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
     body: JSON.stringify(payload)
   })
   .then(res => res.json())
   .then(data => {
     if(data.status === "success") {
       btn.className = 'drive-btn success';
-      btn.innerHTML = '<i class=\"ti ti-check\"></i> ¡Todo guardado con éxito!';
+      btn.innerHTML = '<i class="ti ti-check"></i> ¡Todo guardado con éxito!';
     } else {
       throw new Error(data.message);
     }
@@ -760,8 +817,7 @@ function ejecutarEnvio(url, payload, btn) {
   .catch(err => {
     console.error(err);
     btn.className = 'drive-btn';
-    btn.innerHTML = '<i class=\"ti ti-alert-triangle\"></i> Error al guardar';
-    // Restauramos el click por si quiere reintentar
+    btn.innerHTML = '<i class="ti ti-alert-triangle"></i> Error al guardar';
     btn.onclick = sendToDrive;
   });
 }
