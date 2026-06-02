@@ -211,44 +211,52 @@
     <option value="NATASHA IBAÑEZ"></option>
   </datalist>
 </div>
-      <div class="fw"><div class="field-label">Fecha</div><input type="date" id="fecha"></div>
+ <div class="fw"><div class="field-label">Fecha</div><input type="date" id="fecha"></div>
+  </div> <!-- Cierre del primer .g2 (Asesor y Fecha) -->
+
+  <!-- SEGUNDA FILA: DEPARTAMENTO Y SUPERVISOR JUNTOS -->
+  <div class="g2">
+    <div class="fw">
+      <div class="field-label">Departamento / equipo</div>
+      <div style="position: relative; display: flex; align-items: center;">
+        <i class="ti ti-search" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
+        <input type="text" id="depto" list="lista-departamentos" placeholder="Buscar departamento..." style="padding-left: 36px;">
+      </div>
+      <datalist id="lista-departamentos">
+        <option value="Siglo 21"></option>
+        <option value="Teclab"></option>
+      </datalist>
     </div>
-    <div class="g2">
-      <div class="fw">
-  <div class="field-label">Departamento / equipo</div>
-  <div style="position: relative; display: flex; align-items: center;">
-    <!-- Icono de lupa de Tabler Icons dentro del input -->
-    <i class="ti ti-search" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-    <input type="text" id="depto" list="lista-departamentos" placeholder="Buscar departamento..." style="padding-left: 36px;">
-  </div>
-  
-  <!-- Lista oficial de Departamentos -->
-  <datalist id="lista-departamentos">
-    <option value="Siglo 21"></option>
-    <option value="Teclab"></option>
-  </datalist>
-</div>
-  <div class="field-label">Supervisor evaluador</div>
-  <div style="position: relative; display: flex; align-items: center;">
-    <!-- Icono de usuario de Tabler Icons dentro del input -->
-    <i class="ti ti-user" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-    <input type="text" id="super" list="lista-supervisores" placeholder="Buscar supervisor..." style="padding-left: 36px;">
-  </div>
-  
-  <!-- Lista oficial de Coordinadores / Supervisores -->
-  <datalist id="lista-supervisores">
-    <option value="CAMILA GAITAN"></option>
-    <option value="LUCIANO MIÑO"></option>
-    <option value="MILAGROS SALAS"></option>
-    <option value="AYLEN BERZA"></option>
-  </datalist>
-</div>
+
+    <div class="fw">
+      <div class="field-label">Supervisor evaluador</div>
+      <div style="position: relative; display: flex; align-items: center;">
+        <i class="ti ti-user" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
+        <input type="text" id="super" list="lista-supervisores" placeholder="Buscar supervisor..." style="padding-left: 36px;">
+      </div>
+      <datalist id="lista-supervisores">
+        <option value="CAMILA GAITAN"></option>
+        <option value="LUCIANO MIÑO"></option>
+        <option value="MILAGROS SALAS"></option>
+        <option value="AYLEN BERZA"></option>
+      </datalist>
     </div>
-    <div class="fw"><div class="field-label">Tipo de llamada</div>
-      <select id="tipo"><option value="">— Seleccionar —</option><option>New Lead</option><option>Remarketing</option></select>
-    </div>
-    <div class="btn-row"><button class="btn-p" onclick="go(2)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+  </div> <!-- Cierre del segundo .g2 -->
+
+  <!-- TERCERA FILA: TIPO DE LLAMADA ANCHO COMPLETO -->
+  <div class="fw">
+    <div class="field-label">Tipo de llamada</div>
+    <select id="tipo">
+      <option value="">— Seleccionar —</option>
+      <option value="New Lead">New Lead</option>
+      <option value="Remarketing">Remarketing</option>
+    </select>
   </div>
+
+  <div class="btn-row">
+    <button class="btn-p" onclick="go(2)">Continuar <i class="ti ti-arrow-right"></i></button>
+  </div>
+</div> <!-- Cierre definitivo del step1 -->
 
   <div class="step" id="step2">
     <h2>Evaluación de la llamada</h2>
