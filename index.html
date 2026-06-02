@@ -244,13 +244,21 @@
   </div> <!-- Cierre del segundo .g2 -->
 
   <!-- TERCERA FILA: TIPO DE LLAMADA ANCHO COMPLETO -->
-  <div class="fw">
+ <div class="fw">
     <div class="field-label">Tipo de llamada</div>
     <select id="tipo">
       <option value="">— Seleccionar —</option>
       <option value="New Lead">New Lead</option>
       <option value="Remarketing">Remarketing</option>
     </select>
+  </div>
+
+  <div class="fw" style="margin-top: 15px;">
+    <div class="field-label">Adjuntar audio de la llamada (Opcional)</div>
+    <div style="position: relative; display: flex; align-items: center;">
+      <i class="ti ti-microphone" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
+      <input type="file" id="audio-llamada" accept="audio/*" style="padding-left: 36px; padding-top: 8px;">
+    </div>
   </div>
 
   <div class="btn-row">
@@ -690,35 +698,64 @@ function copyDev(){
   });
 }
 
-// CONEXIÓN AUTOMÁTICA CON GOOGLE DRIVE
+// CONEXIÓN AVANZADA CON GOOGLE DRIVE (TEXTO + AUDIO)
 function sendToDrive() {
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzSdeNCCnEiGf81MSawT1N_v50WQ3mRHWShgtY8cfh4DeDCOwUjW2BL7Ov8CupVfSUzQ/exec"; 
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec"; 
 
   const btn = document.getElementById('drive-btn');
-  btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando en Drive...';
+  btn.innerHTML = '<i class=\"ti ti-loader animate-spin\"></i> Guardando datos y audio...';
   btn.onclick = null; 
+
+  const fileInput = document.getElementById('audio-llamada');
+  const file = fileInput ? fileInput.files[0] : null;
 
   const payload = {
     asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
     fecha: document.getElementById('fecha').value || 'Sin-Fecha',
     tipo: document.getElementById('tipo').value || 'General',
-    reporteTexto: textReportCache
+    reporteTexto: textReportCache,
+    fileData: null,
+    fileName: null
   };
 
-  fetch(SCRIPT_URL, {
+  // Si el supervisor adjuntó un audio, lo procesamos primero
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Parts = e.target.result.split(',');
+      payload.fileData = base64Parts[1]; // Los bytes puros del audio
+      payload.fileName = `${payload.fecha}_${payload.asesor}_${payload.tipo}_llamada.${file.name.split('.').pop()}`;
+      
+      ejecutarEnvio(SCRIPT_URL, payload, btn);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Si no cargó audio, manda solo el reporte de texto como antes
+    ejecutarEnvio(SCRIPT_URL, payload, btn);
+  }
+}
+
+// Función interna para hacer el envío real por POST
+function ejecutarEnvio(url, payload, btn) {
+  fetch(url, {
     method: "POST",
-    mode: "no-cors", 
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // Evita problemas de CORS con Apps Script
     body: JSON.stringify(payload)
   })
-  .then(() => {
-    btn.className = "drive-btn done";
-    btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en su Carpeta!';
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success") {
+      btn.className = 'drive-btn success';
+      btn.innerHTML = '<i class=\"ti ti-check\"></i> ¡Todo guardado con éxito!';
+    } else {
+      throw new Error(data.message);
+    }
   })
   .catch(err => {
     console.error(err);
-    alert("Hubo un error al conectar con Google Drive.");
-    btn.innerHTML = '<i class="ti ti-brand-google-drive"></i> Reintentar guardado';
+    btn.className = 'drive-btn';
+    btn.innerHTML = '<i class=\"ti ti-alert-triangle\"></i> Error al guardar';
+    // Restauramos el click por si quiere reintentar
     btn.onclick = sendToDrive;
   });
 }
