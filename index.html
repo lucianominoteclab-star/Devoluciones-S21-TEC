@@ -76,7 +76,7 @@
     .b-info { background: var(--color-info-bg); color: var(--color-info); }
     .b-neu { background: var(--bg-app); color: var(--text-muted); }
 
-    /* RÚBRICA TRIPLE ESTADO (SÍ / NO / N/A) */
+    /* RÚBRICA TRIPLE ESTADO (CUMPLE / NO CUMPLE / N/A) */
     .rubric-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); }
     .rubric-row:last-of-type { border-bottom: none; }
     .rubric-info { flex: 1; }
@@ -85,9 +85,11 @@
     
     .tri-btn-group { display: flex; background: var(--bg-app); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2px; gap: 2px; }
     .tri-btn { border: none; background: transparent; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
-    .tri-btn.sel-si { background: var(--color-success); color: #fff; }
-    .tri-btn.sel-no { background: var(--color-danger); color: #fff; }
-    .tri-btn.sel-na { background: var(--text-muted); color: #fff; }
+    
+    /* ESTADOS ACTIVOS DE LOS BOTONES DE EVALUACIÓN */
+    .tri-btn.sel-si { background: var(--color-success) !important; color: #fff !important; }
+    .tri-btn.sel-no { background: var(--color-danger) !important; color: #fff !important; }
+    .tri-btn.sel-na { background: var(--text-muted) !important; color: #fff !important; }
     
     .score-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-app); border-radius: var(--radius-md); margin-top: 14px; border: 1px dashed var(--border-color); }
     .score-pill-lbl { font-size: 13px; font-weight: 500; color: var(--text-muted); flex: 1; }
@@ -331,7 +333,7 @@
 <script>
 // ==================== DEFINICIÓN DE RÚBRICAS ====================
 
-// PLANTILLA 2: RÚBRICA PONDERADA (P Y TIP.: 10%, INDAGACIÓN: 10%, BAJADA: 30%, OBJECIÓN: 30%, CIERRE: 15% -> TOTAL 95%+5% AJUSTE A 100%)
+// PLANTILLA 2: RÚBRICA PONDERADA
 const ATTRS_PLANTILLA2 = [
   {k:'ptip', l:'1. P y Tipificación en Sistemas', weight: 10,
    conds:[
@@ -365,7 +367,7 @@ const ATTRS_PLANTILLA2 = [
     {id:'E', l:'Preguntar si tiene tarjeta a mano', s:'Acelera la posibilidad de reserva.'},
     {id:'F', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.'}
   ]},
-  {k:'cierre_p2', l:'5. Cierre', weight: 20, // Ajustado a 20 para cerrar 100% exacto
+  {k:'cierre_p2', l:'5. Cierre', weight: 20,
    conds:[
     {id:'A', l:'Invitar al recontacto', s:'Deja la puerta abierta para el seguimiento.'},
     {id:'B', l:'Saludar cordial', s:'Despedida amable y profesional.'},
@@ -495,7 +497,7 @@ const OPS = [
   {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'}
 ];
 
-// ESTRUCTURA DE ESTADOS DE EVALUACIÓN: 'SI', 'NO', 'NA'
+// ESTRUCTURA DE ESTADOS DE EVALUACIÓN
 let ATTRS = [];
 const checks = {}; // { bloqueKey: { condId: 'SI'|'NO'|'NA' } }
 const E = {respeto:null, fraude:null};
@@ -505,7 +507,7 @@ function inicializarChecks() {
   ATTRS.forEach(a => {
     checks[a.k] = {};
     a.conds.forEach(c => {
-      checks[a.k][c.id] = 'NO'; // Estado por defecto
+      checks[a.k][c.id] = 'NO'; // Estado inicial
     });
   });
 }
@@ -514,13 +516,18 @@ function setCheckState(k, cid, state) {
   checks[k][cid] = state;
   
   // Actualizar UI del grupo de botones
-  const parent = document.getElementById(`tri-${k}-${cid}`);
-  if(parent) {
-    parent.querySelectorAll('.tri-btn').forEach(btn => btn.className = 'tri-btn');
-    if(state === 'SI') parent.querySelector('.btn-si').classList.add('sel-si');
-    if(state === 'NO') parent.querySelector('.btn-no').classList.add('sel-no');
-    if(state === 'NA') parent.querySelector('.btn-na').classList.add('sel-na');
+  const btnGroup = document.getElementById(`tri-${k}-${cid}`);
+  if(btnGroup) {
+    const btnSi = btnGroup.querySelector('.btn-si');
+    const btnNo = btnGroup.querySelector('.btn-no');
+    const btnNa = btnGroup.querySelector('.btn-na');
+
+    btnSi.className = 'tri-btn btn-si' + (state === 'SI' ? ' sel-si' : '');
+    btnNo.className = 'tri-btn btn-no' + (state === 'NO' ? ' sel-no' : '');
+    btnNa.className = 'tri-btn btn-na' + (state === 'NA' ? ' sel-na' : '');
   }
+
+  // Recalcular puntaje del bloque y actualizar contadores
   updateUI(k);
 }
 
@@ -540,7 +547,7 @@ function getScore(k) {
   });
 
   const evaluables = totalConds - naCount;
-  if(evaluables <= 0) return 100; // Si todo es N/A en un bloque, da 100% de cumplimiento
+  if(evaluables <= 0) return 100; // Si todo es N/A en un bloque, no perjudica (100%)
   
   return Math.round((siCount / evaluables) * 100);
 }
@@ -572,7 +579,7 @@ function buildAttrs() {
     <div class="card">
       <div class="card-head">
         <h3>${a.l} ${a.weight ? `<span style="font-size:12px;color:var(--color-info)">[Peso: ${a.weight}%]</span>` : ''}</h3>
-        <span class="badge b-neu" id="sc-${a.k}">0%</span>
+        <span class="badge b-no" id="sc-${a.k}">0%</span>
       </div>
       <div>
         ${a.conds.map(c => `
@@ -591,7 +598,7 @@ function buildAttrs() {
       </div>
       <div class="score-pill">
         <span class="score-pill-lbl">Resultado del bloque</span>
-        <span class="score-pill-val" id="sp-${a.k}">0%</span>
+        <span class="score-pill-val" id="sp-${a.k}">0% (0 cumplen, ${a.conds.length} no cumplen)</span>
       </div>
       <div class="field-label" style="margin-top:14px">Observaciones específicas del bloque</div>
       <textarea id="fb-${a.k}" placeholder="Detalles u observaciones de este ítem..."></textarea>
@@ -745,13 +752,12 @@ function buildDev(){
   let notaCalculada = 0;
 
   if (plantilla === 'p2') {
-    // CÁLCULO PONDERADO REAJUSTABLE ANTE N/A
     let sumaPonderada = 0;
     let pesoTotalEvaluado = 0;
 
     ATTRS.forEach(a => {
       const stats = getStats(a.k);
-      if (stats.si + stats.no > 0) { // Si hay criterios evaluados (distintos de N/A)
+      if (stats.si + stats.no > 0) {
         const scoreBloque = getScore(a.k);
         sumaPonderada += (scoreBloque * (a.weight / 100));
         pesoTotalEvaluado += a.weight;
@@ -760,7 +766,6 @@ function buildDev(){
 
     notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
   } else {
-    // CÁLCULO PROMEDIO SIMPLE
     let totalScore = 0;
     ATTRS.forEach(a => { totalScore += getScore(a.k); });
     notaCalculada = Math.round(totalScore / ATTRS.length);
@@ -784,7 +789,6 @@ function buildDev(){
 
   const attrRows = ATTRS.map(a => {
     const score = getScore(a.k); 
-    const stats = getStats(a.k);
     const barColor = score>=70 ? 'var(--color-success)' : score>=40 ? 'var(--color-warning)' : 'var(--color-danger)';
     
     const fbEl = document.getElementById('fb-'+a.k);
