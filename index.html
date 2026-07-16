@@ -711,6 +711,64 @@ function go(n){
     resetForm();
   } else if(n===3) {
     buildDev();
+    // Generación de reporte en texto enriquecido con emojis para mail/mensajería
+  let lines = [];
+  lines.push('📋 EVALUACIÓN DE CALIDAD — SIGLO 21');
+  lines.push('══════════════════════════════════════');
+  lines.push(`👤 Asesor:      ${asesor}`);
+  lines.push(`📅 Fecha:       ${fechaFmt}`);
+  lines.push(`🏢 Depto:       ${depto}`);
+  lines.push(`🎧 Supervisor:  ${sup}`);
+  lines.push(`📌 Tipo:        ${tipo}`);
+  lines.push(`📊 NOTA FINAL:  ${final}% (${estadoTxt.toUpperCase()})`);
+  lines.push('');
+
+  if(E.respeto === 'SI') lines.push('🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%');
+  if(E.fraude === 'SI') lines.push('🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%');
+  if(arancelado && !hasCrit) lines.push('🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%');
+
+  lines.push('\n🔹 CRITERIOS EVALUADOS ──────────────');
+  ATTRS.forEach(a => {
+    const score = getScore(a.k);
+    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
+    
+    lines.push(`\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
+    
+    a.conds.forEach(c => {
+      const v = checks[a.k][c.id];
+      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
+      lines.push(`   ${icon} ${c.l}`);
+    });
+
+    const fbEl = document.getElementById('fb-' + a.k);
+    if(fbEl && fbEl.value) {
+      lines.push(`   💬 Obs: ${fbEl.value}`);
+    }
+  });
+
+  if(fortalezas) {
+    lines.push('\n💪 FORTALEZAS IDENTIFICADAS ─────────');
+    lines.push(fortalezas);
+  }
+
+  if(mejoras) {
+    lines.push('\n🎯 OPORTUNIDADES DE MEJORA ─────────');
+    lines.push(mejoras);
+  }
+
+  if(acciones) {
+    lines.push('\n📌 PLAN DE ACCIÓN / COMPROMISOS ────');
+    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`  ${i + 1}. ${l}`));
+  }
+
+  lines.push('\n⚙️ GESTIÓN OPERATIVA ────────────────');
+  OPS.forEach(o => {
+    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
+    lines.push(`  • ${o.l}: ${val}`);
+  });
+  
+  lines.push('\n══════════════════════════════════════');
+  textReportCache = lines.join('\n');
   }
   window.scrollTo(0,0);
 }
@@ -909,16 +967,41 @@ function buildDev(){
   textReportCache = lines.join('\n');
 }
 
-function copyDev(){
-  navigator.clipboard.writeText(textReportCache).then(()=>{
+function copyDev() {
+  const devElement = document.getElementById('dev-doc');
+  
+  // Clonar para no alterar el DOM activo
+  const clone = devElement.cloneNode(true);
+  
+  // Crear un contenedor temporal oculto
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  // Seleccionar y copiar el contenido enriquecido (HTML + Estilos renderizados)
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  try {
+    document.execCommand('copy');
     const btn = document.getElementById('copy-btn');
     btn.className = 'copy-btn copied';
-    btn.innerHTML = '<i class="ti ti-check"></i> Copiado con éxito';
-    setTimeout(()=>{
+    btn.innerHTML = '<i class="ti ti-check"></i> ¡Formato copiado!';
+    setTimeout(() => {
       btn.className = 'copy-btn';
       btn.innerHTML = '<i class="ti ti-copy"></i> Copiar devolución';
     }, 2500);
-  });
+  } catch (err) {
+    console.error('Error al copiar formato:', err);
+  } finally {
+    selection.removeAllRanges();
+    document.body.removeChild(container);
+  }
 }
 
 function sendToDrive() {
