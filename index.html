@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evaluación de Calidad — Universidad Siglo 21</title>
   
-  <!-- FAVICON PERSONALIZADO -->
+  <!-- FAVICON PERSONALIZADO CON IMAGEN DE DRIVE -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/u/0/d/1GYj6ZeuJDE8QUQjJQEwxnb_e9k8U3ipz">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -44,11 +44,11 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
-    .app { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+    .app, .container { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
     
     .step-lbl { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
-    .prog-wrap { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
-    .prog-fill { height: 100%; background: var(--color-info); transition: width .4s ease; }
+    .progress-bar, .prog-wrap { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
+    .progress, .prog-fill { height: 100%; background: var(--color-info); transition: width .4s ease; }
     
     .step { display: none; }
     .step.active { display: block; animation: fadeIn 0.3s ease-in-out; }
@@ -58,7 +58,7 @@
     h3 { font-size: 15px; font-weight: 600; color: var(--color-primary); }
     
     .field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
-    input[type=text], input[type=date], textarea, select { width: 100%; font-size: 14px; background: var(--bg-input); color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; transition: all .2s; outline: none; }
+    input[type=text], input[type=date], input[type=file], textarea, select { width: 100%; font-size: 14px; background: var(--bg-input); color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; transition: all .2s; outline: none; }
     input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--color-info); background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
     textarea { resize: vertical; min-height: 80px; }
     
@@ -156,31 +156,37 @@
     .copy-btn:hover { background: #0274be; transform: translateY(-1px); }
     .copy-btn.copied { background: var(--color-success); color: white; }
     
+    /* Botón exclusivo para Drive */
     .drive-btn { display: inline-flex; align-items: center; gap: 8px; background: #1e8e3e; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
     .drive-btn:hover { background: #166e2f; transform: translateY(-1px); }
-    .drive-btn.done { background: var(--color-primary); color: white; cursor: default; transform: none; }
+    .drive-btn.done, .drive-btn.success { background: var(--color-primary); color: white; cursor: default; transform: none; }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .animate-spin { animation: spin 1s linear infinite; }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="container">
 
     <div class="header">
+      <!-- LOGO DE CABECERA ALINEADO -->
       <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
         <img src="https://lh3.googleusercontent.com/u/0/d/1s8dR9apPH_ixCRol10wy2EmrI79sXTsk" 
              alt="Logo Auditoría" 
              style="max-width: 65px; height: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.08));">
         <div>
-          <h1 id="step-lbl" style="margin: 0; font-size: 24px; color: var(--color-primary);">Paso 1 de 3 — Datos del asesor</h1>
+          <h1 id="step-lbl" style="margin: 0; font-size: 22px; color: var(--color-primary);">Paso 1 de 3 — Datos del asesor</h1>
         </div>
       </div>
       
-      <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:33.3%"></div></div>
+      <div class="progress-bar"><div class="progress" id="prog" style="width:33.3%"></div></div>
     </div>
 
-    <!-- PASO 1: DATOS DEL ASESOR -->
+    <!-- PASO 1: DATOS INICIALES -->
     <div class="step active" id="step1">
       <h2>Datos de la evaluación</h2>
       
+      <!-- PRIMERA FILA: ASESOR Y FECHA -->
       <div class="g2">
         <div class="fw">
           <div class="field-label">Nombre del asesor</div>
@@ -214,12 +220,14 @@
             <option value="NATASHA IBAÑEZ"></option>
           </datalist>
         </div>
+
         <div class="fw">
           <div class="field-label">Fecha</div>
           <input type="date" id="fecha">
         </div>
       </div>
 
+      <!-- SEGUNDA FILA: DEPARTAMENTO Y SUPERVISOR -->
       <div class="g2">
         <div class="fw">
           <div class="field-label">Departamento / equipo</div>
@@ -248,6 +256,7 @@
         </div>
       </div>
 
+      <!-- TERCERA FILA: TIPO DE GESTIÓN (ANCHO COMPLETO) -->
       <div class="fw">
         <div class="field-label">Canal / Tipo de gestión</div>
         <select id="tipo">
@@ -258,6 +267,7 @@
         </select>
       </div>
 
+      <!-- ADJUNTAR AUDIO (OCULTO EN WHATSAPP) -->
       <div class="fw" style="margin-top: 15px;">
         <div class="field-label">Adjuntar audio de la llamada (Opcional)</div>
         <div style="position: relative; display: flex; align-items: center;">
@@ -273,8 +283,8 @@
 
     <!-- PASO 2: RÚBRICA Y EVALUACIÓN -->
     <div class="step" id="step2">
-      <h2>Evaluación de la gestión</h2>
-      <div class="sec-title" id="sec-title-attrs">Atributos cuali-cuantitativos</div>
+      <h2>Evaluación de la llamada</h2>
+      <div class="sec-title" id="sec-title-attrs">Atributos cuantitativos</div>
       <div id="attrs-container"></div>
 
       <div class="sec-title">Gestión operativa</div>
@@ -284,34 +294,19 @@
       <div class="card">
         <div style="margin-bottom:18px">
           <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo falta de respeto o ironía?</div>
-          <div class="yn-wrap">
-            <button class="yn-btn" onclick="err('respeto','SI',this)">Sí — error crítico</button>
-            <button class="yn-btn" onclick="err('respeto','NO',this)">No</button>
-          </div>
+          <div class="yn-wrap"><button class="yn-btn" onclick="err('respeto','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('respeto','NO',this)">No</button></div>
         </div>
         <div>
           <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo venta fraudulenta?</div>
-          <div class="yn-wrap">
-            <button class="yn-btn" onclick="err('fraude','SI',this)">Sí — error crítico</button>
-            <button class="yn-btn" onclick="err('fraude','NO',this)">No</button>
-          </div>
+          <div class="yn-wrap"><button class="yn-btn" onclick="err('fraude','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('fraude','NO',this)">No</button></div>
         </div>
       </div>
 
       <div class="sec-title">Plan de acción</div>
       <div class="card">
-        <div class="fw">
-          <div class="field-label">Fortalezas identificadas</div>
-          <textarea id="fortalezas" placeholder="¿Qué hace bien este asesor?"></textarea>
-        </div>
-        <div class="fw">
-          <div class="field-label">Áreas de mejora prioritarias</div>
-          <textarea id="mejoras" placeholder="¿En qué debe enfocarse?"></textarea>
-        </div>
-        <div class="fw">
-          <div class="field-label">Acciones concretas / compromisos (una por línea)</div>
-          <textarea id="acciones" placeholder="Ej: Practicar escucha activa en las próximas 5 llamadas&#10;Seguimiento el dd/mm a las xx:xx"></textarea>
-        </div>
+        <div class="fw"><div class="field-label">Fortalezas identificadas</div><textarea id="fortalezas" placeholder="¿Qué hace bien este asesor?"></textarea></div>
+        <div class="fw"><div class="field-label">Áreas de mejora prioritarias</div><textarea id="mejoras" placeholder="¿En qué debe enfocarse?"></textarea></div>
+        <div class="fw"><div class="field-label">Acciones concretas / compromisos (una por línea)</div><textarea id="acciones" placeholder="Ej: Practicar escucha activa en las próximas 5 llamadas&#10;Seguimiento el dd/mm a las xx:xx"></textarea></div>
       </div>
 
       <div class="btn-row">
@@ -320,7 +315,7 @@
       </div>
     </div>
 
-    <!-- PASO 3: REPORTE DE DEVOLUCIÓN -->
+    <!-- PASO 3: DEVOLUCIÓN -->
     <div class="step" id="step3">
       <div class="dev-outer">
         <div class="dev-doc" id="dev-doc"></div>
@@ -388,7 +383,7 @@ const ATTRS_REMARKETING = [
     {id:'B', l:'Indagó específicamente qué cambió desde la última llamada', s:'Preguntó de forma abierta qué le impidió avanzar o si pudo analizar la info'},
     {id:'C', l:'Detectó el "freno de mano" real del lead', s:'Identificó si el problema actual es económico, de tiempos, dudas de la carrera, etc.'},
     {id:'D', l:'Validó la situación actual del lead con empatía activa', s:'No presionó de entrada; se mostró como un asesor dispuesto a ayudar a destrabar'},
-    {id:'E', l:'Mantuvo una postura resolutiva y ágil', s:'Evitó repetir todo el speech inicial y fue directo al grano según el historial'},
+    {id:'E', l:'Mantuvo una postura resolutiva y ágil', s:'Evitó repetir todo el speech inicial e fue directo al grano según el historial'},
   ]},
   {k:'reb', l:'Destrabe y Manejo de Objeciones complejas',
    conds:[
@@ -431,7 +426,7 @@ const ATTRS_WHATSAPP = [
     {id:'1', l:'1. Presentación', s:'Se presenta correctamente, estableciendo un tono cordial y profesional.'},
     {id:'2', l:'2. Indagación', s:'Realiza preguntas abiertas para entender el contexto del lead.'},
     {id:'3', l:'3. Detección de necesidades', s:'Identificó la necesidad principal del lead de forma explícita.'},
-    {id:'4', l:'4. Personalización', s:'Presentó diferenciales específicos alineados a la necesidad detectada.'},
+    {id:'4', l:'4. Personalización', s:'Presentó diferenciales específicos de la universidad alineados a la necesidad detectada.'},
     {id:'5', l:'5. Claridad', s:'Aclara consultas de manera precisa.'},
     {id:'6', l:'6. Manejo de Objeciones', s:'Detectó la objeción correctamente sin ignorarla ni desviar el tema.'},
     {id:'7', l:'7. Validación', s:'Verificó que el lead quedó conforme con la respuesta dada.'},
@@ -442,12 +437,10 @@ const ATTRS_WHATSAPP = [
     {id:'12', l:'12. Call to Action (CTA)', s:'Propuso una acción inmediata clara (cerrar, preinscribir o reservar).'},
     {id:'13', l:'13. Próximos pasos', s:'Tomó la iniciativa de proponer el próximo contacto o seguimiento.'},
     {id:'14', l:'14. Redacción', s:'Mantuvo una ortografía y gramática impecables.'},
-    {id:'15', l:'15. Naturalidad', s:'El tono fue empático y evitó sonar como un robot (adaptó las plantillas).'},
+    {id:'15', l:'15. Naturalidad', s:'El tono fue empático y evitó sonar como un "robot" (adaptó las plantillas).'},
     {id:'16', l:'16. Uso apropiado', s:'Aplicó el uso correcto de notas y etiquetas.'}
   ]}
 ];
-
-let ATTRS = [];
 
 const OPS = [
   {k:'lead',l:'Lead arancelado',d:'¿Se cerró la venta en la gestión?'},
@@ -459,7 +452,10 @@ const OPS = [
   {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'},
 ];
 
+let ATTRS = [];
 const checks = {};
+const E = {respeto:null, fraude:null};
+const OV = {};
 
 function inicializarChecks() {
   ATTRS.forEach(a => {
@@ -469,9 +465,6 @@ function inicializarChecks() {
     });
   });
 }
-
-const E = {respeto:null, fraude:null};
-const OV = {};
 
 function getScore(k){
   const tipoSeleccionado = document.getElementById('tipo').value;
@@ -486,9 +479,9 @@ function getCount(k){ return Object.values(checks[k] || {}).filter(Boolean).leng
 
 function dotColor(s, totalConds){
   if(totalConds === 16) {
-    return s===100 ? 'var(--color-success)' : s>=60 ? 'var(--color-warning)' : 'var(--color-danger)';
+    return s===100?'var(--color-success)':s>=60?'var(--color-warning)':'var(--color-danger)';
   }
-  return s===20 ? 'var(--color-success)' : s>=12 ? 'var(--color-warning)' : 'var(--color-danger)';
+  return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
 }
 
 function buildAttrs(){
@@ -496,7 +489,7 @@ function buildAttrs(){
   const esWA = (tipoSeleccionado === "WhatsApp");
 
   document.getElementById('sec-title-attrs').textContent = esWA 
-    ? 'Atributos cuali-cuantitativos — cada indicador vale 6.25%' 
+    ? 'Atributos cuali-cuantitativos — cada condición cumplida vale 6.25%' 
     : 'Atributos cuantitativos — cada condición cumplida vale 4%';
 
   document.getElementById('attrs-container').innerHTML = ATTRS.map(a => `
@@ -509,35 +502,21 @@ function buildAttrs(){
         </div>
       </div>
       <div style="${esWA ? 'display:grid; grid-template-columns:1fr 1fr; gap:10px;' : ''}">
-        ${a.conds.map(c => `
+        ${a.conds.map(c=>`
           <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')" style="${esWA ? 'border:1px solid var(--border-color); padding:10px;' : ''}">
-            <div class="rcheck" id="rc-${a.k}-${c.id}">
-              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                <polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div>
-              <div class="rcheck-label">${c.l}</div>
-              <div class="rcheck-sub">${c.s}</div>
-            </div>
+            <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
           </div>`).join('')}
       </div>
-      <div class="score-pill">
-        <span class="score-pill-lbl">Condiciones cumplidas</span>
-        <span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de ${a.conds.length} → 0%</span>
-      </div>
-      <div class="field-label" style="margin-top:14px">Observaciones específicas</div>
-      <textarea id="fb-${a.k}" placeholder="Detalles de lo observado..."></textarea>
+      <div class="score-pill"><span class="score-pill-lbl">Condiciones cumplidas</span><span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de ${a.conds.length} → 0%</span></div>
+      <div class="field-label" style="margin-top:14px">Observaciones específicas</div><textarea id="fb-${a.k}" placeholder="Detalles de lo observado..."></textarea>
     </div>`).join('');
 }
 
 function buildOps(){
-  document.getElementById('ops-card').innerHTML = OPS.map(o => `
+  document.getElementById('ops-card').innerHTML = OPS.map(o=>`
     <div class="op-row">
-      <div>
-        <div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div>
-        <div style="font-size:12px;color:var(--text-muted)">${o.d}</div>
-      </div>
+      <div><div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div><div style="font-size:12px;color:var(--text-muted)">${o.d}</div></div>
       <div class="yn-wrap" style="flex-shrink:0;margin-left:16px">
         <button class="yn-btn" onclick="opv('${o.k}','SI',this)">Sí</button>
         <button class="yn-btn" onclick="opv('${o.k}','NO',this)">No</button>
@@ -563,35 +542,36 @@ document.getElementById('tipo').addEventListener('change', function() {
 
 function toggle(k, cid){
   checks[k][cid] = !checks[k][cid];
-  const rc = document.getElementById('rc-' + k + '-' + cid);
+  const rc = document.getElementById('rc-'+k+'-'+cid);
   if(rc) rc.classList.toggle('on', checks[k][cid]);
   updateUI(k);
 }
 
 function updateUI(k){
-  const aRef = ATTRS.find(a => a.k === k);
+  const aRef = ATTRS.find(a=>a.k===k);
   if(!aRef) return;
+  
   const totalConds = aRef.conds.length;
   const s = getScore(k);
   const n = getCount(k);
   const color = dotColor(s, totalConds);
   
-  aRef.conds.forEach(c => {
-    const dot = document.getElementById('dot-' + k + '-' + c.id);
+  aRef.conds.forEach(c=>{
+    const dot = document.getElementById('dot-'+k+'-'+c.id);
     if(dot) {
       dot.style.background = checks[k][c.id] ? color : 'var(--bg-app)';
       dot.style.borderColor = checks[k][c.id] ? color : 'var(--border-color)';
     }
   });
   
-  const badge = document.getElementById('sc-' + k);
+  const badge = document.getElementById('sc-'+k);
   if(badge) {
     badge.textContent = s + '%';
     const esMax = (totalConds === 16 ? s===100 : s===20);
     badge.className = 'badge ' + (esMax ? 'b-ok' : s>0 ? 'b-mid' : 'b-neu');
   }
   
-  const sp = document.getElementById('sp-' + k);
+  const sp = document.getElementById('sp-'+k);
   if(sp) {
     const esMax = (totalConds === 16 ? s===100 : s===20);
     sp.textContent = n + ' de ' + totalConds + ' → ' + s + '%';
@@ -599,16 +579,16 @@ function updateUI(k){
   }
 }
 
-function err(a, v, btn){
-  E[a] = v;
-  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b => b.className = 'yn-btn');
-  btn.classList.add(v === 'SI' ? 'y' : 'n');
+function err(a,v,btn){
+  E[a]=v;
+  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
+  btn.classList.add(v==='SI'?'y':'n');
 }
 
-function opv(k, v, btn){
-  OV[k] = v;
-  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b => b.className = 'yn-btn');
-  btn.classList.add(v === 'SI' ? 'y' : 'n');
+function opv(k,v,btn){
+  OV[k]=v;
+  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
+  btn.classList.add(v==='SI'?'y':'n');
 }
 
 function go(n){
@@ -632,16 +612,15 @@ function go(n){
     buildAttrs();
   }
 
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step' + n).classList.add('active');
-  
-  const labels = ['', 'Paso 1 de 3 — Datos del asesor', 'Paso 2 de 3 — Evaluación', 'Paso 3 de 3 — Devolución al asesor'];
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  const labels=['','Paso 1 de 3 — Datos del asesor','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución al asesor'];
   document.getElementById('step-lbl').textContent = labels[n];
-  document.getElementById('prog').style.width = (n * 33.3) + '%';
+  document.getElementById('prog').style.width = (n*33.3) + '%';
   
-  if(n === 1 && textReportCache !== "") {
+  if(n===1 && textReportCache !== "") {
     resetForm();
-  } else if(n === 3) {
+  } else if(n===3) {
     buildDev();
   }
   window.scrollTo(0,0);
@@ -658,7 +637,7 @@ function resetForm() {
   if (document.getElementById('audio-llamada')) document.getElementById('audio-llamada').value = '';
 
   const d = new Date();
-  document.getElementById('fecha').value = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
   ATTRS.forEach(a => {
     a.conds.forEach(c => {
@@ -682,17 +661,11 @@ function resetForm() {
   textReportCache = "";
 }
 
-function initials(n){
-  if(!n) return '?';
-  return n.trim().split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
-}
+function initials(n){ if(!n) return '?'; return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 
 function svgRing(pct, color){
-  const r = 26, circ = 2 * Math.PI * r, dash = Math.round((pct / 100) * circ);
-  return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/>
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
-  </svg>`;
+  const r = 26, circ = 2 * Math.PI * r, dash = Math.round((pct/100)*circ);
+  return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`;
 }
 
 let textReportCache = ""; 
@@ -700,21 +673,21 @@ let textReportCache = "";
 function buildDev(){
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'long', year:'numeric'}) : '—';
+  const fechaFmt = fechaRaw ? new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'}) : '—';
   const depto = document.getElementById('depto').value || '—';
   const sup = document.getElementById('super').value || '—';
   const tipo = document.getElementById('tipo').value || '—';
 
-  const hasCrit = E.respeto === 'SI' || E.fraude === 'SI';
-  const arancelado = OV['lead'] === 'SI';
+  const hasCrit = E.respeto==='SI' || E.fraude==='SI';
+  const arancelado = OV['lead']==='SI';
   
   let total = 0; 
   ATTRS.forEach(a => { total += getScore(a.k); });
   let final = hasCrit ? 0 : arancelado ? 100 : Math.round(total);
 
-  const ringColor = final >= 70 ? '#10b981' : final >= 40 ? '#f59e0b' : '#ef4444';
-  const estadoTxt = final >= 70 ? 'Aprobado' : final >= 40 ? 'En desarrollo' : 'Requiere mejora';
-  const estadoCls = final >= 70 ? 'b-ok' : final >= 40 ? 'b-mid' : 'b-no';
+  const ringColor = final>=70 ? '#10b981' : final>=40 ? '#f59e0b' : '#ef4444';
+  const estadoTxt = final>=70 ? 'Aprobado' : final>=40 ? 'En desarrollo' : 'Requiere mejora';
+  const estadoCls = final>=70 ? 'b-ok' : final>=40 ? 'b-mid' : 'b-no';
 
   const dBtn = document.getElementById('drive-btn');
   dBtn.className = "drive-btn";
@@ -722,26 +695,26 @@ function buildDev(){
   dBtn.onclick = sendToDrive;
 
   let errBars = '';
-  if(E.respeto === 'SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
-  if(E.fraude === 'SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
+  if(E.respeto==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
+  if(E.fraude==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
   if(arancelado && !hasCrit) errBars = `<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text)"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Gestión arancelada — Calificación: 100%</div>`;
 
   const attrRows = ATTRS.map(a => {
-    const s = getScore(a.k);
+    const s = getScore(a.k); 
     const n = getCount(a.k);
     const totalConds = a.conds.length;
-    const barColor = (totalConds === 16) ? (s===100?'var(--color-success)':s>=60?'var(--color-warning)':'var(--color-danger)') : (s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)');
-    const fb = document.getElementById('fb-' + a.k).value;
-    const tags = a.conds.map(c => `<span class="cond-tag ${checks[a.k][c.id] ? 'ok' : 'no'}">
-      <svg width="10" height="10" viewBox="0 0 9 9" fill="none">
-        ${checks[a.k][c.id] ? '<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' : '<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}
-      </svg>${c.l}
-    </span>`).join('');
+    const barColor = (totalConds === 16) 
+      ? (s===100 ? 'var(--color-success)' : s>=60 ? 'var(--color-warning)' : 'var(--color-danger)') 
+      : (s===20 ? 'var(--color-success)' : s>=12 ? 'var(--color-warning)' : 'var(--color-danger)');
+    
+    const fbEl = document.getElementById('fb-'+a.k);
+    const fb = fbEl ? fbEl.value : '';
+    const tags = a.conds.map(c => `<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="10" height="10" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
     
     return `<div class="dattr">
       <div class="dattr-top">
         <span class="dattr-name">${a.l}</span>
-        <div class="bar-bg"><div class="bar-fill" style="width:${(totalConds === 16) ? s : s * 5}%;background:${barColor}"></div></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${(totalConds === 16) ? s : s*5}%;background:${barColor}"></div></div>
         <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/${totalConds})</span></span>
       </div>
       <div class="cond-grid">${tags}</div>
@@ -751,7 +724,7 @@ function buildDev(){
 
   const opsRows = OPS.map(o => {
     const v = OV[o.k];
-    return `<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${v === 'SI' ? `<span class="badge b-ok">Sí</span>` : v === 'NO' ? `<span class="badge b-no">No</span>` : `<span class="badge b-neu">—</span>`}</div>`;
+    return `<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${v==='SI'?`<span class="badge b-ok">Sí</span>`:v==='NO'?`<span class="badge b-no">No</span>`:`<span class="badge b-neu">—</span>`}</div>`;
   }).join('');
 
   const fortalezas = document.getElementById('fortalezas').value;
@@ -770,7 +743,7 @@ function buildDev(){
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
           <div style="position:relative;width:64px;height:64px">
-            ${svgRing(final, ringColor)}
+            ${svgRing(final,ringColor)}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:14px;font-weight:700;color:#fff">${final}%</span></div>
           </div>
           <span class="badge ${estadoCls}" style="border:1px solid rgba(255,255,255,0.1)">${estadoTxt}</span>
@@ -790,7 +763,7 @@ function buildDev(){
       <div class="dsec"><div class="dsec-title">Alineación de Criterios (Estructura de Bloques)</div>${attrRows}</div>
       ${fortalezas ? `<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${fortalezas}</div></div>` : ''}
       ${mejoras ? `<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${mejoras}</div></div>` : ''}
-      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos Próximos</div>${acciones.split('\n').filter(l => l.trim()).map((l, i) => `<div class="plan-li"><span class="plan-n">${i+1}.</span><span>${l}</span></div>`).join('')}</div>` : ''}
+      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos Próximos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><span class="plan-n">${i+1}.</span><span>${l}</span></div>`).join('')}</div>` : ''}
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
@@ -806,38 +779,40 @@ function buildDev(){
   lines.push(`NOTA FINAL:  ${final}% — ${estadoTxt}`);
   lines.push(`Puntaje Técnico: ${Math.round(total)}%`);
   lines.push('');
-  if(E.respeto === 'SI') lines.push('⚠ Error crítico: falta de respeto — nota penalizada 0%');
-  if(E.fraude === 'SI') lines.push('⚠ Error crítico: venta fraudulenta — nota penalizada 0%');
+  if(E.respeto==='SI') lines.push('⚠ Error crítico: falta de respeto — nota penalizada 0%');
+  if(E.fraude==='SI') lines.push('⚠ Error crítico: venta fraudulenta — nota penalizada 0%');
   if(arancelado && !hasCrit) lines.push('★ Cierre Efectivo: Lead arancelado — nota 100%');
   lines.push('── CRITERIOS EVALUADOS ────────');
   ATTRS.forEach(a => {
     lines.push(`${a.l}: ${getScore(a.k)}%`);
-    a.conds.forEach(c => lines.push(`  ${checks[a.k][c.id] ? '✓' : '✗'} ${c.l}`));
-    const fb = document.getElementById('fb-' + a.k).value;
+    a.conds.forEach(c => lines.push(`  ${checks[a.k][c.id]?'✓':'✗'} ${c.l}`));
+    const fbEl = document.getElementById('fb-'+a.k);
+    const fb = fbEl ? fbEl.value : '';
     if(fb) lines.push(`  → Obs: ${fb}`);
     lines.push('');
   });
-  if(fortalezas){ lines.push('── FORTALEZAS ─────────────────'); lines.push(fortalezas); lines.push('') }
-  if(mejoras){ lines.push('── OPORTUNIDADES DE MEJORA ────'); lines.push(mejoras); lines.push('') }
-  if(acciones){ lines.push('── COMPROMISOS ASUMIDOS ───────'); acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i+1}. ${l}`)); lines.push('') }
+  if(fortalezas){ lines.push('── FORTALEZAS ─────────────────'); lines.push(fortalezas); lines.push(''); }
+  if(mejoras){ lines.push('── OPORTUNIDADES DE MEJORA ────'); lines.push(mejoras); lines.push(''); }
+  if(acciones){ lines.push('── COMPROMISOS ASUMIDOS ───────'); acciones.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`)); lines.push(''); }
   lines.push('── GESTIÓN OPERATIVA ──────────');
-  OPS.forEach(o => lines.push(`${o.l}: ${OV[o.k] || '—'}`));
+  OPS.forEach(o => lines.push(`${o.l}: ${OV[o.k]||'—'}`));
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   textReportCache = lines.join('\n');
 }
 
 function copyDev(){
-  navigator.clipboard.writeText(textReportCache).then(() => {
+  navigator.clipboard.writeText(textReportCache).then(()=>{
     const btn = document.getElementById('copy-btn');
     btn.className = 'copy-btn copied';
     btn.innerHTML = '<i class="ti ti-check"></i> Copiado con éxito';
-    setTimeout(() => {
+    setTimeout(()=>{
       btn.className = 'copy-btn';
       btn.innerHTML = '<i class="ti ti-copy"></i> Copiar devolución';
     }, 2500);
   });
 }
 
+// CONEXIÓN CON GOOGLE DRIVE
 function sendToDrive() {
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec"; 
 
@@ -881,7 +856,7 @@ function ejecutarEnvio(url, payload, btn) {
   .then(res => res.json())
   .then(data => {
     if(data.status === "success") {
-      btn.className = 'drive-btn done';
+      btn.className = 'drive-btn success';
       btn.innerHTML = '<i class="ti ti-check"></i> ¡Todo guardado con éxito!';
     } else {
       throw new Error(data.message);
