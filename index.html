@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evaluación de Calidad — Universidad Siglo 21</title>
   
-  <!-- FAVICON PERSONALIZADO CON IMAGEN DE DRIVE -->
+  <!-- FAVICON PERSONALIZADO -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/u/0/d/1GYj6ZeuJDE8QUQjJQEwxnb_e9k8U3ipz">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -44,11 +44,10 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
-    .app, .container { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+    .container { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
     
-    .step-lbl { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
-    .progress-bar, .prog-wrap { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
-    .progress, .prog-fill { height: 100%; background: var(--color-info); transition: width .4s ease; }
+    .progress-bar { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
+    .progress { height: 100%; background: var(--color-info); transition: width .4s ease; }
     
     .step { display: none; }
     .step.active { display: block; animation: fadeIn 0.3s ease-in-out; }
@@ -77,24 +76,22 @@
     .b-info { background: var(--color-info-bg); color: var(--color-info); }
     .b-neu { background: var(--bg-app); color: var(--text-muted); }
 
-    .rubric-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); cursor: pointer; transition: background .15s; border-radius: var(--radius-sm); }
-    .rubric-item:hover { background: var(--bg-input); }
-    .rubric-item:last-of-type { border-bottom: none; }
+    /* RÚBRICA TRIPLE ESTADO (SÍ / NO / N/A) */
+    .rubric-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); }
+    .rubric-row:last-of-type { border-bottom: none; }
+    .rubric-info { flex: 1; }
+    .rcheck-label { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
+    .rcheck-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
     
-    .rcheck { width: 20px; height: 20px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: all .2s; }
-    .rcheck.on { background: var(--color-success); border-color: var(--color-success); }
-    .rcheck svg { display: none; }
-    .rcheck.on svg { display: block; }
-    
-    .rcheck-label { font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
-    .rcheck-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+    .tri-btn-group { display: flex; background: var(--bg-app); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2px; gap: 2px; }
+    .tri-btn { border: none; background: transparent; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
+    .tri-btn.sel-si { background: var(--color-success); color: #fff; }
+    .tri-btn.sel-no { background: var(--color-danger); color: #fff; }
+    .tri-btn.sel-na { background: var(--text-muted); color: #fff; }
     
     .score-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-app); border-radius: var(--radius-md); margin-top: 14px; border: 1px dashed var(--border-color); }
     .score-pill-lbl { font-size: 13px; font-weight: 500; color: var(--text-muted); flex: 1; }
     .score-pill-val { font-size: 14px; font-weight: 700; }
-    
-    .mini-dots { display: flex; gap: 5px; align-items: center; }
-    .mdot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--border-color); transition: all .2s; }
 
     .yn-wrap { display: flex; gap: 8px; }
     .yn-btn { flex: 1; border: 1.5px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: var(--radius-md); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
@@ -108,7 +105,7 @@
     .btn-s { background: transparent; color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
     .btn-s:hover { background: var(--bg-app); border-color: var(--text-light); }
 
-    /* SECCIÓN DE DEVOLUCIÓN (PASO 3) */
+    /* DEVOLUCIÓN (PASO 3) */
     .dev-outer { width: 100%; display: flex; flex-direction: column; align-items: center; }
     .dev-doc { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; overflow: hidden; box-shadow: var(--shadow); }
     .dev-hbar { background: var(--color-primary); color: #fff; padding: 2rem; }
@@ -139,27 +136,22 @@
     .cond-tag { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; }
     .cond-tag.ok { background: var(--color-success-bg); color: var(--color-success-text); border-color: rgba(16, 185, 129, 0.15); }
     .cond-tag.no { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: rgba(239, 68, 68, 0.1); }
+    .cond-tag.na { background: var(--bg-app); color: var(--text-muted); border-color: var(--border-color); }
     
     .dattr-fb { font-size: 13px; color: var(--text-muted); margin-top: 8px; padding: 8px 12px; background: var(--bg-input); border-left: 3px solid var(--text-light); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; line-height: 1.5; }
     .op-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg-app); font-size: 13px; }
     .op-row:last-child { border-bottom: none; }
     
-    .plan-li { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--bg-app); line-height: 1.4; }
-    .plan-li:last-child { border-bottom: none; }
-    .plan-n { font-weight: 700; color: var(--color-info); min-width: 16px; }
     .txt-blk { font-size: 13px; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; padding: 10px 14px; background: var(--bg-input); border-radius: var(--radius-md); border: 1px solid var(--border-color); }
-    
-    .err-bar { border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .plan-li { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--bg-app); line-height: 1.4; }
     
     .copy-row { display: flex; justify-content: center; gap: 12px; margin-top: 1.5rem; width: 100%; flex-wrap: wrap; }
     .copy-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--color-info); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .copy-btn:hover { background: #0274be; transform: translateY(-1px); }
-    .copy-btn.copied { background: var(--color-success); color: white; }
+    .copy-btn:hover { background: #0274be; }
+    .copy-btn.copied { background: var(--color-success); }
     
-    /* Botón exclusivo para Drive */
     .drive-btn { display: inline-flex; align-items: center; gap: 8px; background: #1e8e3e; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .drive-btn:hover { background: #166e2f; transform: translateY(-1px); }
-    .drive-btn.done, .drive-btn.success { background: var(--color-primary); color: white; cursor: default; transform: none; }
+    .drive-btn:hover { background: #166e2f; }
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; }
@@ -169,7 +161,6 @@
   <div class="container">
 
     <div class="header">
-      <!-- LOGO DE CABECERA ALINEADO -->
       <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
         <img src="https://lh3.googleusercontent.com/u/0/d/1s8dR9apPH_ixCRol10wy2EmrI79sXTsk" 
              alt="Logo Auditoría" 
@@ -186,7 +177,6 @@
     <div class="step active" id="step1">
       <h2>Datos de la evaluación</h2>
       
-      <!-- PRIMERA FILA: ASESOR Y FECHA -->
       <div class="g2">
         <div class="fw">
           <div class="field-label">Nombre del asesor</div>
@@ -227,7 +217,6 @@
         </div>
       </div>
 
-      <!-- SEGUNDA FILA: DEPARTAMENTO Y SUPERVISOR -->
       <div class="g2">
         <div class="fw">
           <div class="field-label">Departamento / equipo</div>
@@ -256,19 +245,28 @@
         </div>
       </div>
 
-      <!-- TERCERA FILA: TIPO DE GESTIÓN (ANCHO COMPLETO) -->
-      <div class="fw">
-        <div class="field-label">Canal / Tipo de gestión</div>
-        <select id="tipo">
-          <option value="">— Seleccionar —</option>
-          <option value="New Lead">Llamada - New Lead</option>
-          <option value="Remarketing">Llamada - Remarketing</option>
-          <option value="WhatsApp">Auditoría - WhatsApp</option>
-        </select>
+      <!-- SELECCIÓN DE PLANTILLA Y TIPO DE GESTIÓN -->
+      <div class="g2">
+        <div class="fw">
+          <div class="field-label">Plantilla de calidad</div>
+          <select id="plantilla">
+            <option value="p1">Plantilla 1 — Estándar (Por Condición)</option>
+            <option value="p2">Plantilla 2 — Ponderada (Por Secciones %)</option>
+          </select>
+        </div>
+
+        <div class="fw">
+          <div class="field-label">Canal / Tipo de gestión</div>
+          <select id="tipo">
+            <option value="">— Seleccionar —</option>
+            <option value="New Lead">Llamada - New Lead</option>
+            <option value="Remarketing">Llamada - Remarketing</option>
+            <option value="WhatsApp">Auditoría - WhatsApp</option>
+          </select>
+        </div>
       </div>
 
-      <!-- ADJUNTAR AUDIO (OCULTO EN WHATSAPP) -->
-      <div class="fw" style="margin-top: 15px;">
+      <div class="fw">
         <div class="field-label">Adjuntar audio de la llamada (Opcional)</div>
         <div style="position: relative; display: flex; align-items: center;">
           <i class="ti ti-microphone" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
@@ -331,114 +329,159 @@
   </div>
 
 <script>
-// RÚBRICA EXCLUSIVA PARA NEW LEAD
+// ==================== DEFINICIÓN DE RÚBRICAS ====================
+
+// PLANTILLA 2: RÚBRICA PONDERADA (P Y TIP.: 10%, INDAGACIÓN: 10%, BAJADA: 30%, OBJECIÓN: 30%, CIERRE: 15% -> TOTAL 95%+5% AJUSTE A 100%)
+const ATTRS_PLANTILLA2 = [
+  {k:'ptip', l:'1. P y Tipificación en Sistemas', weight: 10,
+   conds:[
+    {id:'A', l:'Presentación cordial', s:'Saluda con educación y amabilidad.'},
+    {id:'B', l:'Voz cálida', s:'Mantiene una entonación empática y profesional.'},
+    {id:'C', l:'Tipificar correctamente en CRM', s:'Registra la gestión adecuadamente.'},
+    {id:'D', l:'Dejar nota y crear agenda', s:'Documenta detalles y pacta próximo contacto.'}
+  ]},
+  {k:'ind_p2', l:'2. Indagación estratégica y personalización', weight: 10,
+   conds:[
+    {id:'A', l:'Preguntar por qué elige la carrera', s:'Indaga motivos y proyectos personales.'},
+    {id:'B', l:'Aportar diferenciales de la carrera', s:'Resalta propuesta única de valor.'},
+    {id:'C', l:'Validar la opinión del lead', s:'Escucha activa y retroalimentación.'},
+    {id:'D', l:'Consultar por tiempos para ofrecer modalidad correcta', s:'Evalúa disponibilidad horaria.'}
+  ]},
+  {k:'bajada', l:'3. Bajada de Oferta', weight: 30,
+   conds:[
+    {id:'A', l:'Información correcta', s:'Datos precisos del programa académico.'},
+    {id:'B', l:'EFIP 1 Y 2', s:'Explica exámenes de integración final.'},
+    {id:'C', l:'TFG', s:'Explica Trabajo Final de Graduación.'},
+    {id:'D', l:'Materias propias de SIGLO 21', s:'Destaca contenido curricular exclusivo.'},
+    {id:'E', l:'Modalidad ED', s:'Explica modelo de Educación Distribuida.'},
+    {id:'F', l:'Prácticas profesional / práctica solidaria', s:'Detalla requisitos de práctica.'}
+  ]},
+  {k:'objecion', l:'4. Objeción y persuasión', weight: 30,
+   conds:[
+    {id:'A', l:'Consultar qué método de pago usa', s:'Indaga sobre tarjetas u otros medios.'},
+    {id:'B', l:'Usar información de IE para rebatir', s:'Aprovecha la indagación previa para argumentar.'},
+    {id:'C', l:'Agregar valor al arancel', s:'Justifica el costo con beneficios.'},
+    {id:'D', l:'En caso de no avanzar preguntar por qué', s:'Busca detectar el freno real.'},
+    {id:'E', l:'Preguntar si tiene tarjeta a mano', s:'Acelera la posibilidad de reserva.'},
+    {id:'F', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.'}
+  ]},
+  {k:'cierre_p2', l:'5. Cierre', weight: 20, // Ajustado a 20 para cerrar 100% exacto
+   conds:[
+    {id:'A', l:'Invitar al recontacto', s:'Deja la puerta abierta para el seguimiento.'},
+    {id:'B', l:'Saludar cordial', s:'Despedida amable y profesional.'},
+    {id:'C', l:'Pactar día y hora para llamarlos', s:'Agenda específica de recontacto.'},
+    {id:'D', l:'Indicar que solo se comunique conmigo', s:'Fideliza el canal directo de atención.'}
+  ]}
+];
+
+// PLANTILLA 1: NEW LEAD
 const ATTRS_NEW_LEAD = [
   {k:'ind', l:'Indagación y diferenciales (New Lead)',
    conds:[
-    {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación, situación laboral o expectativas del lead'},
-    {id:'B', l:'Demostró escucha activa', s:'Retomó o parafraseó lo que el lead dijo durante la conversación'},
-    {id:'C', l:'Identificó la necesidad principal del lead de forma explícita', s:'Nombró o resumió la necesidad detectada antes de presentar la propuesta'},
-    {id:'D', l:'Presentó diferenciales específicos alineados a esa necesidad', s:'No entregó una lista genérica; eligió los más relevantes según el lead'},
-    {id:'E', l:'Mantuvo el foco en el lead durante toda la llamada', s:'La conversación giró en torno al lead, no al producto en abstracto'},
+    {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación o expectativas'},
+    {id:'B', l:'Demostró escucha activa', s:'Retomó lo expresado por el lead'},
+    {id:'C', l:'Identificó la necesidad principal de forma explícita', s:'Puntualizó la necesidad antes de dar oferta'},
+    {id:'D', l:'Presentó diferenciales específicos', s:'Específicos para la necesidad expresada'},
+    {id:'E', l:'Mantuvo el foco en el lead', s:'Conversación centrada en la persona'}
   ]},
   {k:'reb', l:'Rebate de objeciones',
    conds:[
-    {id:'A', l:'Detectó la objeción correctamente sin ignorarla ni desviar el tema', s:'Reconoció la objeción de forma explícita antes de responder'},
-    {id:'B', l:'Validó la preocupación del lead con empatía', s:'Mostró comprensión genuina antes de argumentar'},
-    {id:'C', l:'Respondió con un argumento concreto de Siglo 21 alineado a esa objeción', s:'El argumento fue específico, no una respuesta de lista genérica'},
-    {id:'D', l:'Verificó que el lead quedó conforme con la respuesta', s:'Preguntó o chequeó si la objeción quedó resuelta antes de continuar'},
-    {id:'E', l:'Usó la objeción como puente para reforzar la propuesta de valor', s:'Convirtió la objeción en una oportunidad para destacar un diferencial'},
+    {id:'A', l:'Detectó la objeción correctamente', s:'Sin ignorarla ni desviar el tema'},
+    {id:'B', l:'Validó la preocupación del lead', s:'Mostró comprensión empática'},
+    {id:'C', l:'Respondió con un argumento concreto', s:'Argumento específico de Siglo 21'},
+    {id:'D', l:'Verificó conformidad del lead', s:'Chequeó si la duda quedó resuelta'},
+    {id:'E', l:'Usó la objeción para reforzar valor', s:'La transformó en oportunidad'}
   ]},
   {k:'arancel', l:'Información de aranceles',
    conds:[
-    {id:'A', l:'Ofreció primero el pago semestral con tarjeta como opción principal', s:'Presentó el semestral como la mejor alternativa desde el inicio'},
-    {id:'B', l:'Mencionó los beneficios: descuento y cuotas sin interés', s:'Explicó claramente por qué conviene el semestral'},
-    {id:'C', l:'Preguntó por la tarjeta del lead antes de ofrecer alternativas', s:'Indagó disponibilidad de tarjeta antes de pasar a bimestral o suscripción'},
-    {id:'D', l:'Respetó el orden: semestral → bimestral → suscripción', s:'No saltó pasos ni adelantó opciones inferiores sin manejar objeciones'},
-    {id:'E', l:'No entregó todas las opciones juntas sin manejar objeciones primero', s:'Presentó las opciones de forma escalonada según la respuesta del lead'},
+    {id:'A', l:'Ofreció primero pago semestral', s:'Como opción principal y recomendada'},
+    {id:'B', l:'Mencionó beneficios de descuento/cuotas', s:'Explicó ventajas del semestral'},
+    {id:'C', l:'Preguntó por la tarjeta del lead', s:'Indagó disponibilidad de tarjeta'},
+    {id:'D', l:'Respetó el orden escalar', s:'Semestral → Bimestral → Suscripción'},
+    {id:'E', l:'No entregó opciones juntas', s:'Escalonó según objeción'}
   ]},
   {k:'urgencia', l:'Sentido de urgencia',
    conds:[
-    {id:'A', l:'Mencionó al menos un elemento de urgencia real', s:'Cupos limitados, vencimiento de beca, inicio de clases o beneficio por tiempo limitado'},
-    {id:'B', l:'Lo presentó de forma natural, sin sonar forzado o agresivo', s:'La urgencia fluyó dentro de la conversación sin generar rechazo'},
-    {id:'C', l:'Vinculó la urgencia a un beneficio concreto que el lead pierde si no actúa hoy', s:'Dejó claro qué se pierde específicamente al postergar la decisión'},
-    {id:'D', l:'Propuso una acción inmediata: cerrar, preinscribir o reservar', s:'La urgencia terminó en un llamado a la acción concreto'},
-    {id:'E', l:'Reforzó la urgencia al cierre de la llamada', s:'No solo al inicio; volvió a mencionarla al despedirse o al acordar agenda'},
+    {id:'A', l:'Mencionó urgencia real', s:'Cupos, beca, o inicio de clases'},
+    {id:'B', l:'Presentó urgencia de forma natural', s:'Sin sonar forzado'},
+    {id:'C', l:'Vinculó urgencia a pérdida de beneficio', s:'Dejó claro qué pierde si no actúa hoy'},
+    {id:'D', l:'Propuso acción inmediata', s:'Cerrar, preinscribir o reservar'},
+    {id:'E', l:'Reforzó urgencia al cierre', s:'Mantuvo consistencia al despedirse'}
   ]},
   {k:'agenda', l:'Agenda precisa',
    conds:[
-    {id:'A', l:'Tomó la iniciativa de proponer el próximo contacto', s:'No esperó que el lead lo pidiera; fue proactivo'},
-    {id:'B', l:'Propuso una fecha específica dentro de las 48 horas', s:'No un "te llamo pronto" o "la semana que viene"'},
-    {id:'C', l:'Acordó una hora exacta, no un rango amplio', s:'No "a la tarde" o "mañana" sino una hora concreta'},
-    {id:'D', l:'Generó compromiso del lead con ese horario', s:'El lead confirmó o aceptó explícitamente el horario propuesto'},
-    {id:'E', l:'Mencionó el motivo del recontacto para dar sentido de continuidad', s:'Explicó para qué será la próxima llamada, no solo cuándo'},
-  ]},
+    {id:'A', l:'Iniciativa de proponer próximo contacto', s:'Proactivo'},
+    {id:'B', l:'Propuso fecha dentro de 48h', s:'Límite temporal claro'},
+    {id:'C', l:'Acordó hora exacta', s:'Horario puntual'},
+    {id:'D', l:'Generó compromiso del lead', s:'Confirmación explícita'},
+    {id:'E', l:'Mencionó motivo del recontacto', s:'Dio sentido al seguimiento'}
+  ]}
 ];
 
-// RÚBRICA EXCLUSIVA PARA REMARKETING
+// PLANTILLA 1: REMARKETING
 const ATTRS_REMARKETING = [
-  {k:'ind', l:'Indagación del contacto previo (Remarketing)',
+  {k:'ind', l:'Indagación del contacto previo',
    conds:[
-    {id:'A', l:'Retomó la conversación anterior con contexto claro', s:'Demostró saber en qué estado quedó el contacto anterior'},
-    {id:'B', l:'Indagó específicamente qué cambió desde la última llamada', s:'Preguntó de forma abierta qué le impidió avanzar o si pudo analizar la info'},
-    {id:'C', l:'Detectó el "freno de mano" real del lead', s:'Identificó si el problema actual es económico, de tiempos, dudas de la carrera, etc.'},
-    {id:'D', l:'Validó la situación actual del lead con empatía activa', s:'No presionó de entrada; se mostró como un asesor dispuesto a ayudar a destrabar'},
-    {id:'E', l:'Mantuvo una postura resolutiva y ágil', s:'Evitó repetir todo el speech inicial e fue directo al grano según el historial'},
+    {id:'A', l:'Retomó conversación anterior con contexto', s:'Demostró revisar historial'},
+    {id:'B', l:'Indagó qué cambió desde el último contacto', s:'Pregunta sobre frenos pasados'},
+    {id:'C', l:'Detectó el "freno de mano" real', s:'Identificó causa de demora'},
+    {id:'D', l:'Validó situación con empatía', s:'Disposición a ayudar a destrabar'},
+    {id:'E', l:'Mantuvo postura resolutiva', s:'Fue al grano'}
   ]},
-  {k:'reb', l:'Destrabe y Manejo de Objeciones complejas',
+  {k:'reb', l:'Destrabe y Manejo de Objeciones',
    conds:[
-    {id:'A', l:'Alineó el argumento de destrabe al problema específico detectado', s:'Si el freno era económico, atacó por ahí; si era por dudas, fue al plan de estudios'},
-    {id:'B', l:'Explicó las alternativas de cursado y flexibilidad de Siglo 21', s:'Usó la modalidad ED o EDH como solución a la falta de tiempo si aplicaba'},
-    {id:'C', l:'Derribó mitos o miedos sobre la educación online', s:'Dio seguridad sobre el acompañamiento de los tutores y los CAU'},
-    {id:'D', l:'Confirmó que el freno quedó resuelto antes de pasar al precio', s:'Chequeó si conceptualmente el lead se visualiza arrancando'},
-    {id:'E', l:'Elevó el valor de la carrera por encima del costo percibido', s:'Recordó el impacto del título profesional en su salida laboral'},
+    {id:'A', l:'Alineó argumento al problema detectado', s:'Ataque directo al freno'},
+    {id:'B', l:'Explicó alternativas de cursado', s:'Modalidad ED o flexibilidad'},
+    {id:'C', l:'Derribó mitos de educación online', s:'Dio seguridad en acompañamiento'},
+    {id:'D', l:'Confirmó resolución antes de dar precio', s:'Aseguró visualización del lead'},
+    {id:'E', l:'Elevó valor sobre costo', s:'Destacó salida laboral'}
   ]},
   {k:'arancel', l:'Estrategia de Cierre Económico',
    conds:[
-    {id:'A', l:'Presentó la propuesta económica como una oportunidad de ahorro vigente', s:'Habló de la beca o el arancel actual frente a los aumentos de IPC'},
-    {id:'B', l:'Ofreció el pago semestral remarcando el congelamiento de precio', s:'Explicó que con tarjeta se olvida de los ajustes por el resto del período'},
-    {id:'C', l:'Indagó sobre la disponibilidad de nuevas tarjetas (propias o de terceros)', s:'Buscó alternativas de pago antes de bajar la categoría del plan'},
-    {id:'D', l:'Aplicó de forma escalonada las opciones (Semestral → Bimestral → Suscripción)', s:'No quemó cartuchos; defendió el valor del pack completo'},
-    {id:'E', l:'Transparentó la estructura de pagos sin dejar dudas administrativas', s:'Dejó claro qué incluye la matrícula y los plazos de cuotas'},
+    {id:'A', l:'Presentó propuesta como ahorro', s:'Aprovechamiento de beca actual'},
+    {id:'B', l:'Ofreció pago semestral congelado', s:'Evita aumentos futuros'},
+    {id:'C', l:'Indagó disponibilidad de tarjetas', s:'Buscó alternativas de pago'},
+    {id:'D', l:'Aplicó orden de opciones', s:'Defendió el pack completo'},
+    {id:'E', l:'Transparentó la estructura', s:'Matrícula y cuotas claras'}
   ]},
-  {k:'urgencia', l:'Re-enfoque de Urgencia Operativa',
+  {k:'urgencia', l:'Urgencia Operativa',
    conds:[
-    {id:'A', l:'Apalancó el cierre en una fecha límite real y cercana', s:'Fin de inscripciones, vencimiento de beneficio de reinscripción, etc.'},
-    {id:'B', l:'Hizo énfasis en el tiempo perdido por postergar el inicio', s:'"Si arrancás ahora, en X meses ya metés el primer cuatrimestre"'},
-    {id:'C', l:'Planteó el beneficio exclusivo de resolver la inscripción HOY', s:'Asegurar el cupo en el CAU elegido o congelar el valor de matrícula'},
-    {id:'D', l:'Llamó a la acción de forma directa y asertiva', s:'Pidió los datos para la preinscripción de forma inmediata'},
-    {id:'E', l:'Sostuvo la firmeza comercial sin caer en una postura pasiva', s:'No se quedó con un "pensalo y avisame"; guió al lead al paso siguiente'},
+    {id:'A', l:'Cierre en fecha límite real', s:'Fin de período'},
+    {id:'B', l:'Énfasis en tiempo perdido', s:'Efecto de postergar inicio'},
+    {id:'C', l:'Beneficio exclusivo de resolver hoy', s:'Reserva de cupo'},
+    {id:'D', l:'Llamado a la acción directo', s:'Solicitud de datos'},
+    {id:'E', l:'Firmeza comercial', s:'Guía activa al paso siguiente'}
   ]},
-  {k:'agenda', l:'Agenda de seguimiento estricto',
+  {k:'agenda', l:'Agenda estricta',
    conds:[
-    {id:'A', l:'Estableció el próximo paso de forma clara y unívoca', s:'Definió qué documentos o gestiones quedan pendientes para el recontacto'},
-    {id:'B', l:'Pactó el llamado dentro de las 24 a 48 horas máximo', s:'Al ser remarketing, el tiempo de enfriamiento debe ser corto'},
-    {id:'C', l:'Fijó hora y minutos exactos para la llamada', s:'Compromiso de agenda cerrada (ej: "mañana a las 10:15")'},
-    {id:'D', l:'Consiguió una confirmación verbal explícita del lead', s:'El lead se comprometió activamente a atender en ese horario'},
-    {id:'E', l:'Explicó el objetivo del próximo llamado', s:'Le dio un sentido útil a la llamada, evitando que parezca persecución'},
-  ]},
+    {id:'A', l:'Estableció paso claro', s:'Pendientes concretos'},
+    {id:'B', l:'Pactó llamado en 24h-48h', s:'Enfriamiento corto'},
+    {id:'C', l:'Fijó hora exacta', s:'Agenda cerrada'},
+    {id:'D', l:'Consiguió confirmación', s:'Compromiso del lead'},
+    {id:'E', l:'Explicó objetivo del llamado', s:'Aportó utilidad'}
+  ]}
 ];
 
-// RÚBRICA EXCLUSIVA PARA WHATSAPP (16 Indicadores de 6.25% c/u)
+// PLANTILLA 1: WHATSAPP
 const ATTRS_WHATSAPP = [
   {k:'wa_gestion', l:'Indicadores de Gestión Estratégica — WhatsApp',
    conds:[
-    {id:'1', l:'1. Presentación', s:'Se presenta correctamente, estableciendo un tono cordial y profesional.'},
-    {id:'2', l:'2. Indagación', s:'Realiza preguntas abiertas para entender el contexto del lead.'},
-    {id:'3', l:'3. Detección de necesidades', s:'Identificó la necesidad principal del lead de forma explícita.'},
-    {id:'4', l:'4. Personalización', s:'Presentó diferenciales específicos de la universidad alineados a la necesidad detectada.'},
-    {id:'5', l:'5. Claridad', s:'Aclara consultas de manera precisa.'},
-    {id:'6', l:'6. Manejo de Objeciones', s:'Detectó la objeción correctamente sin ignorarla ni desviar el tema.'},
-    {id:'7', l:'7. Validación', s:'Verificó que el lead quedó conforme con la respuesta dada.'},
-    {id:'8', l:'8. Escalonamiento', s:'Respetó el orden de oferta (semestral → bimestral).'},
-    {id:'9', l:'9. Dosificación', s:'No entregó toda la información de golpe.'},
-    {id:'10', l:'10. Cierre y Seguimiento', s:'Realiza cierres parciales a lo largo de la conversación.'},
-    {id:'11', l:'11. Sentido de urgencia', s:'Mencionó al menos un elemento de urgencia real (cupos, tiempo, promociones).'},
-    {id:'12', l:'12. Call to Action (CTA)', s:'Propuso una acción inmediata clara (cerrar, preinscribir o reservar).'},
-    {id:'13', l:'13. Próximos pasos', s:'Tomó la iniciativa de proponer el próximo contacto o seguimiento.'},
-    {id:'14', l:'14. Redacción', s:'Mantuvo una ortografía y gramática impecables.'},
-    {id:'15', l:'15. Naturalidad', s:'El tono fue empático y evitó sonar como un "robot" (adaptó las plantillas).'},
-    {id:'16', l:'16. Uso apropiado', s:'Aplicó el uso correcto de notas y etiquetas.'}
+    {id:'1', l:'1. Presentación', s:'Cordial y profesional'},
+    {id:'2', l:'2. Indagación', s:'Preguntas abiertas'},
+    {id:'3', l:'3. Detección de necesidades', s:'Identificación explícita'},
+    {id:'4', l:'4. Personalización', s:'Diferenciales alineados'},
+    {id:'5', l:'5. Claridad', s:'Respuestas precisas'},
+    {id:'6', l:'6. Manejo de Objeciones', s:'Sin ignorar ni desviar'},
+    {id:'7', l:'7. Validación', s:'Chequeo de satisfacción'},
+    {id:'8', l:'8. Escalonamiento', s:'Semestral → Bimestral'},
+    {id:'9', l:'9. Dosificación', s:'Sin abrumar con info'},
+    {id:'10', l:'10. Cierre y Seguimiento', s:'Cierres parciales'},
+    {id:'11', l:'11. Sentido de urgencia', s:'Elementos reales'},
+    {id:'12', l:'12. Call to Action', s:'Acción inmediata'},
+    {id:'13', l:'13. Próximos pasos', s:'Iniciativa de recontacto'},
+    {id:'14', l:'14. Redacción', s:'Sin faltas de ortografía'},
+    {id:'15', l:'15. Naturalidad', s:'Tono empático, no robotizado'},
+    {id:'16', l:'16. Uso apropiado', s:'Notas y etiquetas'}
   ]}
 ];
 
@@ -448,12 +491,13 @@ const OPS = [
   {k:'metodos',l:'Pregunta métodos de pago',d:'¿Pregunta por tarjeta antes de ofrecer financiación?'},
   {k:'convenios',l:'Convenios con empresas',d:'¿Pregunta por empresa del lead y ofrece convenio?'},
   {k:'ganchos',l:'Ganchos comerciales',d:'¿Mencionó cursos extras (Excel, Power BI, Autoliderazgo)?'},
-  {k:'sistemas',l:'Registro en sistemas',d:'¿Dejó nota, tarea y fin de gestión en Tomi/Hubspot?'},
-  {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'},
+  {k:'sistemas',l:'Registro en sistemas',d:'¿Dejó nota, tarea y fin de gestión en CRM/Hubspot?'},
+  {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'}
 ];
 
+// ESTRUCTURA DE ESTADOS DE EVALUACIÓN: 'SI', 'NO', 'NA'
 let ATTRS = [];
-const checks = {};
+const checks = {}; // { bloqueKey: { condId: 'SI'|'NO'|'NA' } }
 const E = {respeto:null, fraude:null};
 const OV = {};
 
@@ -461,60 +505,117 @@ function inicializarChecks() {
   ATTRS.forEach(a => {
     checks[a.k] = {};
     a.conds.forEach(c => {
-      checks[a.k][c.id] = false;
+      checks[a.k][c.id] = 'NO'; // Estado por defecto
     });
   });
 }
 
-function getScore(k){
-  const tipoSeleccionado = document.getElementById('tipo').value;
-  const marcados = Object.values(checks[k] || {}).filter(Boolean).length;
-  if(tipoSeleccionado === "WhatsApp") {
-    return Math.round(marcados * 6.25);
+function setCheckState(k, cid, state) {
+  checks[k][cid] = state;
+  
+  // Actualizar UI del grupo de botones
+  const parent = document.getElementById(`tri-${k}-${cid}`);
+  if(parent) {
+    parent.querySelectorAll('.tri-btn').forEach(btn => btn.className = 'tri-btn');
+    if(state === 'SI') parent.querySelector('.btn-si').classList.add('sel-si');
+    if(state === 'NO') parent.querySelector('.btn-no').classList.add('sel-no');
+    if(state === 'NA') parent.querySelector('.btn-na').classList.add('sel-na');
   }
-  return marcados * 4;
+  updateUI(k);
 }
 
-function getCount(k){ return Object.values(checks[k] || {}).filter(Boolean).length; }
+// CÁLCULO DE NOTAS ADAPTABLE A "N/A"
+function getScore(k) {
+  const aRef = ATTRS.find(a => a.k === k);
+  if(!aRef) return 0;
+  
+  const totalConds = aRef.conds.length;
+  let siCount = 0;
+  let naCount = 0;
 
-function dotColor(s, totalConds){
-  if(totalConds === 16) {
-    return s===100?'var(--color-success)':s>=60?'var(--color-warning)':'var(--color-danger)';
-  }
-  return s===20?'var(--color-success)':s>=12?'var(--color-warning)':'var(--color-danger)';
+  aRef.conds.forEach(c => {
+    const val = checks[k][c.id];
+    if(val === 'SI') siCount++;
+    if(val === 'NA') naCount++;
+  });
+
+  const evaluables = totalConds - naCount;
+  if(evaluables <= 0) return 100; // Si todo es N/A en un bloque, da 100% de cumplimiento
+  
+  return Math.round((siCount / evaluables) * 100);
 }
 
-function buildAttrs(){
+function getStats(k) {
+  const aRef = ATTRS.find(a => a.k === k);
+  if(!aRef) return {si:0, no:0, na:0, total:0};
+  
+  let si=0, no=0, na=0;
+  aRef.conds.forEach(c => {
+    const val = checks[k][c.id];
+    if(val === 'SI') si++;
+    else if(val === 'NA') na++;
+    else no++;
+  });
+  return {si, no, na, total: aRef.conds.length};
+}
+
+function buildAttrs() {
+  const plantilla = document.getElementById('plantilla').value;
   const tipoSeleccionado = document.getElementById('tipo').value;
   const esWA = (tipoSeleccionado === "WhatsApp");
 
-  document.getElementById('sec-title-attrs').textContent = esWA 
-    ? 'Atributos cuali-cuantitativos — cada condición cumplida vale 6.25%' 
-    : 'Atributos cuantitativos — cada condición cumplida vale 4%';
+  document.getElementById('sec-title-attrs').textContent = (plantilla === 'p2') 
+    ? 'Atributos evaluados — Plantilla Ponderada por Secciones' 
+    : esWA ? 'Atributos — WhatsApp (16 Indicadores)' : 'Atributos cuantitativos — Plantilla Estándar';
 
   document.getElementById('attrs-container').innerHTML = ATTRS.map(a => `
     <div class="card">
       <div class="card-head">
-        <h3>${a.l}</h3>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="mini-dots" id="dots-${a.k}">${a.conds.map(c=>`<div class="mdot" id="dot-${a.k}-${c.id}"></div>`).join('')}</div>
-          <span class="badge b-neu" id="sc-${a.k}">0%</span>
-        </div>
+        <h3>${a.l} ${a.weight ? `<span style="font-size:12px;color:var(--color-info)">[Peso: ${a.weight}%]</span>` : ''}</h3>
+        <span class="badge b-neu" id="sc-${a.k}">0%</span>
       </div>
-      <div style="${esWA ? 'display:grid; grid-template-columns:1fr 1fr; gap:10px;' : ''}">
-        ${a.conds.map(c=>`
-          <div class="rubric-item" onclick="toggle('${a.k}','${c.id}')" style="${esWA ? 'border:1px solid var(--border-color); padding:10px;' : ''}">
-            <div class="rcheck" id="rc-${a.k}-${c.id}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,5.5 4.5,8 9,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div><div class="rcheck-label">${c.l}</div><div class="rcheck-sub">${c.s}</div></div>
-          </div>`).join('')}
+      <div>
+        ${a.conds.map(c => `
+          <div class="rubric-row">
+            <div class="rubric-info">
+              <div class="rcheck-label">${c.l}</div>
+              <div class="rcheck-sub">${c.s}</div>
+            </div>
+            <div class="tri-btn-group" id="tri-${a.k}-${c.id}">
+              <button class="tri-btn btn-si" onclick="setCheckState('${a.k}','${c.id}','SI')">Cumple</button>
+              <button class="tri-btn btn-no sel-no" onclick="setCheckState('${a.k}','${c.id}','NO')">No cumple</button>
+              <button class="tri-btn btn-na" onclick="setCheckState('${a.k}','${c.id}','NA')">N/A</button>
+            </div>
+          </div>
+        `).join('')}
       </div>
-      <div class="score-pill"><span class="score-pill-lbl">Condiciones cumplidas</span><span class="score-pill-val" id="sp-${a.k}" style="color:var(--text-light)">0 de ${a.conds.length} → 0%</span></div>
-      <div class="field-label" style="margin-top:14px">Observaciones específicas</div><textarea id="fb-${a.k}" placeholder="Detalles de lo observado..."></textarea>
+      <div class="score-pill">
+        <span class="score-pill-lbl">Resultado del bloque</span>
+        <span class="score-pill-val" id="sp-${a.k}">0%</span>
+      </div>
+      <div class="field-label" style="margin-top:14px">Observaciones específicas del bloque</div>
+      <textarea id="fb-${a.k}" placeholder="Detalles u observaciones de este ítem..."></textarea>
     </div>`).join('');
 }
 
-function buildOps(){
-  document.getElementById('ops-card').innerHTML = OPS.map(o=>`
+function updateUI(k) {
+  const score = getScore(k);
+  const stats = getStats(k);
+  
+  const badge = document.getElementById('sc-' + k);
+  if(badge) {
+    badge.textContent = score + '%';
+    badge.className = 'badge ' + (score >= 70 ? 'b-ok' : score >= 40 ? 'b-mid' : 'b-no');
+  }
+  
+  const sp = document.getElementById('sp-' + k);
+  if(sp) {
+    sp.textContent = `${score}% (${stats.si} cumplen, ${stats.no} no cumplen${stats.na > 0 ? `, ${stats.na} N/A` : ''})`;
+  }
+}
+
+function buildOps() {
+  document.getElementById('ops-card').innerHTML = OPS.map(o => `
     <div class="op-row">
       <div><div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div><div style="font-size:12px;color:var(--text-muted)">${o.d}</div></div>
       <div class="yn-wrap" style="flex-shrink:0;margin-left:16px">
@@ -540,45 +641,6 @@ document.getElementById('tipo').addEventListener('change', function() {
   document.getElementById('fecha').value = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 })();
 
-function toggle(k, cid){
-  checks[k][cid] = !checks[k][cid];
-  const rc = document.getElementById('rc-'+k+'-'+cid);
-  if(rc) rc.classList.toggle('on', checks[k][cid]);
-  updateUI(k);
-}
-
-function updateUI(k){
-  const aRef = ATTRS.find(a=>a.k===k);
-  if(!aRef) return;
-  
-  const totalConds = aRef.conds.length;
-  const s = getScore(k);
-  const n = getCount(k);
-  const color = dotColor(s, totalConds);
-  
-  aRef.conds.forEach(c=>{
-    const dot = document.getElementById('dot-'+k+'-'+c.id);
-    if(dot) {
-      dot.style.background = checks[k][c.id] ? color : 'var(--bg-app)';
-      dot.style.borderColor = checks[k][c.id] ? color : 'var(--border-color)';
-    }
-  });
-  
-  const badge = document.getElementById('sc-'+k);
-  if(badge) {
-    badge.textContent = s + '%';
-    const esMax = (totalConds === 16 ? s===100 : s===20);
-    badge.className = 'badge ' + (esMax ? 'b-ok' : s>0 ? 'b-mid' : 'b-neu');
-  }
-  
-  const sp = document.getElementById('sp-'+k);
-  if(sp) {
-    const esMax = (totalConds === 16 ? s===100 : s===20);
-    sp.textContent = n + ' de ' + totalConds + ' → ' + s + '%';
-    sp.style.color = esMax ? 'var(--color-success-text)' : s>0 ? 'var(--color-warning-text)' : 'var(--text-light)';
-  }
-}
-
 function err(a,v,btn){
   E[a]=v;
   btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
@@ -594,17 +656,19 @@ function opv(k,v,btn){
 function go(n){
   if (n === 2) {
     const tipoSeleccionado = document.getElementById('tipo').value;
+    const plantilla = document.getElementById('plantilla').value;
+    
     if (!tipoSeleccionado) {
       alert("Por favor, seleccioná el Canal / Tipo de gestión primero.");
       return;
     }
-    
-    if (tipoSeleccionado === "Remarketing") {
-      ATTRS = ATTRS_REMARKETING;
-    } else if (tipoSeleccionado === "WhatsApp") {
-      ATTRS = ATTRS_WHATSAPP;
+
+    if (plantilla === 'p2') {
+      ATTRS = ATTRS_PLANTILLA2;
     } else {
-      ATTRS = ATTRS_NEW_LEAD;
+      if (tipoSeleccionado === "Remarketing") ATTRS = ATTRS_REMARKETING;
+      else if (tipoSeleccionado === "WhatsApp") ATTRS = ATTRS_WHATSAPP;
+      else ATTRS = ATTRS_NEW_LEAD;
     }
     
     document.getElementById('attrs-container').innerHTML = '';
@@ -640,11 +704,7 @@ function resetForm() {
   document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
   ATTRS.forEach(a => {
-    a.conds.forEach(c => {
-      checks[a.k][c.id] = false;
-      const rc = document.getElementById(`rc-${a.k}-${c.id}`);
-      if(rc) rc.classList.remove('on');
-    });
+    a.conds.forEach(c => { checks[a.k][c.id] = 'NO'; });
     updateUI(a.k);
     const fb = document.getElementById(`fb-${a.k}`);
     if(fb) fb.value = '';
@@ -677,13 +737,36 @@ function buildDev(){
   const depto = document.getElementById('depto').value || '—';
   const sup = document.getElementById('super').value || '—';
   const tipo = document.getElementById('tipo').value || '—';
+  const plantilla = document.getElementById('plantilla').value;
 
   const hasCrit = E.respeto==='SI' || E.fraude==='SI';
   const arancelado = OV['lead']==='SI';
   
-  let total = 0; 
-  ATTRS.forEach(a => { total += getScore(a.k); });
-  let final = hasCrit ? 0 : arancelado ? 100 : Math.round(total);
+  let notaCalculada = 0;
+
+  if (plantilla === 'p2') {
+    // CÁLCULO PONDERADO REAJUSTABLE ANTE N/A
+    let sumaPonderada = 0;
+    let pesoTotalEvaluado = 0;
+
+    ATTRS.forEach(a => {
+      const stats = getStats(a.k);
+      if (stats.si + stats.no > 0) { // Si hay criterios evaluados (distintos de N/A)
+        const scoreBloque = getScore(a.k);
+        sumaPonderada += (scoreBloque * (a.weight / 100));
+        pesoTotalEvaluado += a.weight;
+      }
+    });
+
+    notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
+  } else {
+    // CÁLCULO PROMEDIO SIMPLE
+    let totalScore = 0;
+    ATTRS.forEach(a => { totalScore += getScore(a.k); });
+    notaCalculada = Math.round(totalScore / ATTRS.length);
+  }
+
+  let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
 
   const ringColor = final>=70 ? '#10b981' : final>=40 ? '#f59e0b' : '#ef4444';
   const estadoTxt = final>=70 ? 'Aprobado' : final>=40 ? 'En desarrollo' : 'Requiere mejora';
@@ -695,27 +778,30 @@ function buildDev(){
   dBtn.onclick = sendToDrive;
 
   let errBars = '';
-  if(E.respeto==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Falta de respeto — Nota penalizada a 0%</div>`;
-  if(E.fraude==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico detectado: Venta fraudulenta — Nota penalizada a 0%</div>`;
+  if(E.respeto==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico: Falta de respeto — Nota 0%</div>`;
+  if(E.fraude==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Error crítico: Venta fraudulenta — Nota 0%</div>`;
   if(arancelado && !hasCrit) errBars = `<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text)"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Gestión arancelada — Calificación: 100%</div>`;
 
   const attrRows = ATTRS.map(a => {
-    const s = getScore(a.k); 
-    const n = getCount(a.k);
-    const totalConds = a.conds.length;
-    const barColor = (totalConds === 16) 
-      ? (s===100 ? 'var(--color-success)' : s>=60 ? 'var(--color-warning)' : 'var(--color-danger)') 
-      : (s===20 ? 'var(--color-success)' : s>=12 ? 'var(--color-warning)' : 'var(--color-danger)');
+    const score = getScore(a.k); 
+    const stats = getStats(a.k);
+    const barColor = score>=70 ? 'var(--color-success)' : score>=40 ? 'var(--color-warning)' : 'var(--color-danger)';
     
     const fbEl = document.getElementById('fb-'+a.k);
     const fb = fbEl ? fbEl.value : '';
-    const tags = a.conds.map(c => `<span class="cond-tag ${checks[a.k][c.id]?'ok':'no'}"><svg width="10" height="10" viewBox="0 0 9 9" fill="none">${checks[a.k][c.id]?'<polyline points="1.5,4.5 3.5,6.5 7.5,2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>':'<line x1="2" y1="2" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="2" x2="2" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>${c.l}</span>`).join('');
+    
+    const tags = a.conds.map(c => {
+      const val = checks[a.k][c.id];
+      const cls = val === 'SI' ? 'ok' : val === 'NA' ? 'na' : 'no';
+      const txt = val === 'SI' ? '✓ ' + c.l : val === 'NA' ? 'N/A ' + c.l : '✗ ' + c.l;
+      return `<span class="cond-tag ${cls}">${txt}</span>`;
+    }).join('');
     
     return `<div class="dattr">
       <div class="dattr-top">
-        <span class="dattr-name">${a.l}</span>
-        <div class="bar-bg"><div class="bar-fill" style="width:${(totalConds === 16) ? s : s*5}%;background:${barColor}"></div></div>
-        <span class="dattr-pct" style="color:${barColor}">${s}% <span style="font-size:12px;font-weight:500;color:var(--text-light)">(${n}/${totalConds})</span></span>
+        <span class="dattr-name">${a.l} ${a.weight ? `<small style="color:var(--text-light)">(${a.weight}%)</small>` : ''}</span>
+        <div class="bar-bg"><div class="bar-fill" style="width:${score}%;background:${barColor}"></div></div>
+        <span class="dattr-pct" style="color:${barColor}">${score}%</span>
       </div>
       <div class="cond-grid">${tags}</div>
       ${fb ? `<div class="dattr-fb">${fb}</div>` : ''}
@@ -733,7 +819,7 @@ function buildDev(){
 
   document.getElementById('dev-doc').innerHTML = `
     <div class="dev-hbar">
-      <div class="dev-logo-row"><span class="dev-logo-txt">Reporte de Calidad Operativa</span><span class="badge b-info">${tipo}</span></div>
+      <div class="dev-logo-row"><span class="dev-logo-txt">Reporte de Calidad (${plantilla==='p2'?'Plantilla Ponderada':'Plantilla Estándar'})</span><span class="badge b-info">${tipo}</span></div>
       <div class="dev-asesor-row">
         <div class="dev-av">${initials(asesor)}</div>
         <div style="flex:1">
@@ -746,7 +832,7 @@ function buildDev(){
             ${svgRing(final,ringColor)}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:14px;font-weight:700;color:#fff">${final}%</span></div>
           </div>
-          <span class="badge ${estadoCls}" style="border:1px solid rgba(255,255,255,0.1)">${estadoTxt}</span>
+          <span class="badge ${estadoCls}">${estadoTxt}</span>
         </div>
       </div>
     </div>
@@ -756,20 +842,20 @@ function buildDev(){
         <div class="dsec-title">Métricas de Desempeño</div>
         <div class="mrow">
           <div class="met"><div class="met-val">${final}%</div><div class="met-lbl">Nota Final</div></div>
-          <div class="met"><div class="met-val">${Math.round(total)}%</div><div class="met-lbl">Puntaje Técnico</div></div>
+          <div class="met"><div class="met-val">${notaCalculada}%</div><div class="met-lbl">Puntaje Técnico</div></div>
           <div class="met"><div class="met-val" style="display:flex;justify-content:center;align-items:center;height:28px;"><span class="badge ${estadoCls}">${estadoTxt}</span></div><div class="met-lbl">Estado General</div></div>
         </div>
       </div>
-      <div class="dsec"><div class="dsec-title">Alineación de Criterios (Estructura de Bloques)</div>${attrRows}</div>
+      <div class="dsec"><div class="dsec-title">Criterios Evaluados</div>${attrRows}</div>
       ${fortalezas ? `<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${fortalezas}</div></div>` : ''}
       ${mejoras ? `<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${mejoras}</div></div>` : ''}
-      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos Próximos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><span class="plan-n">${i+1}.</span><span>${l}</span></div>`).join('')}</div>` : ''}
+      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><b>${i+1}.</b> <span>${l}</span></div>`).join('')}</div>` : ''}
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
   let lines = [];
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push(`EVALUACIÓN DE CALIDAD — ${tipo === 'WhatsApp' ? 'WHATSAPP' : 'SIGLO 21'}`);
+  lines.push(`EVALUACIÓN DE CALIDAD — ${plantilla==='p2'?'PLANTILLA PONDERADA':'PLANTILLA ESTÁNDAR'}`);
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   lines.push(`Asesor:      ${asesor}`);
   lines.push(`Fecha:       ${fechaFmt}`);
@@ -777,7 +863,6 @@ function buildDev(){
   lines.push(`Supervisor:  ${sup}`);
   lines.push(`Tipo:        ${tipo}`);
   lines.push(`NOTA FINAL:  ${final}% — ${estadoTxt}`);
-  lines.push(`Puntaje Técnico: ${Math.round(total)}%`);
   lines.push('');
   if(E.respeto==='SI') lines.push('⚠ Error crítico: falta de respeto — nota penalizada 0%');
   if(E.fraude==='SI') lines.push('⚠ Error crítico: venta fraudulenta — nota penalizada 0%');
@@ -785,15 +870,17 @@ function buildDev(){
   lines.push('── CRITERIOS EVALUADOS ────────');
   ATTRS.forEach(a => {
     lines.push(`${a.l}: ${getScore(a.k)}%`);
-    a.conds.forEach(c => lines.push(`  ${checks[a.k][c.id]?'✓':'✗'} ${c.l}`));
+    a.conds.forEach(c => {
+      const v = checks[a.k][c.id];
+      lines.push(`  ${v==='SI'?'[✓]':v==='NA'?'[N/A]':'[✗]'} ${c.l}`);
+    });
     const fbEl = document.getElementById('fb-'+a.k);
-    const fb = fbEl ? fbEl.value : '';
-    if(fb) lines.push(`  → Obs: ${fb}`);
+    if(fbEl && fbEl.value) lines.push(`  → Obs: ${fbEl.value}`);
     lines.push('');
   });
   if(fortalezas){ lines.push('── FORTALEZAS ─────────────────'); lines.push(fortalezas); lines.push(''); }
   if(mejoras){ lines.push('── OPORTUNIDADES DE MEJORA ────'); lines.push(mejoras); lines.push(''); }
-  if(acciones){ lines.push('── COMPROMISOS ASUMIDOS ───────'); acciones.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`)); lines.push(''); }
+  if(acciones){ lines.push('── COMPROMISOS ────────────────'); acciones.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`)); lines.push(''); }
   lines.push('── GESTIÓN OPERATIVA ──────────');
   OPS.forEach(o => lines.push(`${o.l}: ${OV[o.k]||'—'}`));
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -812,7 +899,6 @@ function copyDev(){
   });
 }
 
-// CONEXIÓN CON GOOGLE DRIVE
 function sendToDrive() {
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec"; 
 
@@ -828,6 +914,7 @@ function sendToDrive() {
     asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
     fecha: document.getElementById('fecha').value || 'Sin-Fecha',
     tipo: tipoGestion,
+    plantilla: document.getElementById('plantilla').value,
     reporteTexto: textReportCache,
     fileData: null,
     fileName: null
@@ -857,7 +944,7 @@ function ejecutarEnvio(url, payload, btn) {
   .then(data => {
     if(data.status === "success") {
       btn.className = 'drive-btn success';
-      btn.innerHTML = '<i class="ti ti-check"></i> ¡Todo guardado con éxito!';
+      btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en Google Drive!';
     } else {
       throw new Error(data.message);
     }
@@ -865,7 +952,7 @@ function ejecutarEnvio(url, payload, btn) {
   .catch(err => {
     console.error(err);
     btn.className = 'drive-btn';
-    btn.innerHTML = '<i class="ti ti-alert-triangle"></i> Error al guardar';
+    btn.innerHTML = '<i class="ti ti-alert-triangle"></i> Reintentar guardado';
     btn.onclick = sendToDrive;
   });
 }
