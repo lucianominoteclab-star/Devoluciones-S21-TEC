@@ -873,19 +873,19 @@ function buildDev(){
   let lines = [];
   lines.push('📋 EVALUACIÓN DE CALIDAD — SIGLO 21');
   lines.push('══════════════════════════════════════');
-  lines.push(`👤 Asesor:      ${asesor}`);
-  lines.push(`📅 Fecha:       ${fechaFmt}`);
-  lines.push(`🏢 Depto:       ${depto}`);
-  lines.push(`🎧 Supervisor:  ${sup}`);
-  lines.push(`📌 Tipo:        ${tipo}`);
-  lines.push(`📊 NOTA FINAL:  ${final}% (${estadoTxt.toUpperCase()})`);
+  lines.push(`👤 *Asesor:*      ${asesor}`);
+  lines.push(`📅 *Fecha:*       ${fechaFmt}`);
+  lines.push(`🏢 *Depto:*       ${depto}`);
+  lines.push(`🎧 *Supervisor:*  ${sup}`);
+  lines.push(`📌 *Tipo:*        ${tipo}`);
+  lines.push(`📊 *NOTA FINAL:*  ${final}% (${estadoTxt.toUpperCase()})`);
   lines.push('');
 
   if(E.respeto === 'SI') lines.push('🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%');
   if(E.fraude === 'SI') lines.push('🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%');
   if(arancelado && !hasCrit) lines.push('🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%');
 
-  lines.push('\n🔹 CRITERIOS EVALUADOS ──────────────');
+  lines.push('\n🔹────────────── *CRITERIOS EVALUADOS* ──────────────');
   ATTRS.forEach(a => {
     const score = getScore(a.k);
     const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
@@ -905,21 +905,21 @@ function buildDev(){
   });
 
   if(fortalezas) {
-    lines.push('\n💪 FORTALEZAS IDENTIFICADAS ─────────');
+    lines.push('\n💪 ───────── *FORTALEZAS IDENTIFICADAS* ─────────');
     lines.push(fortalezas);
   }
 
   if(mejoras) {
-    lines.push('\n🎯 OPORTUNIDADES DE MEJORA ─────────');
+    lines.push('\n🎯───────── *OPORTUNIDADES DE MEJORA* ─────────');
     lines.push(mejoras);
   }
 
   if(acciones) {
-    lines.push('\n📌 PLAN DE ACCIÓN / COMPROMISOS ────');
+    lines.push('\n📌──── *PLAN DE ACCIÓN / COMPROMISOS* ────');
     acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`  ${i + 1}. ${l}`));
   }
 
-  lines.push('\n⚙️ GESTIÓN OPERATIVA ────────────────');
+  lines.push('\n⚙️──────────────── *GESTIÓN OPERATIVA* ────────────────');
   OPS.forEach(o => {
     const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
     lines.push(`  • ${o.l}: ${val}`);
