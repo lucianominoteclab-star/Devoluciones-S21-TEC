@@ -40,24 +40,26 @@
       --radius-md: 10px;
       --radius-lg: 16px;
       --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-      .email-btn { 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 8px; 
-  background: #ea4335; 
-  color: #fff; 
-  border: none; 
-  border-radius: var(--radius-md); 
-  padding: 12px 22px; 
-  font-size: 13px; 
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: all .2s; 
-  box-shadow: var(--shadow); 
-}
-.email-btn:hover { 
-  background: #d33828; 
-}
+    }
+
+    .email-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      background: #ea4335; 
+      color: #fff; 
+      border: none; 
+      border-radius: var(--radius-md); 
+      padding: 12px 22px; 
+      font-size: 13px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all .2s; 
+      box-shadow: var(--shadow); 
+    }
+    .email-btn:hover { 
+      background: #d33828; 
+    }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
@@ -337,12 +339,12 @@
       <div class="dev-outer">
         <div class="dev-doc" id="dev-doc"></div>
         <div class="copy-row">
-  <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
-  <button class="email-btn" id="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
-  <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
-  <button class="btn-s" onclick="go(2)" style="font-size:13px;padding:8px 16px"><i class="ti ti-edit"></i> Editar</button>
-  <button class="btn-p" onclick="go(1)" style="font-size:13px;padding:8px 16px"><i class="ti ti-plus"></i> Nueva evaluación</button>
-</div>
+          <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
+          <button class="email-btn" id="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
+          <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
+          <button class="btn-s" onclick="go(2)" style="font-size:13px;padding:8px 16px"><i class="ti ti-edit"></i> Editar</button>
+          <button class="btn-p" onclick="go(1)" style="font-size:13px;padding:8px 16px"><i class="ti ti-plus"></i> Nueva evaluación</button>
+        </div>
       </div>
     </div>
 
@@ -351,7 +353,6 @@
 <script>
 // ==================== DEFINICIÓN DE RÚBRICAS ====================
 
-// PLANTILLA 2: RÚBRICA PONDERADA
 const ATTRS_PLANTILLA2 = [
   {k:'ptip', l:'1. P y Tipificación en Sistemas', weight: 10,
    conds:[
@@ -394,7 +395,6 @@ const ATTRS_PLANTILLA2 = [
   ]}
 ];
 
-// PLANTILLA 1: NEW LEAD
 const ATTRS_NEW_LEAD = [
   {k:'ind', l:'Indagación y diferenciales (New Lead)',
    conds:[
@@ -438,7 +438,6 @@ const ATTRS_NEW_LEAD = [
   ]}
 ];
 
-// PLANTILLA 1: REMARKETING
 const ATTRS_REMARKETING = [
   {k:'ind', l:'Indagación del contacto previo',
    conds:[
@@ -482,7 +481,6 @@ const ATTRS_REMARKETING = [
   ]}
 ];
 
-// PLANTILLA 1: WHATSAPP
 const ATTRS_WHATSAPP = [
   {k:'wa_gestion', l:'Indicadores de Gestión Estratégica — WhatsApp',
    conds:[
@@ -515,9 +513,8 @@ const OPS = [
   {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'}
 ];
 
-// ESTRUCTURA DE ESTADOS DE EVALUACIÓN
 let ATTRS = [];
-const checks = {}; // { bloqueKey: { condId: 'SI'|'NO'|'NA' } }
+const checks = {}; 
 const E = {respeto:null, fraude:null};
 const OV = {};
 
@@ -525,7 +522,7 @@ function inicializarChecks() {
   ATTRS.forEach(a => {
     checks[a.k] = {};
     a.conds.forEach(c => {
-      checks[a.k][c.id] = 'NO'; // Estado inicial
+      checks[a.k][c.id] = 'NO'; 
     });
   });
 }
@@ -533,7 +530,6 @@ function inicializarChecks() {
 function setCheckState(k, cid, state) {
   checks[k][cid] = state;
   
-  // Actualizar UI del grupo de botones
   const btnGroup = document.getElementById(`tri-${k}-${cid}`);
   if(btnGroup) {
     const btnSi = btnGroup.querySelector('.btn-si');
@@ -545,11 +541,9 @@ function setCheckState(k, cid, state) {
     btnNa.className = 'tri-btn btn-na' + (state === 'NA' ? ' sel-na' : '');
   }
 
-  // Recalcular puntaje del bloque y actualizar contadores
   updateUI(k);
 }
 
-// CÁLCULO DE NOTAS ADAPTABLE A "N/A"
 function getScore(k) {
   const aRef = ATTRS.find(a => a.k === k);
   if(!aRef) return 0;
@@ -565,7 +559,7 @@ function getScore(k) {
   });
 
   const evaluables = totalConds - naCount;
-  if(evaluables <= 0) return 100; // Si todo es N/A en un bloque, no perjudica (100%)
+  if(evaluables <= 0) return 100;
   
   return Math.round((siCount / evaluables) * 100);
 }
@@ -711,64 +705,6 @@ function go(n){
     resetForm();
   } else if(n===3) {
     buildDev();
-    // Generación de reporte en texto enriquecido con emojis para mail/mensajería
-  let lines = [];
-  lines.push('📋 EVALUACIÓN DE CALIDAD — SIGLO 21');
-  lines.push('══════════════════════════════════════');
-  lines.push(`👤 Asesor:      ${asesor}`);
-  lines.push(`📅 Fecha:       ${fechaFmt}`);
-  lines.push(`🏢 Depto:       ${depto}`);
-  lines.push(`🎧 Supervisor:  ${sup}`);
-  lines.push(`📌 Tipo:        ${tipo}`);
-  lines.push(`📊 NOTA FINAL:  ${final}% (${estadoTxt.toUpperCase()})`);
-  lines.push('');
-
-  if(E.respeto === 'SI') lines.push('🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%');
-  if(E.fraude === 'SI') lines.push('🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%');
-  if(arancelado && !hasCrit) lines.push('🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%');
-
-  lines.push('\n🔹 CRITERIOS EVALUADOS ──────────────');
-  ATTRS.forEach(a => {
-    const score = getScore(a.k);
-    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-    
-    lines.push(`\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
-    
-    a.conds.forEach(c => {
-      const v = checks[a.k][c.id];
-      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-      lines.push(`   ${icon} ${c.l}`);
-    });
-
-    const fbEl = document.getElementById('fb-' + a.k);
-    if(fbEl && fbEl.value) {
-      lines.push(`   💬 Obs: ${fbEl.value}`);
-    }
-  });
-
-  if(fortalezas) {
-    lines.push('\n💪 FORTALEZAS IDENTIFICADAS ─────────');
-    lines.push(fortalezas);
-  }
-
-  if(mejoras) {
-    lines.push('\n🎯 OPORTUNIDADES DE MEJORA ─────────');
-    lines.push(mejoras);
-  }
-
-  if(acciones) {
-    lines.push('\n📌 PLAN DE ACCIÓN / COMPROMISOS ────');
-    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`  ${i + 1}. ${l}`));
-  }
-
-  lines.push('\n⚙️ GESTIÓN OPERATIVA ────────────────');
-  OPS.forEach(o => {
-    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
-    lines.push(`  • ${o.l}: ${val}`);
-  });
-  
-  lines.push('\n══════════════════════════════════════');
-  textReportCache = lines.join('\n');
   }
   window.scrollTo(0,0);
 }
@@ -933,54 +869,77 @@ function buildDev(){
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
+  // --- GENERACIÓN DE REPORTE CON FORMATO Y EMOJIS ---
   let lines = [];
-  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push(`EVALUACIÓN DE CALIDAD — ${plantilla==='p2'?'PLANTILLA PONDERADA':'PLANTILLA ESTÁNDAR'}`);
-  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push(`Asesor:      ${asesor}`);
-  lines.push(`Fecha:       ${fechaFmt}`);
-  lines.push(`Depto:       ${depto}`);
-  lines.push(`Supervisor:  ${sup}`);
-  lines.push(`Tipo:        ${tipo}`);
-  lines.push(`NOTA FINAL:  ${final}% — ${estadoTxt}`);
+  lines.push('📋 EVALUACIÓN DE CALIDAD — SIGLO 21');
+  lines.push('══════════════════════════════════════');
+  lines.push(`👤 Asesor:      ${asesor}`);
+  lines.push(`📅 Fecha:       ${fechaFmt}`);
+  lines.push(`🏢 Depto:       ${depto}`);
+  lines.push(`🎧 Supervisor:  ${sup}`);
+  lines.push(`📌 Tipo:        ${tipo}`);
+  lines.push(`📊 NOTA FINAL:  ${final}% (${estadoTxt.toUpperCase()})`);
   lines.push('');
-  if(E.respeto==='SI') lines.push('⚠ Error crítico: falta de respeto — nota penalizada 0%');
-  if(E.fraude==='SI') lines.push('⚠ Error crítico: venta fraudulenta — nota penalizada 0%');
-  if(arancelado && !hasCrit) lines.push('★ Cierre Efectivo: Lead arancelado — nota 100%');
-  lines.push('── CRITERIOS EVALUADOS ────────');
+
+  if(E.respeto === 'SI') lines.push('🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%');
+  if(E.fraude === 'SI') lines.push('🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%');
+  if(arancelado && !hasCrit) lines.push('🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%');
+
+  lines.push('\n🔹 CRITERIOS EVALUADOS ──────────────');
   ATTRS.forEach(a => {
-    lines.push(`${a.l}: ${getScore(a.k)}%`);
+    const score = getScore(a.k);
+    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
+    
+    lines.push(`\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
+    
     a.conds.forEach(c => {
       const v = checks[a.k][c.id];
-      lines.push(`  ${v==='SI'?'[✓]':v==='NA'?'[N/A]':'[✗]'} ${c.l}`);
+      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
+      lines.push(`   ${icon} ${c.l}`);
     });
-    const fbEl = document.getElementById('fb-'+a.k);
-    if(fbEl && fbEl.value) lines.push(`  → Obs: ${fbEl.value}`);
-    lines.push('');
+
+    const fbEl = document.getElementById('fb-' + a.k);
+    if(fbEl && fbEl.value) {
+      lines.push(`   💬 Obs: ${fbEl.value}`);
+    }
   });
-  if(fortalezas){ lines.push('── FORTALEZAS ─────────────────'); lines.push(fortalezas); lines.push(''); }
-  if(mejoras){ lines.push('── OPORTUNIDADES DE MEJORA ────'); lines.push(mejoras); lines.push(''); }
-  if(acciones){ lines.push('── COMPROMISOS ────────────────'); acciones.split('\n').filter(l=>l.trim()).forEach((l,i)=>lines.push(`${i+1}. ${l}`)); lines.push(''); }
-  lines.push('── GESTIÓN OPERATIVA ──────────');
-  OPS.forEach(o => lines.push(`${o.l}: ${OV[o.k]||'—'}`));
-  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  if(fortalezas) {
+    lines.push('\n💪 FORTALEZAS IDENTIFICADAS ─────────');
+    lines.push(fortalezas);
+  }
+
+  if(mejoras) {
+    lines.push('\n🎯 OPORTUNIDADES DE MEJORA ─────────');
+    lines.push(mejoras);
+  }
+
+  if(acciones) {
+    lines.push('\n📌 PLAN DE ACCIÓN / COMPROMISOS ────');
+    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`  ${i + 1}. ${l}`));
+  }
+
+  lines.push('\n⚙️ GESTIÓN OPERATIVA ────────────────');
+  OPS.forEach(o => {
+    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
+    lines.push(`  • ${o.l}: ${val}`);
+  });
+  
+  lines.push('\n══════════════════════════════════════');
   textReportCache = lines.join('\n');
 }
 
 function copyDev() {
   const devElement = document.getElementById('dev-doc');
   
-  // Clonar para no alterar el DOM activo
   const clone = devElement.cloneNode(true);
   
-  // Crear un contenedor temporal oculto
   const container = document.createElement('div');
   container.style.position = 'absolute';
   container.style.left = '-9999px';
   container.appendChild(clone);
   document.body.appendChild(container);
 
-  // Seleccionar y copiar el contenido enriquecido (HTML + Estilos renderizados)
   const range = document.createRange();
   range.selectNodeContents(container);
   const selection = window.getSelection();
@@ -1061,18 +1020,15 @@ function ejecutarEnvio(url, payload, btn) {
     btn.onclick = sendToDrive;
   });
 }
-  function sendByEmail() {
+
+function sendByEmail() {
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
   const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
   
-  // Asunto personalizado
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
-  
-  // Cuerpo del mensaje utilizando el reporte generado
   const body = encodeURIComponent(textReportCache);
 
-  // Abre el cliente de correo por defecto
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 </script>
