@@ -748,6 +748,7 @@ function svgRing(pct, color){
 }
 
 let textReportCache = ""; 
+let htmlReportCache = "";
 
 function buildDev(){
   const asesor = document.getElementById('asesor').value || 'Asesor';
@@ -927,6 +928,60 @@ function buildDev(){
   
   lines.push('\n══════════════════════════════════════');
   textReportCache = lines.join('\n');
+
+  // --- GENERACIÓN DE REPORTE EN HTML (para email con formato real) ---
+  const notaBg = final>=70 ? '#ecfdf5' : final>=40 ? '#fffbe6' : '#fef2f2';
+  const notaColor = final>=70 ? '#065f46' : final>=40 ? '#92400e' : '#991b1b';
+
+  let h = [];
+  h.push(`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1e293b;line-height:1.55;max-width:640px;">`);
+  h.push(`<h2 style="margin:0 0 14px;font-size:18px;color:#0f172a;">📋 Evaluación de Calidad — Siglo 21</h2>`);
+  h.push(`<p style="margin:4px 0;"><b>👤 Asesor:</b> ${asesor}</p>`);
+  h.push(`<p style="margin:4px 0;"><b>📅 Fecha:</b> ${fechaFmt}</p>`);
+  h.push(`<p style="margin:4px 0;"><b>🏢 Depto:</b> ${depto}</p>`);
+  h.push(`<p style="margin:4px 0;"><b>🎧 Supervisor:</b> ${sup}</p>`);
+  h.push(`<p style="margin:4px 0;"><b>📌 Tipo:</b> ${tipo}</p>`);
+  h.push(`<p style="margin:14px 0;padding:10px 14px;background:${notaBg};color:${notaColor};border-radius:8px;font-weight:700;font-size:15px;">📊 NOTA FINAL: ${final}% (${estadoTxt.toUpperCase()})</p>`);
+
+  if(E.respeto === 'SI') h.push(`<p style="color:#991b1b;font-weight:700;">🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%</p>`);
+  if(E.fraude === 'SI') h.push(`<p style="color:#991b1b;font-weight:700;">🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%</p>`);
+  if(arancelado && !hasCrit) h.push(`<p style="color:#065f46;font-weight:700;">🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%</p>`);
+
+  h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;border-bottom:2px solid #e2e8f0;padding-bottom:5px;">🔹 CRITERIOS EVALUADOS</h3>`);
+  ATTRS.forEach(a => {
+    const score = getScore(a.k);
+    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
+    h.push(`<p style="margin:10px 0 2px;"><b>▶ ${a.l.toUpperCase()}</b> — ${scoreIcon} <b>${score}%</b></p>`);
+    a.conds.forEach(c => {
+      const v = checks[a.k][c.id];
+      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
+      h.push(`<p style="margin:2px 0 2px 18px;">${icon} ${c.l}</p>`);
+    });
+    const fbEl = document.getElementById('fb-' + a.k);
+    if(fbEl && fbEl.value) {
+      h.push(`<p style="margin:2px 0 6px 18px;font-style:italic;color:#64748b;">💬 Obs: ${fbEl.value}</p>`);
+    }
+  });
+
+  if(fortalezas) {
+    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">💪 FORTALEZAS IDENTIFICADAS</h3><p style="margin:4px 0;">${fortalezas.replace(/\n/g,'<br>')}</p>`);
+  }
+  if(mejoras) {
+    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">🎯 OPORTUNIDADES DE MEJORA</h3><p style="margin:4px 0;">${mejoras.replace(/\n/g,'<br>')}</p>`);
+  }
+  if(acciones) {
+    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">📌 PLAN DE ACCIÓN / COMPROMISOS</h3>`);
+    acciones.split('\n').filter(l => l.trim()).forEach((l,i) => h.push(`<p style="margin:2px 0;"><b>${i+1}.</b> ${l}</p>`));
+  }
+
+  h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">⚙️ GESTIÓN OPERATIVA</h3>`);
+  OPS.forEach(o => {
+    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
+    h.push(`<p style="margin:2px 0;">• ${o.l}: ${val}</p>`);
+  });
+
+  h.push(`</div>`);
+  htmlReportCache = h.join('');
 }
 
 function copyDev() {
@@ -1021,15 +1076,54 @@ function ejecutarEnvio(url, payload, btn) {
   });
 }
 
-function sendByEmail() {
+async function copyRichHTML(html, text) {
+  if (navigator.clipboard && window.ClipboardItem) {
+    const item = new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([text], { type: 'text/plain' })
+    });
+    await navigator.clipboard.write([item]);
+  } else {
+    // Fallback para navegadores sin Clipboard API moderna
+    const tmp = document.createElement('div');
+    tmp.style.position = 'absolute';
+    tmp.style.left = '-9999px';
+    tmp.innerHTML = html;
+    document.body.appendChild(tmp);
+    const range = document.createRange();
+    range.selectNodeContents(tmp);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(tmp);
+  }
+}
+
+async function sendByEmail() {
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
   const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
-  
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
-  const body = encodeURIComponent(textReportCache);
 
-  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  const btn = document.getElementById('email-btn');
+  const originalHtml = btn ? btn.innerHTML : null;
+
+  // mailto: nunca admite HTML en el body (limitación del protocolo, no del navegador),
+  // por eso copiamos el reporte YA formateado (negrita real + nota final resaltada
+  // en verde/ámbar/rojo según el estado) al portapapeles para que se pegue con formato.
+  try {
+    await copyRichHTML(htmlReportCache, textReportCache);
+    if (btn) {
+      btn.innerHTML = '<i class="ti ti-check"></i> ¡Copiado! Pegalo con Ctrl+V';
+      setTimeout(() => { btn.innerHTML = originalHtml; }, 4500);
+    }
+  } catch (err) {
+    console.error('No se pudo copiar el formato al portapapeles:', err);
+  }
+
+  window.location.href = `mailto:?subject=${subject}`;
 }
 </script>
 </body>
