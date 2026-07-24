@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evaluación de Calidad — Universidad Siglo 21</title>
   
-  <!-- FAVICON PERSONALIZADO -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/u/0/d/1GYj6ZeuJDE8QUQjJQEwxnb_e9k8U3ipz">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
@@ -42,24 +40,8 @@
       --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     }
 
-    .email-btn { 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 8px; 
-      background: #ea4335; 
-      color: #fff; 
-      border: none; 
-      border-radius: var(--radius-md); 
-      padding: 12px 22px; 
-      font-size: 13px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all .2s; 
-      box-shadow: var(--shadow); 
-    }
-    .email-btn:hover { 
-      background: #d33828; 
-    }
+    .email-btn { display: inline-flex; align-items: center; gap: 8px; background: #ea4335; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
+    .email-btn:hover { background: #d33828; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
@@ -95,7 +77,6 @@
     .b-info { background: var(--color-info-bg); color: var(--color-info); }
     .b-neu { background: var(--bg-app); color: var(--text-muted); }
 
-    /* RÚBRICA TRIPLE ESTADO (CUMPLE / NO CUMPLE / N/A) */
     .rubric-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); }
     .rubric-row:last-of-type { border-bottom: none; }
     .rubric-info { flex: 1; }
@@ -105,7 +86,6 @@
     .tri-btn-group { display: flex; background: var(--bg-app); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2px; gap: 2px; }
     .tri-btn { border: none; background: transparent; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
     
-    /* ESTADOS ACTIVOS DE LOS BOTONES DE EVALUACIÓN */
     .tri-btn.sel-si { background: var(--color-success) !important; color: #fff !important; }
     .tri-btn.sel-no { background: var(--color-danger) !important; color: #fff !important; }
     .tri-btn.sel-na { background: var(--text-muted) !important; color: #fff !important; }
@@ -126,7 +106,6 @@
     .btn-s { background: transparent; color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
     .btn-s:hover { background: var(--bg-app); border-color: var(--text-light); }
 
-    /* DEVOLUCIÓN (PASO 3) */
     .dev-outer { width: 100%; display: flex; flex-direction: column; align-items: center; }
     .dev-doc { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; overflow: hidden; box-shadow: var(--shadow); }
     .dev-hbar { background: var(--color-primary); color: #fff; padding: 2rem; }
@@ -266,7 +245,6 @@
         </div>
       </div>
 
-      <!-- SELECCIÓN DE PLANTILLA Y TIPO DE GESTIÓN -->
       <div class="g2">
         <div class="fw">
           <div class="field-label">Plantilla de calidad</div>
@@ -351,8 +329,6 @@
   </div>
 
 <script>
-// ==================== DEFINICIÓN DE RÚBRICAS ====================
-
 const ATTRS_PLANTILLA2 = [
   {k:'ptip', l:'1. P y Tipificación en Sistemas', weight: 10,
    conds:[
@@ -517,6 +493,15 @@ let ATTRS = [];
 const checks = {}; 
 const E = {respeto:null, fraude:null};
 const OV = {};
+let textReportCache = ""; 
+
+function setTodayDate() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  document.getElementById('fecha').value = `${year}-${month}-${day}`;
+}
 
 function inicializarChecks() {
   ATTRS.forEach(a => {
@@ -529,7 +514,6 @@ function inicializarChecks() {
 
 function setCheckState(k, cid, state) {
   checks[k][cid] = state;
-  
   const btnGroup = document.getElementById(`tri-${k}-${cid}`);
   if(btnGroup) {
     const btnSi = btnGroup.querySelector('.btn-si');
@@ -540,7 +524,6 @@ function setCheckState(k, cid, state) {
     btnNo.className = 'tri-btn btn-no' + (state === 'NO' ? ' sel-no' : '');
     btnNa.className = 'tri-btn btn-na' + (state === 'NA' ? ' sel-na' : '');
   }
-
   updateUI(k);
 }
 
@@ -560,7 +543,6 @@ function getScore(k) {
 
   const evaluables = totalConds - naCount;
   if(evaluables <= 0) return 100;
-  
   return Math.round((siCount / evaluables) * 100);
 }
 
@@ -644,22 +626,6 @@ function buildOps() {
     </div>`).join('');
 }
 
-buildOps();
-
-document.getElementById('tipo').addEventListener('change', function() {
-  const audioField = document.getElementById('audio-llamada')?.closest('.fw');
-  if(this.value === "WhatsApp") {
-    if(audioField) audioField.style.display = 'none';
-  } else {
-    if(audioField) audioField.style.display = 'block';
-  }
-});
-
-(function(){
-  const d = new Date();
-  document.getElementById('fecha').value = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-})();
-
 function err(a,v,btn){
   E[a]=v;
   btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
@@ -719,8 +685,7 @@ function resetForm() {
   if (audioField) audioField.style.display = 'block';
   if (document.getElementById('audio-llamada')) document.getElementById('audio-llamada').value = '';
 
-  const d = new Date();
-  document.getElementById('fecha').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  setTodayDate();
 
   ATTRS.forEach(a => {
     a.conds.forEach(c => { checks[a.k][c.id] = 'NO'; });
@@ -747,17 +712,129 @@ function svgRing(pct, color){
   return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`;
 }
 
-// FUNCIÓN AUXILIAR PARA CONVERTIR TEXTO A NEGRITA NATIVA UNICODE
-function toBoldUnicode(str) {
-  const normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ÁÉÍÓÚÁÉÍÓÚáéíóúñÑ";
-  const bold = "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗ÁÉÍÓÚÁÉÍÓÚáéíóúñÑ";
-  return str.split('').map(c => {
-    const i = normal.indexOf(c);
-    return i !== -1 ? bold.slice(i*2, i*2+2) : c;
-  }).join('');
-}
+function generateTextReport() {
+  const asesor = document.getElementById('asesor').value || 'Asesor';
+  const fechaRaw = document.getElementById('fecha').value;
+  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '—';
+  const depto = document.getElementById('depto').value || '—';
+  const sup = document.getElementById('super').value || '—';
+  const tipo = document.getElementById('tipo').value || '—';
+  const plantilla = document.getElementById('plantilla').value;
 
-let textReportCache = ""; 
+  const hasCrit = E.respeto === 'SI' || E.fraude === 'SI';
+  const arancelado = OV['lead'] === 'SI';
+  
+  let notaCalculada = 0;
+  if (plantilla === 'p2') {
+    let sumaPonderada = 0;
+    let pesoTotalEvaluado = 0;
+    ATTRS.forEach(a => {
+      const stats = getStats(a.k);
+      if (stats.si + stats.no > 0) {
+        sumaPonderada += (getScore(a.k) * (a.weight / 100));
+        pesoTotalEvaluado += a.weight;
+      }
+    });
+    notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
+  } else {
+    let totalScore = 0;
+    ATTRS.forEach(a => { totalScore += getScore(a.k); });
+    notaCalculada = Math.round(totalScore / ATTRS.length);
+  }
+
+  let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
+  const estadoTxt = final >= 70 ? 'Aprobado' : final >= 40 ? 'En desarrollo' : 'No cumple';
+
+  const fortalezas = document.getElementById('fortalezas').value;
+  const mejoras = document.getElementById('mejoras').value;
+  const acciones = document.getElementById('acciones').value;
+
+  let lines = [];
+
+  if (plantilla === 'p2') {
+    lines.push('📋 Evaluación de Calidad — Siglo 21');
+    lines.push(`Asesor: ${asesor}`);
+    lines.push(`Fecha: ${fechaFmt}`);
+    lines.push(`Depto: ${depto}`);
+    lines.push(`Supervisor: ${sup}`);
+    lines.push(`Tipo: ${tipo}`);
+    lines.push('');
+    lines.push('🔹 CRITERIOS EVALUADOS');
+
+    ATTRS.forEach(a => {
+      const score = getScore(a.k);
+      const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
+      lines.push(`▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
+      
+      a.conds.forEach(c => {
+        const v = checks[a.k][c.id];
+        const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
+        lines.push(`${icon} ${c.l}`);
+      });
+
+      const fbEl = document.getElementById('fb-' + a.k);
+      if (fbEl && fbEl.value) {
+        lines.push(`💬 Observación: ${fbEl.value}`);
+      }
+    });
+
+    lines.push('');
+    lines.push(`PUNTAJE: ${final}%`);
+    lines.push('OBJETIVO DE CALIDAD: 70%');
+    lines.push(`DEFINICIÓN: ${estadoTxt}`);
+    lines.push('');
+
+    if (fortalezas) {
+      lines.push('💪 FORTALEZAS IDENTIFICADAS');
+      lines.push(fortalezas);
+      lines.push('');
+    }
+
+    if (mejoras) {
+      lines.push('🎯 OPORTUNIDADES DE MEJORA');
+      lines.push(mejoras);
+      lines.push('');
+    }
+
+    if (acciones) {
+      lines.push('📌 PLAN DE ACCIÓN / COMPROMISOS');
+      acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i + 1}. ${l}`));
+    }
+  } else {
+    lines.push(`==========================================`);
+    lines.push(`REPORTE DE AUDITORÍA DE CALIDAD`);
+    lines.push(`==========================================`);
+    lines.push(`Asesor: ${asesor}`);
+    lines.push(`Fecha: ${fechaFmt} | Depto: ${depto}`);
+    lines.push(`Evaluador: ${sup} | Tipo: ${tipo}`);
+    lines.push(`Resultado Final: ${final}% [${estadoTxt.toUpperCase()}]`);
+    lines.push(`------------------------------------------`);
+    lines.push(``);
+    lines.push(`DETALLE DE ATRIBUTOS EVALUADOS:`);
+
+    ATTRS.forEach(a => {
+      const score = getScore(a.k);
+      lines.push(`\n* ${a.l}: ${score}%`);
+      a.conds.forEach(c => {
+        const v = checks[a.k][c.id];
+        const st = v === 'SI' ? '[CUMPLE]' : v === 'NA' ? '[N/A]' : '[NO CUMPLE]';
+        lines.push(`  - ${st} ${c.l}`);
+      });
+      const fbEl = document.getElementById('fb-' + a.k);
+      if (fbEl && fbEl.value) {
+        lines.push(`    Notas: ${fbEl.value}`);
+      }
+    });
+
+    lines.push(``);
+    lines.push(`------------------------------------------`);
+    if (fortalezas) lines.push(`FORTALEZAS:\n${fortalezas}\n`);
+    if (mejoras) lines.push(`ÁREAS DE MEJORA:\n${mejoras}\n`);
+    if (acciones) lines.push(`PLAN DE ACCIÓN:\n${acciones}\n`);
+  }
+
+  textReportCache = lines.join('\r\n');
+}
 
 function buildDev(){
   const asesor = document.getElementById('asesor').value || 'Asesor';
@@ -879,66 +956,12 @@ function buildDev(){
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
-  // --- GENERACIÓN DE REPORTE FORMATO SOLICITADO ---
-  let lines = [];
-  lines.push('📋 Evaluación de Calidad — Siglo 21');
-  lines.push(`Asesor: ${asesor}`);
-  lines.push(`Fecha: ${fechaFmt}`);
-  lines.push(`Depto: ${depto}`);
-  lines.push(`Supervisor: ${sup}`);
-  lines.push(`Tipo: ${tipo}`);
-  lines.push('');
-  lines.push('🔹 CRITERIOS EVALUADOS');
-
-  ATTRS.forEach(a => {
-    const score = getScore(a.k);
-    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-    
-    lines.push(`▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
-    
-    a.conds.forEach(c => {
-      const v = checks[a.k][c.id];
-      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-      lines.push(`${icon} ${c.l}`);
-    });
-
-    const fbEl = document.getElementById('fb-' + a.k);
-    if(fbEl && fbEl.value) {
-      lines.push(`💬 ${fbEl.value}`);
-    }
-  });
-
-  lines.push('');
-  lines.push(`PUNTAJE:${final}%`);
-  lines.push('OBJETIVO DE CALIDAD: 70%');
-  lines.push(`DEFINICIÓN: ${estadoTxt}`);
-  lines.push('');
-
-  if(fortalezas) {
-    lines.push('💪 FORTALEZAS IDENTIFICADAS');
-    lines.push(fortalezas);
-    lines.push('');
-  }
-
-  if(mejoras) {
-    lines.push('🎯 OPORTUNIDADES DE MEJORA');
-    lines.push(mejoras);
-    lines.push('');
-  }
-
-  if(acciones) {
-    lines.push('📌 PLAN DE ACCIÓN / COMPROMISOS');
-    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i + 1}. ${l}`));
-  }
-
-  textReportCache = lines.join('\n');
+  generateTextReport();
 }
 
 function copyDev() {
   const devElement = document.getElementById('dev-doc');
-  
   const clone = devElement.cloneNode(true);
-  
   const container = document.createElement('div');
   container.style.position = 'absolute';
   container.style.left = '-9999px';
@@ -1026,148 +1049,31 @@ function ejecutarEnvio(url, payload, btn) {
   });
 }
 
-// --- GENERACIÓN DE REPORTE FORMATO TEXTO ---
-function generateTextReport() {
-  const asesor = document.getElementById('asesor').value || 'Asesor';
-  const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '—';
-  const depto = document.getElementById('depto').value || '—';
-  const sup = document.getElementById('super').value || '—';
-  const tipo = document.getElementById('tipo').value || '—';
-  const plantilla = document.getElementById('plantilla').value;
-
-  const hasCrit = E.respeto === 'SI' || E.fraude === 'SI';
-  const arancelado = OV['lead'] === 'SI';
-  
-  let notaCalculada = 0;
-  if (plantilla === 'p2') {
-    let sumaPonderada = 0;
-    let pesoTotalEvaluado = 0;
-    ATTRS.forEach(a => {
-      const stats = getStats(a.k);
-      if (stats.si + stats.no > 0) {
-        sumaPonderada += (getScore(a.k) * (a.weight / 100));
-        pesoTotalEvaluado += a.weight;
-      }
-    });
-    notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
-  } else {
-    let totalScore = 0;
-    ATTRS.forEach(a => { totalScore += getScore(a.k); });
-    notaCalculada = Math.round(totalScore / ATTRS.length);
-  }
-
-  let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
-  const estadoTxt = final >= 70 ? 'Aprobado' : final >= 40 ? 'En desarrollo' : 'No cumple';
-
-  const fortalezas = document.getElementById('fortalezas').value;
-  const mejoras = document.getElementById('mejoras').value;
-  const acciones = document.getElementById('acciones').value;
-
-  let lines = [];
-
-  // ==========================================
-  // FORMATO 1: PLANTILLA 2 (RESUMIDA)
-  // ==========================================
-  if (plantilla === 'p2') {
-    lines.push('📋 Evaluación de Calidad — Siglo 21');
-    lines.push(`Asesor: ${asesor}`);
-    lines.push(`Fecha: ${fechaFmt}`);
-    lines.push(`Depto: ${depto}`);
-    lines.push(`Supervisor: ${sup}`);
-    lines.push(`Tipo: ${tipo}`);
-    lines.push('');
-    lines.push('🔹 CRITERIOS EVALUADOS');
-
-    ATTRS.forEach(a => {
-      const score = getScore(a.k);
-      const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-      
-      lines.push(`▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
-      
-      a.conds.forEach(c => {
-        const v = checks[a.k][c.id];
-        const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-        lines.push(`${icon} ${c.l}`);
-      });
-
-      const fbEl = document.getElementById('fb-' + a.k);
-      if (fbEl && fbEl.value) {
-        lines.push(`💬 Observación: ${fbEl.value}`);
-      }
-    });
-
-    lines.push('');
-    lines.push(`PUNTAJE: ${final}%`);
-    lines.push('OBJETIVO DE CALIDAD: 70%');
-    lines.push(`DEFINICIÓN: ${estadoTxt}`);
-    lines.push('');
-
-    if (fortalezas) {
-      lines.push('💪 FORTALEZAS IDENTIFICADAS');
-      lines.push(fortalezas);
-      lines.push('');
-    }
-
-    if (mejoras) {
-      lines.push('🎯 OPORTUNIDADES DE MEJORA');
-      lines.push(mejoras);
-      lines.push('');
-    }
-
-    if (acciones) {
-      lines.push('📌 PLAN DE ACCIÓN / COMPROMISOS');
-      acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i + 1}. ${l}`));
-    }
-
-  // ==========================================
-  // FORMATO 2: PLANTILLA 1 (COMPLETA / ESTÁNDAR)
-  // ==========================================
-  } else {
-    lines.push(`==========================================`);
-    lines.push(`REPORTE DE AUDITORÍA DE CALIDAD`);
-    lines.push(`==========================================`);
-    lines.push(`Asesor: ${asesor}`);
-    lines.push(`Fecha: ${fechaFmt} | Depto: ${depto}`);
-    lines.push(`Evaluador: ${sup} | Tipo: ${tipo}`);
-    lines.push(`Resultado Final: ${final}% [${estadoTxt.toUpperCase()}]`);
-    lines.push(`------------------------------------------`);
-    lines.push(``);
-    lines.push(`DETALLE DE ATRIBUTOS EVALUADOS:`);
-
-    ATTRS.forEach(a => {
-      const score = getScore(a.k);
-      lines.push(`\n* ${a.l}: ${score}%`);
-      a.conds.forEach(c => {
-        const v = checks[a.k][c.id];
-        const st = v === 'SI' ? '[CUMPLE]' : v === 'NA' ? '[N/A]' : '[NO CUMPLE]';
-        lines.push(`  - ${st} ${c.l}`);
-      });
-      const fbEl = document.getElementById('fb-' + a.k);
-      if (fbEl && fbEl.value) {
-        lines.push(`    Notas: ${fbEl.value}`);
-      }
-    });
-
-    lines.push(``);
-    lines.push(`------------------------------------------`);
-    if (fortalezas) lines.push(`FORTALEZAS:\n${fortalezas}\n`);
-    if (mejoras) lines.push(`ÁREAS DE MEJORA:\n${mejoras}\n`);
-    if (acciones) lines.push(`PLAN DE ACCIÓN:\n${acciones}\n`);
-  }
-
-  textReportCache = lines.join('\r\n');
-}
-
 function sendByEmail() {
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
   const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '';
   
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
-  
-  // Mantiene los saltos de línea nativos sin alterar las fuentes del cliente de mail (Arial)
   const body = encodeURIComponent(textReportCache);
 
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
+
+// Inicialización de la app
+document.addEventListener("DOMContentLoaded", function() {
+  setTodayDate();
+  buildOps();
+
+  document.getElementById('tipo').addEventListener('change', function() {
+    const audioField = document.getElementById('audio-llamada')?.closest('.fw');
+    if(this.value === "WhatsApp") {
+      if(audioField) audioField.style.display = 'none';
+    } else {
+      if(audioField) audioField.style.display = 'block';
+    }
+  });
+});
+</script>
+</body>
+</html>
