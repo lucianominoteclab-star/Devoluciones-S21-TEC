@@ -396,7 +396,7 @@ const ATTRS_PLANTILLA2 = [
 ];
 
 const ATTRS_NEW_LEAD = [
-  {k:'ind', l:'Indagación y diferenciales (New Lead)',
+  {k:'ind', l:'1. Indagación y diferenciales (New Lead)',
    conds:[
     {id:'A', l:'Realizó al menos 2 preguntas abiertas', s:'Orientadas a motivación o expectativas'},
     {id:'B', l:'Demostró escucha activa', s:'Retomó lo expresado por el lead'},
@@ -404,7 +404,7 @@ const ATTRS_NEW_LEAD = [
     {id:'D', l:'Presentó diferenciales específicos', s:'Específicos para la necesidad expresada'},
     {id:'E', l:'Mantuvo el foco en el lead', s:'Conversación centrada en la persona'}
   ]},
-  {k:'reb', l:'Rebate de objeciones',
+  {k:'reb', l:'2. Rebate de objeciones',
    conds:[
     {id:'A', l:'Detectó la objeción correctamente', s:'Sin ignorarla ni desviar el tema'},
     {id:'B', l:'Validó la preocupación del lead', s:'Mostró comprensión empática'},
@@ -412,7 +412,7 @@ const ATTRS_NEW_LEAD = [
     {id:'D', l:'Verificó conformidad del lead', s:'Chequeó si la duda quedó resuelta'},
     {id:'E', l:'Usó la objeción para reforzar valor', s:'La transformó en oportunidad'}
   ]},
-  {k:'arancel', l:'Información de aranceles',
+  {k:'arancel', l:'3. Información de aranceles',
    conds:[
     {id:'A', l:'Ofreció primero pago semestral', s:'Como opción principal y recomendada'},
     {id:'B', l:'Mencionó beneficios de descuento/cuotas', s:'Explicó ventajas del semestral'},
@@ -420,7 +420,7 @@ const ATTRS_NEW_LEAD = [
     {id:'D', l:'Respetó el orden escalar', s:'Semestral → Bimestral → Suscripción'},
     {id:'E', l:'No entregó opciones juntas', s:'Escalonó según objeción'}
   ]},
-  {k:'urgencia', l:'Sentido de urgencia',
+  {k:'urgencia', l:'4. Sentido de urgencia',
    conds:[
     {id:'A', l:'Mencionó urgencia real', s:'Cupos, beca, o inicio de clases'},
     {id:'B', l:'Presentó urgencia de forma natural', s:'Sin sonar forzado'},
@@ -428,7 +428,7 @@ const ATTRS_NEW_LEAD = [
     {id:'D', l:'Propuso acción inmediata', s:'Cerrar, preinscribir o reservar'},
     {id:'E', l:'Reforzó urgencia al cierre', s:'Mantuvo consistencia al despedirse'}
   ]},
-  {k:'agenda', l:'Agenda precisa',
+  {k:'agenda', l:'5. Agenda precisa',
    conds:[
     {id:'A', l:'Iniciativa de proponer próximo contacto', s:'Proactivo'},
     {id:'B', l:'Propuso fecha dentro de 48h', s:'Límite temporal claro'},
@@ -439,7 +439,7 @@ const ATTRS_NEW_LEAD = [
 ];
 
 const ATTRS_REMARKETING = [
-  {k:'ind', l:'Indagación del contacto previo',
+  {k:'ind', l:'1. Indagación del contacto previo',
    conds:[
     {id:'A', l:'Retomó conversación anterior con contexto', s:'Demostró revisar historial'},
     {id:'B', l:'Indagó qué cambió desde el último contacto', s:'Pregunta sobre frenos pasados'},
@@ -447,7 +447,7 @@ const ATTRS_REMARKETING = [
     {id:'D', l:'Validó situación con empatía', s:'Disposición a ayudar a destrabar'},
     {id:'E', l:'Mantuvo postura resolutiva', s:'Fue al grano'}
   ]},
-  {k:'reb', l:'Destrabe y Manejo de Objeciones',
+  {k:'reb', l:'2. Destrabe y Manejo de Objeciones',
    conds:[
     {id:'A', l:'Alineó argumento al problema detectado', s:'Ataque directo al freno'},
     {id:'B', l:'Explicó alternativas de cursado', s:'Modalidad ED o flexibilidad'},
@@ -455,7 +455,7 @@ const ATTRS_REMARKETING = [
     {id:'D', l:'Confirmó resolución antes de dar precio', s:'Aseguró visualización del lead'},
     {id:'E', l:'Elevó valor sobre costo', s:'Destacó salida laboral'}
   ]},
-  {k:'arancel', l:'Estrategia de Cierre Económico',
+  {k:'arancel', l:'3. Estrategia de Cierre Económico',
    conds:[
     {id:'A', l:'Presentó propuesta como ahorro', s:'Aprovechamiento de beca actual'},
     {id:'B', l:'Ofreció pago semestral congelado', s:'Evita aumentos futuros'},
@@ -463,7 +463,7 @@ const ATTRS_REMARKETING = [
     {id:'D', l:'Aplicó orden de opciones', s:'Defendió el pack completo'},
     {id:'E', l:'Transparentó la estructura', s:'Matrícula y cuotas claras'}
   ]},
-  {k:'urgencia', l:'Urgencia Operativa',
+  {k:'urgencia', l:'4. Urgencia Operativa',
    conds:[
     {id:'A', l:'Cierre en fecha límite real', s:'Fin de período'},
     {id:'B', l:'Énfasis en tiempo perdido', s:'Efecto de postergar inicio'},
@@ -471,7 +471,7 @@ const ATTRS_REMARKETING = [
     {id:'D', l:'Llamado a la acción directo', s:'Solicitud de datos'},
     {id:'E', l:'Firmeza comercial', s:'Guía activa al paso siguiente'}
   ]},
-  {k:'agenda', l:'Agenda estricta',
+  {k:'agenda', l:'5. Agenda estricta',
    conds:[
     {id:'A', l:'Estableció paso claro', s:'Pendientes concretos'},
     {id:'B', l:'Pactó llamado en 24h-48h', s:'Enfriamiento corto'},
@@ -482,24 +482,24 @@ const ATTRS_REMARKETING = [
 ];
 
 const ATTRS_WHATSAPP = [
-  {k:'wa_gestion', l:'Indicadores de Gestión Estratégica — WhatsApp',
+  {k:'wa_gestion', l:'1. Indicadores de Gestión Estratégica — WhatsApp',
    conds:[
-    {id:'1', l:'1. Presentación', s:'Cordial y profesional'},
-    {id:'2', l:'2. Indagación', s:'Preguntas abiertas'},
-    {id:'3', l:'3. Detección de necesidades', s:'Identificación explícita'},
-    {id:'4', l:'4. Personalización', s:'Diferenciales alineados'},
-    {id:'5', l:'5. Claridad', s:'Respuestas precisas'},
-    {id:'6', l:'6. Manejo de Objeciones', s:'Sin ignorar ni desviar'},
-    {id:'7', l:'7. Validación', s:'Chequeo de satisfacción'},
-    {id:'8', l:'8. Escalonamiento', s:'Semestral → Bimestral'},
-    {id:'9', l:'9. Dosificación', s:'Sin abrumar con info'},
-    {id:'10', l:'10. Cierre y Seguimiento', s:'Cierres parciales'},
-    {id:'11', l:'11. Sentido de urgencia', s:'Elementos reales'},
-    {id:'12', l:'12. Call to Action', s:'Acción inmediata'},
-    {id:'13', l:'13. Próximos pasos', s:'Iniciativa de recontacto'},
-    {id:'14', l:'14. Redacción', s:'Sin faltas de ortografía'},
-    {id:'15', l:'15. Naturalidad', s:'Tono empático, no robotizado'},
-    {id:'16', l:'16. Uso apropiado', s:'Notas y etiquetas'}
+    {id:'1', l:'Presentación', s:'Cordial y profesional'},
+    {id:'2', l:'Indagación', s:'Preguntas abiertas'},
+    {id:'3', l:'Detección de necesidades', s:'Identificación explícita'},
+    {id:'4', l:'Personalización', s:'Diferenciales alineados'},
+    {id:'5', l:'Claridad', s:'Respuestas precisas'},
+    {id:'6', l:'Manejo de Objeciones', s:'Sin ignorar ni desviar'},
+    {id:'7', l:'Validación', s:'Chequeó de satisfacción'},
+    {id:'8', l:'Escalonamiento', s:'Semestral → Bimestral'},
+    {id:'9', l:'Dosificación', s:'Sin abrumar con info'},
+    {id:'10', l:'Cierre y Seguimiento', s:'Cierres parciales'},
+    {id:'11', l:'Sentido de urgencia', s:'Elementos reales'},
+    {id:'12', l:'Call to Action', s:'Acción inmediata'},
+    {id:'13', l:'Próximos pasos', s:'Iniciativa de recontacto'},
+    {id:'14', l:'Redacción', s:'Sin faltas de ortografía'},
+    {id:'15', l:'Naturalidad', s:'Tono empático, no robotizado'},
+    {id:'16', l:'Uso apropiado', s:'Notas y etiquetas'}
   ]}
 ];
 
@@ -747,13 +747,22 @@ function svgRing(pct, color){
   return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`;
 }
 
+// FUNCIÓN AUXILIAR PARA CONVERTIR TEXTO A NEGRITA NATIVA UNICODE
+function toBoldUnicode(str) {
+  const normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ÁÉÍÓÚÁÉÍÓÚáéíóúñÑ";
+  const bold = "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗ÁÉÍÓÚÁÉÍÓÚáéíóúñÑ";
+  return str.split('').map(c => {
+    const i = normal.indexOf(c);
+    return i !== -1 ? bold.slice(i*2, i*2+2) : c;
+  }).join('');
+}
+
 let textReportCache = ""; 
-let htmlReportCache = "";
 
 function buildDev(){
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  const fechaFmt = fechaRaw ? new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}) : '—';
   const depto = document.getElementById('depto').value || '—';
   const sup = document.getElementById('super').value || '—';
   const tipo = document.getElementById('tipo').value || '—';
@@ -787,7 +796,7 @@ function buildDev(){
   let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
 
   const ringColor = final>=70 ? '#10b981' : final>=40 ? '#f59e0b' : '#ef4444';
-  const estadoTxt = final>=70 ? 'Aprobado' : final>=40 ? 'En desarrollo' : 'Requiere mejora';
+  const estadoTxt = final>=70 ? 'Aprobado' : final>=40 ? 'En desarrollo' : 'No cumple';
   const estadoCls = final>=70 ? 'b-ok' : final>=40 ? 'b-mid' : 'b-no';
 
   const dBtn = document.getElementById('drive-btn');
@@ -858,9 +867,9 @@ function buildDev(){
       <div class="dsec">
         <div class="dsec-title">Métricas de Desempeño</div>
         <div class="mrow">
-          <div class="met"><div class="met-val">${final}%</div><div class="met-lbl">Nota Final</div></div>
-          <div class="met"><div class="met-val">${notaCalculada}%</div><div class="met-lbl">Puntaje Técnico</div></div>
-          <div class="met"><div class="met-val" style="display:flex;justify-content:center;align-items:center;height:28px;"><span class="badge ${estadoCls}">${estadoTxt}</span></div><div class="met-lbl">Estado General</div></div>
+          <div class="met"><div class="met-val">${final}%</div><div class="met-lbl">Puntaje</div></div>
+          <div class="met"><div class="met-val">70%</div><div class="met-lbl">Objetivo de Calidad</div></div>
+          <div class="met"><div class="met-val" style="display:flex;justify-content:center;align-items:center;height:28px;"><span class="badge ${estadoCls}">${estadoTxt}</span></div><div class="met-lbl">Definición</div></div>
         </div>
       </div>
       <div class="dsec"><div class="dsec-title">Criterios Evaluados</div>${attrRows}</div>
@@ -870,118 +879,59 @@ function buildDev(){
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
-  // --- GENERACIÓN DE REPORTE CON FORMATO Y EMOJIS ---
+  // --- GENERACIÓN DE REPORTE FORMATO SOLICITADO ---
   let lines = [];
-  lines.push('📋 EVALUACIÓN DE CALIDAD — SIGLO 21');
-  lines.push('══════════════════════════════════════');
-  lines.push(`👤 *Asesor:*      ${asesor}`);
-  lines.push(`📅 *Fecha:*       ${fechaFmt}`);
-  lines.push(`🏢 *Depto:*       ${depto}`);
-  lines.push(`🎧 *Supervisor:*  ${sup}`);
-  lines.push(`📌 *Tipo:*        ${tipo}`);
-  lines.push(`📊 *NOTA FINAL:*  ${final}% (${estadoTxt.toUpperCase()})`);
+  lines.push('📋 Evaluación de Calidad — Siglo 21');
+  lines.push(`Asesor: ${asesor}`);
+  lines.push(`Fecha: ${fechaFmt}`);
+  lines.push(`Depto: ${depto}`);
+  lines.push(`Supervisor: ${sup}`);
+  lines.push(`Tipo: ${tipo}`);
+  lines.push('');
+  lines.push('🔹 CRITERIOS EVALUADOS');
+
+  ATTRS.forEach(a => {
+    const score = getScore(a.k);
+    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
+    
+    lines.push(`▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
+    
+    a.conds.forEach(c => {
+      const v = checks[a.k][c.id];
+      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
+      lines.push(`${icon} ${c.l}`);
+    });
+
+    const fbEl = document.getElementById('fb-' + a.k);
+    if(fbEl && fbEl.value) {
+      lines.push(`💬 ${fbEl.value}`);
+    }
+  });
+
+  lines.push('');
+  lines.push(`PUNTAJE:${final}%`);
+  lines.push('OBJETIVO DE CALIDAD: 70%');
+  lines.push(`DEFINICIÓN: ${estadoTxt}`);
   lines.push('');
 
-  if(E.respeto === 'SI') lines.push('🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%');
-  if(E.fraude === 'SI') lines.push('🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%');
-  if(arancelado && !hasCrit) lines.push('🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%');
-
-  lines.push('\n🔹────────────── *CRITERIOS EVALUADOS* ──────────────');
-  ATTRS.forEach(a => {
-    const score = getScore(a.k);
-    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-    
-    lines.push(`\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
-    
-    a.conds.forEach(c => {
-      const v = checks[a.k][c.id];
-      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-      lines.push(`   ${icon} ${c.l}`);
-    });
-
-    const fbEl = document.getElementById('fb-' + a.k);
-    if(fbEl && fbEl.value) {
-      lines.push(`   💬 Obs: ${fbEl.value}`);
-    }
-  });
-
   if(fortalezas) {
-    lines.push('\n💪 ───────── *FORTALEZAS IDENTIFICADAS* ─────────');
+    lines.push('💪 FORTALEZAS IDENTIFICADAS');
     lines.push(fortalezas);
+    lines.push('');
   }
 
   if(mejoras) {
-    lines.push('\n🎯───────── *OPORTUNIDADES DE MEJORA* ─────────');
+    lines.push('🎯 OPORTUNIDADES DE MEJORA');
     lines.push(mejoras);
+    lines.push('');
   }
 
   if(acciones) {
-    lines.push('\n📌──── *PLAN DE ACCIÓN / COMPROMISOS* ────');
-    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`  ${i + 1}. ${l}`));
+    lines.push('📌 PLAN DE ACCIÓN / COMPROMISOS');
+    acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i + 1}. ${l}`));
   }
 
-  lines.push('\n⚙️──────────────── *GESTIÓN OPERATIVA* ────────────────');
-  OPS.forEach(o => {
-    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
-    lines.push(`  • ${o.l}: ${val}`);
-  });
-  
-  lines.push('\n══════════════════════════════════════');
   textReportCache = lines.join('\n');
-
-  // --- GENERACIÓN DE REPORTE EN HTML (para email con formato real) ---
-  const notaBg = final>=70 ? '#ecfdf5' : final>=40 ? '#fffbe6' : '#fef2f2';
-  const notaColor = final>=70 ? '#065f46' : final>=40 ? '#92400e' : '#991b1b';
-
-  let h = [];
-  h.push(`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1e293b;line-height:1.55;max-width:640px;">`);
-  h.push(`<h2 style="margin:0 0 14px;font-size:18px;color:#0f172a;">📋 Evaluación de Calidad — Siglo 21</h2>`);
-  h.push(`<p style="margin:4px 0;"><b>👤 Asesor:</b> ${asesor}</p>`);
-  h.push(`<p style="margin:4px 0;"><b>📅 Fecha:</b> ${fechaFmt}</p>`);
-  h.push(`<p style="margin:4px 0;"><b>🏢 Depto:</b> ${depto}</p>`);
-  h.push(`<p style="margin:4px 0;"><b>🎧 Supervisor:</b> ${sup}</p>`);
-  h.push(`<p style="margin:4px 0;"><b>📌 Tipo:</b> ${tipo}</p>`);
-  h.push(`<p style="margin:14px 0;padding:10px 14px;background:${notaBg};color:${notaColor};border-radius:8px;font-weight:700;font-size:15px;">📊 NOTA FINAL: ${final}% (${estadoTxt.toUpperCase()})</p>`);
-
-  if(E.respeto === 'SI') h.push(`<p style="color:#991b1b;font-weight:700;">🚨 ERROR CRÍTICO: Falta de respeto — Nota penalizada a 0%</p>`);
-  if(E.fraude === 'SI') h.push(`<p style="color:#991b1b;font-weight:700;">🚨 ERROR CRÍTICO: Venta fraudulenta — Nota penalizada a 0%</p>`);
-  if(arancelado && !hasCrit) h.push(`<p style="color:#065f46;font-weight:700;">🌟 CIERRE EFECTIVO: Lead arancelado — Nota 100%</p>`);
-
-  h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;border-bottom:2px solid #e2e8f0;padding-bottom:5px;">🔹 CRITERIOS EVALUADOS</h3>`);
-  ATTRS.forEach(a => {
-    const score = getScore(a.k);
-    const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-    h.push(`<p style="margin:10px 0 2px;"><b>▶ ${a.l.toUpperCase()}</b> — ${scoreIcon} <b>${score}%</b></p>`);
-    a.conds.forEach(c => {
-      const v = checks[a.k][c.id];
-      const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-      h.push(`<p style="margin:2px 0 2px 18px;">${icon} ${c.l}</p>`);
-    });
-    const fbEl = document.getElementById('fb-' + a.k);
-    if(fbEl && fbEl.value) {
-      h.push(`<p style="margin:2px 0 6px 18px;font-style:italic;color:#64748b;">💬 Obs: ${fbEl.value}</p>`);
-    }
-  });
-
-  if(fortalezas) {
-    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">💪 FORTALEZAS IDENTIFICADAS</h3><p style="margin:4px 0;">${fortalezas.replace(/\n/g,'<br>')}</p>`);
-  }
-  if(mejoras) {
-    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">🎯 OPORTUNIDADES DE MEJORA</h3><p style="margin:4px 0;">${mejoras.replace(/\n/g,'<br>')}</p>`);
-  }
-  if(acciones) {
-    h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">📌 PLAN DE ACCIÓN / COMPROMISOS</h3>`);
-    acciones.split('\n').filter(l => l.trim()).forEach((l,i) => h.push(`<p style="margin:2px 0;"><b>${i+1}.</b> ${l}</p>`));
-  }
-
-  h.push(`<h3 style="margin:20px 0 8px;font-size:14px;color:#0f172a;">⚙️ GESTIÓN OPERATIVA</h3>`);
-  OPS.forEach(o => {
-    const val = OV[o.k] === 'SI' ? '✅ Sí' : OV[o.k] === 'NO' ? '❌ No' : '➖';
-    h.push(`<p style="margin:2px 0;">• ${o.l}: ${val}</p>`);
-  });
-
-  h.push(`</div>`);
-  htmlReportCache = h.join('');
 }
 
 function copyDev() {
@@ -1076,54 +1026,18 @@ function ejecutarEnvio(url, payload, btn) {
   });
 }
 
-async function copyRichHTML(html, text) {
-  if (navigator.clipboard && window.ClipboardItem) {
-    const item = new ClipboardItem({
-      'text/html': new Blob([html], { type: 'text/html' }),
-      'text/plain': new Blob([text], { type: 'text/plain' })
-    });
-    await navigator.clipboard.write([item]);
-  } else {
-    // Fallback para navegadores sin Clipboard API moderna
-    const tmp = document.createElement('div');
-    tmp.style.position = 'absolute';
-    tmp.style.left = '-9999px';
-    tmp.innerHTML = html;
-    document.body.appendChild(tmp);
-    const range = document.createRange();
-    range.selectNodeContents(tmp);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    document.execCommand('copy');
-    sel.removeAllRanges();
-    document.body.removeChild(tmp);
-  }
-}
-
-async function sendByEmail() {
+function sendByEmail() {
   const asesor = document.getElementById('asesor').value || 'Asesor';
   const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '';
+  
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
 
-  const btn = document.getElementById('email-btn');
-  const originalHtml = btn ? btn.innerHTML : null;
+  // CONVIERTE CADA LÍNEA A SU VERSIÓN NEGRITA UNICODE PARA GARANTIZAR NEGRITAS EN EMAIL EN PLANO
+  const boldReport = textReportCache.split('\n').map(l => toBoldUnicode(l)).join('\n');
+  const body = encodeURIComponent(boldReport);
 
-  // mailto: nunca admite HTML en el body (limitación del protocolo, no del navegador),
-  // por eso copiamos el reporte YA formateado (negrita real + nota final resaltada
-  // en verde/ámbar/rojo según el estado) al portapapeles para que se pegue con formato.
-  try {
-    await copyRichHTML(htmlReportCache, textReportCache);
-    if (btn) {
-      btn.innerHTML = '<i class="ti ti-check"></i> ¡Copiado! Pegalo con Ctrl+V';
-      setTimeout(() => { btn.innerHTML = originalHtml; }, 4500);
-    }
-  } catch (err) {
-    console.error('No se pudo copiar el formato al portapapeles:', err);
-  }
-
-  window.location.href = `mailto:?subject=${subject}`;
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 </script>
 </body>
