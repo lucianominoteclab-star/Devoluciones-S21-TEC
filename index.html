@@ -3,330 +3,301 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evaluación de Calidad — Universidad Siglo 21</title>
-  
-  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/u/0/d/1GYj6ZeuJDE8QUQjJQEwxnb_e9k8U3ipz">
+  <title>Auditoría de Calidad — Siglo 21</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
-      --bg-app: #f4f6f9;
-      --bg-card: #ffffff;
-      --bg-input: #f8fafc;
-      --border-color: #e2e8f0;
-      --text-main: #1e293b;
+      --color-primary: #0f172a;
+      --color-primary-light: #1e293b;
+      --color-accent: #2563eb;
+      --color-bg: #f8fafc;
+      --color-card: #ffffff;
+      --text-main: #334155;
       --text-muted: #64748b;
       --text-light: #94a3b8;
-      
-      --color-primary: #0f172a;
-      --color-primary-hover: #1e293b;
-      --color-info: #0284c7;
-      --color-info-bg: #e0f2fe;
+      --border-color: #e2e8f0;
       
       --color-success: #10b981;
       --color-success-bg: #ecfdf5;
       --color-success-text: #065f46;
       
       --color-warning: #f59e0b;
-      --color-warning-bg: #fffbe6;
+      --color-warning-bg: #fffbeb;
       --color-warning-text: #92400e;
       
       --color-danger: #ef4444;
       --color-danger-bg: #fef2f2;
       --color-danger-text: #991b1b;
       
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --color-info: #3b82f6;
+      --color-info-bg: #eff6ff;
     }
 
-    .email-btn { display: inline-flex; align-items: center; gap: 8px; background: #ea4335; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .email-btn:hover { background: #d33828; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--color-bg); color: var(--text-main); padding: 20px; line-height: 1.5; }
+    
+    .container { max-width: 850px; margin: 0 auto; }
+    
+    header { margin-bottom: 24px; text-align: center; }
+    header h1 { font-size: 24px; color: var(--color-primary); font-weight: 700; }
+    header p { font-size: 14px; color: var(--text-muted); }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-    body { background-color: var(--bg-app); color: var(--text-main); padding: 2rem 1rem; }
-    .container { max-width: 760px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
-    
-    .progress-bar { background: var(--border-color); border-radius: 99px; height: 6px; margin-bottom: 2.5rem; overflow: hidden; }
-    .progress { height: 100%; background: var(--color-info); transition: width .4s ease; }
-    
+    /* Barra de Progreso */
+    .prog-bar-wrap { background: #e2e8f0; border-radius: 99px; height: 8px; width: 100%; margin-bottom: 8px; overflow: hidden; }
+    .prog-bar { background: var(--color-accent); height: 100%; width: 33.3%; transition: width 0.3s ease; }
+    .step-lbl { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 20px; display: block; }
+
+    /* Pasos */
     .step { display: none; }
-    .step.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .step.active { display: block; }
+
+    /* Tarjetas y Formulario */
+    .card { background: var(--color-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    .card-head h3 { font-size: 16px; color: var(--color-primary); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .fw { grid-column: 1 / -1; }
     
-    h2 { font-size: 22px; font-weight: 700; color: var(--color-primary); margin-bottom: 1.75rem; border-bottom: 2px solid var(--bg-app); padding-bottom: 10px; }
-    h3 { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; display: block; }
+    input[type="text"], input[type="date"], select, textarea, input[type="file"] {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; color: var(--text-main); outline: none; transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--color-accent); }
+    textarea { min-height: 80px; resize: vertical; }
+
+    /* Botones de calificación Tri-estado */
+    .rubric-row { padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .rubric-row:last-child { border-bottom: none; }
+    .rubric-info { flex: 1; }
+    .rcheck-label { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .rcheck-sub { font-size: 12px; color: var(--text-muted); }
+
+    .tri-btn-group { display: flex; gap: 4px; background: #f1f5f9; padding: 3px; border-radius: 6px; }
+    .tri-btn { border: none; background: transparent; padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
     
-    .field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
-    input[type=text], input[type=date], input[type=file], textarea, select { width: 100%; font-size: 14px; background: var(--bg-input); color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; transition: all .2s; outline: none; }
-    input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color: var(--color-info); background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
-    textarea { resize: vertical; min-height: 80px; }
-    
-    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .fw { margin-bottom: 16px; }
-    
-    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem; transition: box-shadow .2s; }
-    .card:hover { box-shadow: var(--shadow); }
-    .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    .sec-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); margin: 2.5rem 0 1rem; border-left: 3px solid var(--text-light); padding-left: 8px; }
-    
-    .badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.02em; display: inline-flex; align-items: center; }
+    .tri-btn.sel-si { background: var(--color-success); color: #fff; }
+    .tri-btn.sel-no { background: var(--color-danger); color: #fff; }
+    .tri-btn.sel-na { background: var(--text-muted); color: #fff; }
+
+    /* Botones Sí / No */
+    .yn-wrap { display: flex; gap: 6px; }
+    .yn-btn { border: 1px solid var(--border-color); background: #fff; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-muted); }
+    .yn-btn.y { background: var(--color-success); color: #fff; border-color: var(--color-success); }
+    .yn-btn.n { background: var(--color-danger); color: #fff; border-color: var(--color-danger); }
+
+    .score-pill { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 14px; border-radius: 6px; margin-top: 10px; border: 1px solid var(--border-color); }
+    .score-pill-lbl { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .score-pill-val { font-size: 13px; font-weight: 700; color: var(--color-primary); }
+
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; display: inline-block; }
     .b-ok { background: var(--color-success-bg); color: var(--color-success-text); }
     .b-mid { background: var(--color-warning-bg); color: var(--color-warning-text); }
     .b-no { background: var(--color-danger-bg); color: var(--color-danger-text); }
+    .b-neu { background: #f1f5f9; color: var(--text-muted); }
     .b-info { background: var(--color-info-bg); color: var(--color-info); }
-    .b-neu { background: var(--bg-app); color: var(--text-muted); }
 
-    .rubric-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 8px; border-bottom: 1px solid var(--bg-app); }
-    .rubric-row:last-of-type { border-bottom: none; }
-    .rubric-info { flex: 1; }
-    .rcheck-label { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
-    .rcheck-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-    
-    .tri-btn-group { display: flex; background: var(--bg-app); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2px; gap: 2px; }
-    .tri-btn { border: none; background: transparent; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
-    
-    .tri-btn.sel-si { background: var(--color-success) !important; color: #fff !important; }
-    .tri-btn.sel-no { background: var(--color-danger) !important; color: #fff !important; }
-    .tri-btn.sel-na { background: var(--text-muted) !important; color: #fff !important; }
-    
-    .score-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-app); border-radius: var(--radius-md); margin-top: 14px; border: 1px dashed var(--border-color); }
-    .score-pill-lbl { font-size: 13px; font-weight: 500; color: var(--text-muted); flex: 1; }
-    .score-pill-val { font-size: 14px; font-weight: 700; }
+    /* Acciones inferiores */
+    .actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+    .btn { padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--color-accent); color: #fff; }
+    .btn-secondary { background: #e2e8f0; color: var(--text-main); }
 
-    .yn-wrap { display: flex; gap: 8px; }
-    .yn-btn { flex: 1; border: 1.5px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: var(--radius-md); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
-    .yn-btn:hover { background: var(--bg-input); border-color: var(--text-light); }
-    .yn-btn.y { background: var(--color-success-bg); color: var(--color-success-text); border-color: var(--color-success); }
-    .yn-btn.n { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: var(--color-danger); }
+    /* Vista Devolución (Paso 3) */
+    .dev-card { background: #1e293b; color: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .dev-hbar { padding: 20px; background: #0f172a; border-bottom: 1px solid #334155; }
+    .dev-logo-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .dev-logo-txt { font-size: 14px; font-weight: 700; letter-spacing: 0.5px; color: #94a3b8; text-transform: uppercase; }
+    .dev-asesor-row { display: flex; align-items: center; gap: 16px; }
+    .dev-av { width: 48px; height: 48px; border-radius: 50%; background: var(--color-accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; }
+    
+    .dev-body { padding: 20px; background: #1e293b; }
+    .dsec { margin-bottom: 20px; }
+    .dsec-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94a3b8; margin-bottom: 10px; letter-spacing: 0.5px; }
+    
+    .mrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .met { background: #0f172a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #334155; }
+    .met-val { font-size: 18px; font-weight: 700; color: #fff; }
+    .met-lbl { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-    .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
-    .btn-p { background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .btn-p:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
-    .btn-s { background: transparent; color: var(--text-main); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
-    .btn-s:hover { background: var(--bg-app); border-color: var(--text-light); }
-
-    .dev-outer { width: 100%; display: flex; flex-direction: column; align-items: center; }
-    .dev-doc { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; overflow: hidden; box-shadow: var(--shadow); }
-    .dev-hbar { background: var(--color-primary); color: #fff; padding: 2rem; }
-    .dev-logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .dev-logo-txt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); }
-    .dev-asesor-row { display: flex; align-items: center; gap: 18px; }
-    .dev-av { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; }
-    
-    .dev-body { padding: 2rem; background: #fff; }
-    .dsec-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; padding-bottom: 6px; border-bottom: 2px solid var(--bg-app); }
-    .dsec { margin-bottom: 2rem; }
-    
-    .mrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
-    .met { background: var(--bg-app); border-radius: var(--radius-md); padding: 1rem; text-align: center; border: 1px solid var(--border-color); }
-    .met-val { font-size: 24px; font-weight: 700; color: var(--color-primary); }
-    .met-lbl { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
-    
-    .dattr { padding: 14px 0; border-bottom: 1px solid var(--bg-app); }
-    .dattr:last-child { border-bottom: none; }
-    .dattr-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-    .dattr-name { font-size: 14px; font-weight: 600; color: var(--color-primary); flex: 1; }
-    .dattr-pct { font-size: 14px; font-weight: 700; min-width: 45px; text-align: right; }
-    
-    .bar-bg { flex: 1; height: 6px; background: var(--bg-app); border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 99px; transition: width .3s ease; }
+    .dattr { background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #334155; }
+    .dattr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .dattr-name { font-size: 13px; font-weight: 600; color: #f8fafc; }
+    .dattr-pct { font-size: 13px; font-weight: 700; }
+    .bar-bg { height: 6px; background: #334155; border-radius: 3px; flex: 1; margin: 0 12px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; }
     
     .cond-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .cond-tag { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; }
-    .cond-tag.ok { background: var(--color-success-bg); color: var(--color-success-text); border-color: rgba(16, 185, 129, 0.15); }
-    .cond-tag.no { background: var(--color-danger-bg); color: var(--color-danger-text); border-color: rgba(239, 68, 68, 0.1); }
-    .cond-tag.na { background: var(--bg-app); color: var(--text-muted); border-color: var(--border-color); }
+    .cond-tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+    .cond-tag.ok { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .cond-tag.no { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .cond-tag.na { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
     
-    .dattr-fb { font-size: 13px; color: var(--text-muted); margin-top: 8px; padding: 8px 12px; background: var(--bg-input); border-left: 3px solid var(--text-light); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; line-height: 1.5; }
-    .op-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg-app); font-size: 13px; }
-    .op-row:last-child { border-bottom: none; }
+    .dattr-fb { font-size: 12px; color: #cbd5e1; margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b; font-style: italic; }
+    .txt-blk { background: #0f172a; padding: 12px; border-radius: 8px; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; white-space: pre-line; }
     
-    .txt-blk { font-size: 13px; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; padding: 10px 14px; background: var(--bg-input); border-radius: var(--radius-md); border: 1px solid var(--border-color); }
-    .plan-li { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--bg-app); line-height: 1.4; }
-    
-    .copy-row { display: flex; justify-content: center; gap: 12px; margin-top: 1.5rem; width: 100%; flex-wrap: wrap; }
-    .copy-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--color-info); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .copy-btn:hover { background: #0274be; }
-    .copy-btn.copied { background: var(--color-success); }
-    
-    .drive-btn { display: inline-flex; align-items: center; gap: 8px; background: #1e8e3e; color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
-    .drive-btn:hover { background: #166e2f; }
+    .plan-li { font-size: 13px; color: #cbd5e1; margin-bottom: 4px; display: flex; gap: 6px; }
 
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .op-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 12px; }
+    .op-row:last-child { border-bottom: none; }
+
+    .copy-btn, .drive-btn, .email-btn { cursor: pointer; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .copy-btn { background: #334155; color: #fff; }
+    .copy-btn.copied { background: var(--color-success); }
+    .drive-btn { background: #0284c7; color: #fff; }
+    .drive-btn.success { background: var(--color-success); }
+    .email-btn { background: #7c3aed; color: #fff; }
+
     .animate-spin { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="container">
 
-    <div class="header">
-      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-        <img src="https://lh3.googleusercontent.com/u/0/d/1s8dR9apPH_ixCRol10wy2EmrI79sXTsk" 
-             alt="Logo Auditoría" 
-             style="max-width: 65px; height: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.08));">
-        <div>
-          <h1 id="step-lbl" style="margin: 0; font-size: 22px; color: var(--color-primary);">Paso 1 de 3 — Datos del asesor</h1>
-        </div>
+<div class="container">
+  <header>
+    <h1>Auditoría de Calidad</h1>
+    <p>Plataforma de Evaluación Comercial y Seguimiento</p>
+  </header>
+
+  <div class="prog-bar-wrap">
+    <div class="prog-bar" id="prog"></div>
+  </div>
+  <span class="step-lbl" id="step-lbl">Paso 1 de 3 — Datos del asesor</span>
+
+  <!-- PASO 1: DATOS -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="card-head">
+        <h3>Información General de la Evaluación</h3>
       </div>
-      
-      <div class="progress-bar"><div class="progress" id="prog" style="width:33.3%"></div></div>
-    </div>
-
-    <!-- PASO 1: DATOS INICIALES -->
-    <div class="step active" id="step1">
-      <h2>Datos de la evaluación</h2>
-      
-      <div class="g2">
-        <div class="fw">
-          <div class="field-label">Nombre del asesor</div>
-          <div style="position: relative; display: flex; align-items: center;">
-            <i class="ti ti-search" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-            <input type="text" id="asesor" list="lista-asesores" placeholder="Buscar asesor..." style="padding-left: 36px;">
-          </div>
-          <datalist id="lista-asesores">
-            <option value="ANTONELLA BONAFFINI"></option>
-            <option value="AYLEN BERZA"></option>
-            <option value="CANDELA ESPINOSA"></option>
-            <option value="CECILIA OLMOS"></option>
-            <option value="CIELO LOZANO"></option>
-            <option value="GABRIELA LEAL"></option>
-            <option value="JOAQUIN SITTNER"></option>
-            <option value="LOURDES ORTIZ"></option>
-            <option value="LUANA LOPEZ"></option>
-            <option value="MAGALÍ ABDELHAY"></option>
-            <option value="MAKARENA ANDRADE"></option>
-            <option value="MICAELA GONZALEZ"></option>
-            <option value="MILAGROS SALAS"></option>
-            <option value="MILENA VARGAS"></option>
-            <option value="JIMENA SANCHEZ"></option>
-            <option value="VICTORIA PÁEZ"></option>
-            <option value="MARIANA TORRES"></option>
-            <option value="LEILA FUSCO"></option>
-            <option value="CAMILA LEZCANO"></option>
-            <option value="ABRIL PALADEA"></option>
-            <option value="JULIETA ROSALES"></option>
-            <option value="SOFIA ARAVALES"></option>
-            <option value="NATASHA IBAÑEZ"></option>
-          </datalist>
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Nombre del Asesor</label>
+          <input type="text" id="asesor" placeholder="Ej. Juan Pérez">
         </div>
-
-        <div class="fw">
-          <div class="field-label">Fecha</div>
+        <div>
+          <label class="field-label">Fecha de Evaluación</label>
           <input type="date" id="fecha">
         </div>
-      </div>
-
-      <div class="g2">
-        <div class="fw">
-          <div class="field-label">Departamento / equipo</div>
-          <div style="position: relative; display: flex; align-items: center;">
-            <i class="ti ti-search" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-            <input type="text" id="depto" list="lista-departamentos" placeholder="Buscar departamento..." style="padding-left: 36px;">
-          </div>
-          <datalist id="lista-departamentos">
-            <option value="Siglo 21"></option>
-            <option value="Teclab"></option>
-          </datalist>
-        </div>
-
-        <div class="fw">
-          <div class="field-label">Supervisor evaluador</div>
-          <div style="position: relative; display: flex; align-items: center;">
-            <i class="ti ti-user" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-            <input type="text" id="super" list="lista-supervisores" placeholder="Buscar supervisor..." style="padding-left: 36px;">
-          </div>
-          <datalist id="lista-supervisores">
-            <option value="CAMILA GAITAN"></option>
-            <option value="LUCIANO MIÑO"></option>
-            <option value="MILAGROS SALAS"></option>
-            <option value="VERONICA PONCE"></option>
-          </datalist>
-        </div>
-      </div>
-
-      <div class="g2">
-        <div class="fw">
-          <div class="field-label">Plantilla de calidad</div>
-          <select id="plantilla">
-            <option value="p1">Plantilla 1 — Completa</option>
-            <option value="p2">Plantilla 2 — Resumida</option>
-          </select>
-        </div>
-
-        <div class="fw">
-          <div class="field-label">Canal / Tipo de gestión</div>
-          <select id="tipo">
-            <option value="">— Seleccionar —</option>
-            <option value="New Lead">Llamada - New Lead</option>
-            <option value="Remarketing">Llamada - Remarketing</option>
-            <option value="WhatsApp">Auditoría - WhatsApp</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="fw">
-        <div class="field-label">Adjuntar audio de la llamada (Opcional)</div>
-        <div style="position: relative; display: flex; align-items: center;">
-          <i class="ti ti-microphone" style="position: absolute; left: 12px; color: var(--text-light); font-size: 16px; pointer-events: none;"></i>
-          <input type="file" id="audio-llamada" accept="audio/*" style="padding-left: 36px; padding-top: 8px;">
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-p" onclick="go(2)">Continuar <i class="ti ti-arrow-right"></i></button>
-      </div>
-    </div>
-
-    <!-- PASO 2: RÚBRICA Y EVALUACIÓN -->
-    <div class="step" id="step2">
-      <h2>Evaluación de la llamada</h2>
-      <div class="sec-title" id="sec-title-attrs">Atributos cuantitativos</div>
-      <div id="attrs-container"></div>
-
-      <div class="sec-title">Gestión operativa</div>
-      <div class="card" id="ops-card"></div>
-
-      <div class="sec-title">Errores críticos</div>
-      <div class="card">
-        <div style="margin-bottom:18px">
-          <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo falta de respeto o ironía?</div>
-          <div class="yn-wrap"><button class="yn-btn" onclick="err('respeto','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('respeto','NO',this)">No</button></div>
+        <div>
+          <label class="field-label">Departamento / Equipo</label>
+          <input type="text" id="depto" placeholder="Ej. Ventas Ingresantes">
         </div>
         <div>
-          <div style="font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:8px">¿Hubo venta fraudulenta?</div>
-          <div class="yn-wrap"><button class="yn-btn" onclick="err('fraude','SI',this)">Sí — error crítico</button><button class="yn-btn" onclick="err('fraude','NO',this)">No</button></div>
+          <label class="field-label">Supervisor / Evaluador</label>
+          <input type="text" id="super" placeholder="Ej. Lucía Gómez">
         </div>
-      </div>
-
-      <div class="sec-title">Plan de acción</div>
-      <div class="card">
-        <div class="fw"><div class="field-label">Fortalezas identificadas</div><textarea id="fortalezas" placeholder="¿Qué hace bien este asesor?"></textarea></div>
-        <div class="fw"><div class="field-label">Áreas de mejora prioritarias</div><textarea id="mejoras" placeholder="¿En qué debe enfocarse?"></textarea></div>
-        <div class="fw"><div class="field-label">Acciones concretas / compromisos (una por línea)</div><textarea id="acciones" placeholder="Ej: Practicar escucha activa en las próximas 5 llamadas&#10;Seguimiento el dd/mm a las xx:xx"></textarea></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-s" onclick="go(1)"><i class="ti ti-arrow-left"></i> Volver</button>
-        <button class="btn-p" onclick="go(3)">Ver devolución <i class="ti ti-eye"></i></button>
-      </div>
-    </div>
-
-    <!-- PASO 3: DEVOLUCIÓN -->
-    <div class="step" id="step3">
-      <div class="dev-outer">
-        <div class="dev-doc" id="dev-doc"></div>
-        <div class="copy-row">
-          <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
-          <button class="email-btn" id="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
-          <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
-          <button class="btn-s" onclick="go(2)" style="font-size:13px;padding:8px 16px"><i class="ti ti-edit"></i> Editar</button>
-          <button class="btn-p" onclick="go(1)" style="font-size:13px;padding:8px 16px"><i class="ti ti-plus"></i> Nueva evaluación</button>
+        <div>
+          <label class="field-label">Tipo de Plantilla</label>
+          <select id="plantilla">
+            <option value="p2">Plantilla Ponderada por Secciones</option>
+            <option value="std">Plantilla Estándar</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Canal / Tipo de Gestión</label>
+          <select id="tipo">
+            <option value="">-- Seleccionar --</option>
+            <option value="New Lead">New Lead</option>
+            <option value="Remarketing">Remarketing</option>
+            <option value="WhatsApp">WhatsApp</option>
+          </select>
+        </div>
+        <div class="fw">
+          <label class="field-label">Adjuntar Audio de Llamada (Opcional)</label>
+          <input type="file" id="audio-llamada" accept="audio/*">
         </div>
       </div>
     </div>
-
+    <div class="actions" style="justify-content: flex-end;">
+      <button class="btn btn-primary" onclick="go(2)">Continuar a Evaluación <i class="ti ti-arrow-right"></i></button>
+    </div>
   </div>
+
+  <!-- PASO 2: EVALUACIÓN -->
+  <div class="step" id="step2">
+    <!-- Errores Críticos -->
+    <div class="card">
+      <div class="card-head">
+        <h3>Errores Críticos (Nota 0%)</h3>
+      </div>
+      <div class="rubric-row">
+        <div class="rubric-info">
+          <div class="rcheck-label">Falta de Respeto / Mala praxis</div>
+          <div class="rcheck-sub">Trato inadecuado, insultos o agresión verbal al lead</div>
+        </div>
+        <div class="yn-wrap">
+          <button class="yn-btn" onclick="err('respeto','SI',this)">Sí</button>
+          <button class="yn-btn" onclick="err('respeto','NO',this)">No</button>
+        </div>
+      </div>
+      <div class="rubric-row">
+        <div class="rubric-info">
+          <div class="rcheck-label">Venta Fraudulenta / Información Falsa</div>
+          <div class="rcheck-sub">Prometer condiciones inexistentes o engañar deliberadamente</div>
+        </div>
+        <div class="yn-wrap">
+          <button class="yn-btn" onclick="err('fraude','SI',this)">Sí</button>
+          <button class="yn-btn" onclick="err('fraude','NO',this)">No</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="font-size: 16px; margin-bottom: 12px; color: var(--color-primary);" id="sec-title-attrs">Atributos Evaluados</h2>
+    <div id="attrs-container"></div>
+
+    <!-- Procesos y Operaciones -->
+    <div class="card">
+      <div class="card-head">
+        <h3>Gestión de Procesos y Sistemas</h3>
+      </div>
+      <div id="ops-card"></div>
+    </div>
+
+    <!-- Retroalimentación Cualitativa -->
+    <div class="card">
+      <div class="card-head">
+        <h3>Devolución Cualitativa</h3>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label class="field-label">💪 Fortalezas Identificadas</label>
+          <textarea id="fortalezas" placeholder="Aspectos positivos destacados en la gestión..."></textarea>
+        </div>
+        <div>
+          <label class="field-label">🎯 Oportunidades de Mejora</label>
+          <textarea id="mejoras" placeholder="Puntos específicos a trabajar y corregir..."></textarea>
+        </div>
+        <div>
+          <label class="field-label">📌 Plan de Acción / Compromisos (Un compromiso por línea)</label>
+          <textarea id="acciones" placeholder="1. Repasar speech de aranceles&#10;2. Aplicar doble alternativa de agenda"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="go(1)"><i class="ti ti-arrow-left"></i> Volver</button>
+      <button class="btn btn-primary" onclick="go(3)">Generar Devolución <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- PASO 3: DEVOLUCIÓN -->
+  <div class="step" id="step3">
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 12px;">
+      <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
+      <button class="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
+      <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
+    </div>
+
+    <div class="dev-card" id="dev-doc"></div>
+
+    <div class="actions" style="margin-top: 24px;">
+      <button class="btn btn-secondary" onclick="go(2)"><i class="ti ti-arrow-left"></i> Editar Evaluación</button>
+      <button class="btn btn-primary" onclick="go(1)"><i class="ti ti-plus"></i> Nueva Evaluación</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const ATTRS_PLANTILLA2 = [
@@ -355,12 +326,11 @@ const ATTRS_PLANTILLA2 = [
   ]},
   {k:'objecion', l:'4. Objeción y persuasión', weight: 30,
    conds:[
-    {id:'A', l:'Consultar qué método de pago usa', s:'Indaga sobre tarjetas u otros medios.'},
-    {id:'B', l:'Usar información de IE para rebatir', s:'Aprovecha la indagación previa para argumentar.'},
-    {id:'C', l:'Agregar valor al arancel', s:'Justifica el costo con beneficios.'},
-    {id:'D', l:'En caso de no avanzar preguntar por qué', s:'Busca detectar el freno real.'},
-    {id:'E', l:'Preguntar si tiene tarjeta a mano', s:'Acelera la posibilidad de reserva.'},
-    {id:'F', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.'}
+    {id:'A', l:'Hace push de cierre', s:'¿Avanzamos con la inscripción?'},
+    {id:'B', l:'Manejo de objeción', s:'Usar información de IE para rebatir.'},
+    {id:'C', l:'En caso de no avanzar preguntar por qué', s:'Busca detectar el freno real.'},
+    {id:'D', l:'Conexión con el lead', s:'Genera empatía y sintonía durante la conversación.'},
+    {id:'E', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.'}
   ]},
   {k:'cierre_p2', l:'5. Cierre', weight: 20,
    conds:[
@@ -749,91 +719,90 @@ function generateTextReport() {
   const mejoras = document.getElementById('mejoras').value;
   const acciones = document.getElementById('acciones').value;
 
-  let lines = [];
+  let blocks = [];
 
   if (plantilla === 'p2') {
-    lines.push('📋 Evaluación de Calidad — Siglo 21');
-    lines.push(`Asesor: ${asesor}`);
-    lines.push(`Fecha: ${fechaFmt}`);
-    lines.push(`Depto: ${depto}`);
-    lines.push(`Supervisor: ${sup}`);
-    lines.push(`Tipo: ${tipo}`);
-    lines.push('');
-    lines.push('🔹 CRITERIOS EVALUADOS');
+    blocks.push(
+      `📋 EVALUACIÓN DE CALIDAD — SIGLO 21\r\n` +
+      `Asesor: ${asesor}\r\n` +
+      `Fecha: ${fechaFmt}\r\n` +
+      `Depto: ${depto}\r\n` +
+      `Supervisor: ${sup}\r\n` +
+      `Tipo: ${tipo}`
+    );
 
+    let condsText = `🔹 CRITERIOS EVALUADOS:\r\n`;
     ATTRS.forEach(a => {
       const score = getScore(a.k);
       const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
-      lines.push(`▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%`);
+      condsText += `\r\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%\r\n`;
       
       a.conds.forEach(c => {
         const v = checks[a.k][c.id];
         const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
-        lines.push(`${icon} ${c.l}`);
+        condsText += `${icon} ${c.l}\r\n`;
       });
 
       const fbEl = document.getElementById('fb-' + a.k);
       if (fbEl && fbEl.value) {
-        lines.push(`💬 Observación: ${fbEl.value}`);
+        condsText += `💬 Observación: ${fbEl.value}\r\n`;
       }
     });
+    blocks.push(condsText.trim());
 
-    lines.push('');
-    lines.push(`PUNTAJE: ${final}%`);
-    lines.push('OBJETIVO DE CALIDAD: 70%');
-    lines.push(`DEFINICIÓN: ${estadoTxt}`);
-    lines.push('');
+    blocks.push(
+      `📊 RESULTADO FINAL:\r\n` +
+      `Puntaje: ${final}%\r\n` +
+      `Objetivo de Calidad: 70%\r\n` +
+      `Estado: ${estadoTxt}`
+    );
 
     if (fortalezas) {
-      lines.push('💪 FORTALEZAS IDENTIFICADAS');
-      lines.push(fortalezas);
-      lines.push('');
+      blocks.push(`💪 FORTALEZAS IDENTIFICADAS:\r\n${fortalezas}`);
     }
 
     if (mejoras) {
-      lines.push('🎯 OPORTUNIDADES DE MEJORA');
-      lines.push(mejoras);
-      lines.push('');
+      blocks.push(`🎯 OPORTUNIDADES DE MEJORA:\r\n${mejoras}`);
     }
 
     if (acciones) {
-      lines.push('📌 PLAN DE ACCIÓN / COMPROMISOS');
-      acciones.split('\n').filter(l => l.trim()).forEach((l, i) => lines.push(`${i + 1}. ${l}`));
+      let accTxt = `📌 PLAN DE ACCIÓN / COMPROMISOS:\r\n`;
+      accTxt += acciones.split('\n').filter(l => l.trim()).map((l, i) => `${i + 1}. ${l}`).join('\r\n');
+      blocks.push(accTxt);
     }
   } else {
-    lines.push(`==========================================`);
-    lines.push(`REPORTE DE AUDITORÍA DE CALIDAD`);
-    lines.push(`==========================================`);
-    lines.push(`Asesor: ${asesor}`);
-    lines.push(`Fecha: ${fechaFmt} | Depto: ${depto}`);
-    lines.push(`Evaluador: ${sup} | Tipo: ${tipo}`);
-    lines.push(`Resultado Final: ${final}% [${estadoTxt.toUpperCase()}]`);
-    lines.push(`------------------------------------------`);
-    lines.push(``);
-    lines.push(`DETALLE DE ATRIBUTOS EVALUADOS:`);
+    blocks.push(
+      `==========================================\r\n` +
+      `REPORTE DE AUDITORÍA DE CALIDAD\r\n` +
+      `==========================================\r\n` +
+      `Asesor: ${asesor}\r\n` +
+      `Fecha: ${fechaFmt} | Depto: ${depto}\r\n` +
+      `Evaluador: ${sup} | Tipo: ${tipo}\r\n` +
+      `Resultado Final: ${final}% [${estadoTxt.toUpperCase()}]`
+    );
 
+    let condsText = `DETALLE DE ATRIBUTOS EVALUADOS:`;
     ATTRS.forEach(a => {
       const score = getScore(a.k);
-      lines.push(`\n* ${a.l}: ${score}%`);
+      condsText += `\r\n\r\n* ${a.l}: ${score}%\r\n`;
       a.conds.forEach(c => {
         const v = checks[a.k][c.id];
         const st = v === 'SI' ? '[CUMPLE]' : v === 'NA' ? '[N/A]' : '[NO CUMPLE]';
-        lines.push(`  - ${st} ${c.l}`);
+        condsText += `  - ${st} ${c.l}\r\n`;
       });
       const fbEl = document.getElementById('fb-' + a.k);
       if (fbEl && fbEl.value) {
-        lines.push(`    Notas: ${fbEl.value}`);
+        condsText += `    Notas: ${fbEl.value}\r\n`;
       }
     });
+    blocks.push(condsText);
 
-    lines.push(``);
-    lines.push(`------------------------------------------`);
-    if (fortalezas) lines.push(`FORTALEZAS:\n${fortalezas}\n`);
-    if (mejoras) lines.push(`ÁREAS DE MEJORA:\n${mejoras}\n`);
-    if (acciones) lines.push(`PLAN DE ACCIÓN:\n${acciones}\n`);
+    if (fortalezas) blocks.push(`FORTALEZAS:\r\n${fortalezas}`);
+    if (mejoras) blocks.push(`ÁREAS DE MEJORA:\r\n${mejoras}`);
+    if (acciones) blocks.push(`PLAN DE ACCIÓN:\r\n${acciones}`);
   }
 
-  textReportCache = lines.join('\r\n');
+  textReportCache = blocks.join('\r\n\r\n------------------------------------------\r\n\r\n');
 }
 
 function buildDev(){
