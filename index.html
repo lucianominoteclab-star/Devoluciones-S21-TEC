@@ -1069,9 +1069,17 @@ function sendByEmail() {
   const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '';
   
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
-  const body = encodeURIComponent(textReportCache);
 
-  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  // 1. Copiamos el contenido del reporte directamente al portapapeles
+  navigator.clipboard.writeText(textReportCache).then(() => {
+    alert("El reporte se copió al portapapeles. Se abrirá Outlook; solo tenés que pegar (Ctrl + V) el contenido en el cuerpo del mail.");
+    // 2. Abrimos la ventana de correo únicamente con el asunto para no saturar la URL
+    window.location.href = `mailto:?subject=${subject}`;
+  }).catch(err => {
+    // Alternativa en caso de que el navegador bloquee el acceso al portapapeles
+    console.error('Error al copiar texto: ', err);
+    window.location.href = `mailto:?subject=${subject}`;
+  });
 }
 
 // Inicialización de la app
