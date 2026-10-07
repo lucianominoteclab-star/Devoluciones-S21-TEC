@@ -150,6 +150,52 @@
 
     .animate-spin { animation: spin 1s linear infinite; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ===== Navegación por pasos y secciones ===== */
+    .step-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
+    .step-tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 10px; border: 1px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .step-tab b { width: 20px; height: 20px; border-radius: 50%; background: #e2e8f0; color: var(--text-main); font-size: 11px; display: inline-flex; align-items: center; justify-content: center; }
+    .step-tab.active { border-color: var(--color-accent); background: var(--color-info-bg); color: var(--color-accent); }
+    .step-tab.active b { background: var(--color-accent); color: #fff; }
+
+    .sec-nav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; background: var(--color-bg); padding: 8px 0 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+    .nav-chips { display: flex; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: thin; padding-bottom: 2px; }
+    .nav-chip { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--border-color); background: #fff; color: var(--text-muted); border-radius: 99px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .nav-chip .chip-n { font-weight: 700; color: var(--color-primary); }
+    .nav-chip .chip-t { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nav-chip.active { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+    .nav-chip.active .chip-n { color: #fff; }
+    .nav-chip.done::after { content: "\2713"; color: var(--color-success); font-weight: 700; }
+    .nav-chip.active.done::after { color: #fff; }
+    .nav-sum { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+
+    .card { scroll-margin-top: 84px; }
+    .w-sec { font-size: 12px; color: var(--color-info); font-weight: 600; }
+    .w-chip { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px; background: var(--color-info-bg); color: var(--color-info); font-size: 11px; font-weight: 700; vertical-align: middle; }
+    .rubric-row.pending .rcheck-label::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--color-warning); vertical-align: middle; }
+
+    select:disabled { background: #f1f5f9; color: var(--text-muted); cursor: not-allowed; }
+    .dev-toolbar { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      .grid-2, .g2 { grid-template-columns: 1fr; }
+      .rubric-row { flex-direction: column; align-items: stretch; }
+      .tri-btn-group { width: 100%; }
+      .tri-btn { flex: 1; padding: 9px 6px; }
+      .op-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .op-row .yn-wrap { margin-left: 0 !important; }
+      .dev-asesor-row { flex-wrap: wrap; }
+      .actions { flex-wrap: wrap; }
+      .step-tab { font-size: 12px; padding: 8px 4px; }
+      .sec-nav { flex-direction: column; align-items: stretch; gap: 6px; }
+      .nav-sum { flex-direction: row; justify-content: space-between; align-items: center; }
+      .nav-chip .chip-t:not(.always) { display: none; }
+      .dev-toolbar { justify-content: stretch; }
+      .dev-toolbar > button { flex: 1 1 100%; justify-content: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   </style>
 </head>
 <body>
@@ -196,7 +242,11 @@
   <div class="prog-bar-wrap">
     <div class="prog-bar" id="prog"></div>
   </div>
-  <span class="step-lbl" id="step-lbl">Paso 1 de 3 — Datos de la evaluación</span>
+  <nav class="step-tabs" aria-label="Pasos">
+    <button type="button" class="step-tab active" data-step="1" onclick="go(1)"><b>1</b> Datos</button>
+    <button type="button" class="step-tab" data-step="2" onclick="go(2)"><b>2</b> Evaluación</button>
+    <button type="button" class="step-tab" data-step="3" onclick="go(3)"><b>3</b> Devolución</button>
+  </nav>
 
   <!-- PASO 1: DATOS INICIALES -->
   <div class="step active" id="step1">
@@ -229,10 +279,7 @@
         </div>
         <div>
           <label class="field-label">Tipo de Plantilla</label>
-          <select id="plantilla">
-            <option value="p2">Plantilla Ponderada por Secciones</option>
-            <option value="std">Plantilla Estándar</option>
-          </select>
+          <select id="plantilla" onchange="onPlantillaChange()"></select>
         </div>
         <div>
           <label class="field-label">Canal / Tipo de Gestión</label>
@@ -250,14 +297,21 @@
       </div>
     </div>
     <div class="actions" style="justify-content: flex-end;">
-      <button class="btn btn-primary" onclick="go(2)">Continuar a Evaluación <i class="ti ti-arrow-right"></i></button>
+      <button type="button" class="btn btn-primary" onclick="go(2)">Continuar a Evaluación <i class="ti ti-arrow-right"></i></button>
     </div>
   </div>
 
   <!-- PASO 2: EVALUACIÓN -->
   <div class="step" id="step2">
     <!-- Errores Críticos -->
-    <div class="card">
+    <div class="sec-nav" id="sec-nav">
+      <div class="nav-chips" id="nav-chips"></div>
+      <div class="nav-sum">
+        <span id="nav-prog">0/0 ítems marcados</span>
+        <span class="badge b-no" id="nav-score">0%</span>
+      </div>
+    </div>
+    <div class="card" id="card-crit">
       <div class="card-head">
         <h3>Errores Críticos (Nota 0%)</h3>
       </div>
@@ -267,8 +321,8 @@
           <div class="rcheck-sub">Trato inadecuado, insultos o agresión verbal al lead</div>
         </div>
         <div class="yn-wrap">
-          <button class="yn-btn" onclick="err('respeto','SI',this)">Sí</button>
-          <button class="yn-btn" onclick="err('respeto','NO',this)">No</button>
+          <button type="button" class="yn-btn" onclick="err('respeto','SI',this)">Sí</button>
+          <button type="button" class="yn-btn" onclick="err('respeto','NO',this)">No</button>
         </div>
       </div>
       <div class="rubric-row">
@@ -277,8 +331,8 @@
           <div class="rcheck-sub">Prometer condiciones inexistentes o engañar deliberadamente</div>
         </div>
         <div class="yn-wrap">
-          <button class="yn-btn" onclick="err('fraude','SI',this)">Sí</button>
-          <button class="yn-btn" onclick="err('fraude','NO',this)">No</button>
+          <button type="button" class="yn-btn" onclick="err('fraude','SI',this)">Sí</button>
+          <button type="button" class="yn-btn" onclick="err('fraude','NO',this)">No</button>
         </div>
       </div>
     </div>
@@ -287,7 +341,7 @@
     <div id="attrs-container"></div>
 
     <!-- Procesos y Operaciones -->
-    <div class="card">
+    <div class="card" id="card-ops">
       <div class="card-head">
         <h3>Gestión de Procesos y Sistemas</h3>
       </div>
@@ -295,7 +349,7 @@
     </div>
 
     <!-- Retroalimentación Cualitativa -->
-    <div class="card">
+    <div class="card" id="card-dev">
       <div class="card-head">
         <h3>Devolución Cualitativa</h3>
       </div>
@@ -316,29 +370,32 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-secondary" onclick="go(1)"><i class="ti ti-arrow-left"></i> Volver</button>
-      <button class="btn btn-primary" onclick="go(3)">Generar Devolución <i class="ti ti-arrow-right"></i></button>
+      <button type="button" class="btn btn-secondary" onclick="go(1)"><i class="ti ti-arrow-left"></i> Volver</button>
+      <button type="button" class="btn btn-primary" onclick="go(3)">Generar Devolución <i class="ti ti-arrow-right"></i></button>
     </div>
   </div>
 
   <!-- PASO 3: DEVOLUCIÓN -->
   <div class="step" id="step3">
-    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 12px;">
-      <button class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
-      <button class="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
-      <button class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
+    <div class="dev-toolbar">
+      <button type="button" class="copy-btn" id="copy-btn" onclick="copyDev()"><i class="ti ti-copy"></i> Copiar devolución</button>
+      <button type="button" class="email-btn" onclick="sendByEmail()"><i class="ti ti-mail"></i> Enviar por Email</button>
+      <button type="button" class="drive-btn" id="drive-btn" onclick="sendToDrive()"><i class="ti ti-brand-google-drive"></i> Guardar en Google Drive</button>
     </div>
 
     <div class="dev-card" id="dev-doc"></div>
 
     <div class="actions" style="margin-top: 24px;">
-      <button class="btn btn-secondary" onclick="go(2)"><i class="ti ti-arrow-left"></i> Editar Evaluación</button>
-      <button class="btn btn-primary" onclick="go(1)"><i class="ti ti-plus"></i> Nueva Evaluación</button>
+      <button type="button" class="btn btn-secondary" onclick="go(2)"><i class="ti ti-arrow-left"></i> Editar Evaluación</button>
+      <button type="button" class="btn btn-primary" onclick="newEval()"><i class="ti ti-plus"></i> Nueva Evaluación</button>
     </div>
   </div>
 </div>
 
 <script>
+/* =====================================================================
+   PLANTILLAS — DATOS
+   ===================================================================== */
 const ATTRS_PLANTILLA2 = [
   {k:'ptip', l:'1. P y Tipificación en Sistemas', weight: 10,
    conds:[
@@ -498,226 +555,147 @@ const OPS = [
   {k:'descuentos',l:'Info descuentos correcta',d:'¿Clarificó beca de bienvenida y variaciones IPC?'}
 ];
 
+
+
+/* ---------- Ítems reutilizables de las plantillas ponderadas nuevas ---------- */
+const ITEMS = {
+  // 1. Tipificación y sistemas
+  pres:        {l:'Presentación cordial',          s:'Se presenta y saluda con amabilidad.'},
+  tip:         {l:'Tipificar en sistemas',         s:'Registra la gestión correctamente en el CRM.'},
+  sondCarrera: {l:'Sondeo de carrera',             s:'Consulta qué carrera le interesa al lead.'},
+  sondReq:     {l:'Sondeo de requisito previo',    s:'Verifica si cumple el requisito para ingresar.'},
+  actitud:     {l:'Actitud cordial',               s:'Mantiene un trato amable y cercano en toda la llamada.'},
+  contexto:    {l:'Contextualización',             s:'Explica el motivo del llamado y retoma el contacto previo.'},
+  // 2. Indagación estratégica y personalización
+  motivo:      {l:'Indaga sobre motivo de elección de carrera', s:'Pregunta por qué eligió la carrera y qué busca lograr.'},
+  exp:         {l:'Indaga sobre experiencia previa',            s:'Consulta por estudios o trabajos anteriores.'},
+  tiempos:     {l:'Indaga sobre tiempos',                       s:'Averigua disponibilidad horaria y plazos para cursar.'},
+  descartaSiglo:{l:'Indaga por qué descarta Siglo 21',          s:'Detecta el motivo por el que dejó de lado Siglo 21.'},
+  asocia:      {l:'Asocia y conecta la información con la propuesta', s:'Vincula lo que dijo el lead con la carrera.'},
+  valida:      {l:'Valida la opinión del lead',    s:'Escucha con atención y confirma lo que piensa.'},
+  difer:       {l:'Aporta diferenciales',          s:'Destaca lo que distingue a la propuesta.'},
+  qParece:     {l:'Indaga: ¿qué le parece la propuesta?', s:'Pregunta la opinión sobre lo ya enviado o hablado.'},
+  pudoDefinir: {l:'Indaga: ¿pudo definir?',        s:'Consulta si ya tomó una decisión.'},
+  dudas:       {l:'Indaga sobre dudas adicionales',s:'Pregunta si quedó alguna consulta pendiente.'},
+  // 3. Bajada de oferta
+  infoOk:      {l:'Información correcta',          s:'Brinda datos precisos y actualizados del programa.'},
+  efip:        {l:'EFIP',                          s:'Explica en qué consiste el EFIP y cuándo se cursa.'},
+  tfg:         {l:'TFG',                           s:'Explica el Trabajo Final de Graduación.'},
+  perfil:      {l:'Perfil del egresado / salida laboral', s:'Presenta el perfil profesional y las oportunidades laborales.'},
+  practicas:   {l:'Prácticas profesionales / bolsa de empleo', s:'Explica las prácticas y la bolsa de empleo disponibles.'},
+  modED:       {l:'Modalidad ED',                  s:'Explica cómo funciona la cursada en modalidad ED.'},
+  cierresParc: {l:'Cierres parciales',             s:'Confirma lo explicado y avanza con cierres cortos.'},
+  articulacion:{l:'Articulación con Siglo 21',     s:'Explica cómo se articula la carrera con Siglo 21.'},
+  // 4. Objeción y persuasión
+  urgencia:    {l:'Uso de elementos de urgencia',  s:'Menciona cupos, becas o fechas de inicio reales.'},
+  push:        {l:'Push de cierre: propone avanzar de forma activa', s:'Propone concretar la inscripción durante la llamada.'},
+  motivoNoAvanza:{l:'Si no avanza, indaga el motivo que tiene que evaluar', s:'Detecta el freno real cuando el lead duda.'},
+  objeciones:  {l:'Manejo de objeciones',          s:'Responde las objeciones con argumentos concretos.'},
+  conexion:    {l:'Conexión con el lead',          s:'Genera empatía y sintonía durante la conversación.'},
+  pre:         {l:'¿Tomó pre?',                    s:'Intenta la preinscripción en la llamada.'},
+  // 5. Cierre
+  saludo:      {l:'Saluda cordial',                s:'Se despide con amabilidad y profesionalismo.'},
+  recontacto:  {l:'Invita al recontacto',          s:'Deja la puerta abierta para un próximo contacto.'},
+  pacta:       {l:'Pacta día y horario',           s:'Acuerda fecha y hora concreta para volver a llamar.'},
+  fideliza:    {l:'Fidelizar',                     s:'Se posiciona como único referente de contacto del lead.'},
+  accionVenta: {l:'Finaliza la llamada con una acción de venta concreta', s:'Cierra con un paso de venta definido.'},
+  pautaDia:    {l:'Pauta día y hora de ser necesario', s:'Si no se concreta la venta, acuerda cuándo retomar.'}
+};
+
+/* Sección ponderada: el peso de la sección se reparte en partes iguales entre sus ítems
+   (se puede forzar un peso por ítem agregando "w" al ítem). */
+const sec = (k, l, weight, keys) => ({
+  k, l, weight,
+  conds: keys.map((key, i) => {
+    if (!ITEMS[key]) throw new Error('Ítem inexistente: ' + key);
+    return {id: String.fromCharCode(65 + i), l: ITEMS[key].l, s: ITEMS[key].s};
+  })
+});
+
+const SEC4 = ['urgencia','push','motivoNoAvanza','objeciones','conexion','pre'];
+const SEC5 = ['saludo','recontacto','pacta','fideliza'];
+
+/* Pesos: 10 / 20 / 30 / 25 / 15 = 100 */
+const ATTRS_NEW_LEAD_POND = [
+  sec('s1','1. Tipificación y sistemas',10,['pres','tip','sondCarrera','sondReq','actitud']),
+  sec('s2','2. Indagación estratégica y personalización',20,['motivo','exp','tiempos','asocia','valida','difer']),
+  sec('s3','3. Bajada de oferta',30,['infoOk','efip','tfg','perfil','practicas','modED','cierresParc']),
+  sec('s4','4. Objeción y persuasión',25,SEC4),
+  sec('s5','5. Cierre',15,SEC5)
+];
+
+const ATTRS_CROSS_POND = [
+  sec('s1','1. Tipificación y sistemas',10,['pres','tip','contexto','sondReq','actitud']),
+  sec('s2','2. Indagación estratégica y personalización',20,['motivo','exp','tiempos','descartaSiglo','asocia','valida','difer']),
+  sec('s3','3. Bajada de oferta',30,['infoOk','perfil','practicas','cierresParc','articulacion']),
+  sec('s4','4. Objeción y persuasión',25,SEC4),
+  sec('s5','5. Cierre',15,SEC5)
+];
+
+/* Recontacto no tiene la sección 3, por eso los pesos se reparten así: 15 / 25 / 35 / 25 = 100 */
+const ATTRS_RECONTACTO_POND = [
+  sec('s1','1. Tipificación y sistemas',15,['pres','tip','contexto','actitud']),
+  sec('s2','2. Indagación estratégica y personalización',25,['qParece','pudoDefinir','dudas','asocia','valida']),
+  sec('s4','4. Objeción y persuasión',35,SEC4),
+  sec('s5','5. Cierre',25,['saludo','accionVenta','pautaDia'])
+];
+
+const CANALES_BASE = ['New Lead','Remarketing','WhatsApp'];
+
+const PLANTILLAS = {
+  p2:        {nombre:'Plantilla Ponderada por Secciones', ponderada:true,  canales:CANALES_BASE, attrs:() => ATTRS_PLANTILLA2},
+  std:       {nombre:'Plantilla Estándar',                ponderada:false, canales:CANALES_BASE,
+              attrs:(canal) => canal === 'Remarketing' ? ATTRS_REMARKETING : canal === 'WhatsApp' ? ATTRS_WHATSAPP : ATTRS_NEW_LEAD},
+  new_lead:  {nombre:'Plantilla New Lead',                ponderada:true,  canales:['New Lead'],   attrs:() => ATTRS_NEW_LEAD_POND},
+  cross:     {nombre:'Plantilla Cross',                   ponderada:true,  canales:['Cross'],      attrs:() => ATTRS_CROSS_POND},
+  recontacto:{nombre:'Plantilla Recontacto',              ponderada:true,  canales:['Recontacto'], attrs:() => ATTRS_RECONTACTO_POND}
+};
+
+/* ---------- Qué plantillas ve cada evaluador (editar acá para agregar/cambiar) ---------- */
+const PLANTILLAS_BASE  = ['p2','std'];
+const PLANTILLAS_TODAS = ['p2','std','new_lead','cross','recontacto'];
+const PLANTILLAS_POR_EVALUADOR = {
+  'VERONICA PONCE': PLANTILLAS_BASE,
+  'MILAGROS SALAS': PLANTILLAS_TODAS,
+  'LUCIANO MINO':   PLANTILLAS_TODAS,
+  'CAMILA GAITAN':  PLANTILLAS_TODAS
+};
+/* Cualquier otro nombre (o vacío) ve solo las plantillas base. */
+
+/* Control: los pesos de las secciones de cada plantilla ponderada deben sumar 100 */
+Object.entries(PLANTILLAS).forEach(([id, t]) => {
+  if (!t.ponderada) return;
+  const suma = t.attrs().reduce((acc, a) => acc + a.weight, 0);
+  if (Math.round(suma * 100) !== 10000) console.warn(`La plantilla "${id}" suma ${suma}% (debería sumar 100%)`);
+});
+
+/* =====================================================================
+   ESTADO
+   ===================================================================== */
+const $ = id => document.getElementById(id);
 let ATTRS = [];
-const checks = {}; 
+let TPL = null;          // plantilla actualmente construida
+let TPL_ID = null;
+let builtSig = null;     // firma (plantilla + canal) con la que se armó el formulario
+let currentStep = 1;
+let dirty = false;       // hay datos sin exportar
+const checks = {};       // checks[bloque][item] = 'SI' | 'NO' | 'NA'
+const touched = {};      // touched[bloque][item] = true si el evaluador lo marcó
 const E = {respeto:null, fraude:null};
 const OV = {};
-let textReportCache = ""; 
+let textReportCache = "";
+
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const fmt = n => Number(n.toFixed(2)).toLocaleString('es-AR');
+const norm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim().toUpperCase();
+const markDirty = () => { dirty = true; };
 
 function setTodayDate() {
   const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  document.getElementById('fecha').value = `${year}-${month}-${day}`;
-}
-
-function inicializarChecks() {
-  ATTRS.forEach(a => {
-    checks[a.k] = {};
-    a.conds.forEach(c => {
-      checks[a.k][c.id] = 'NO'; 
-    });
-  });
-}
-
-function setCheckState(k, cid, state) {
-  checks[k][cid] = state;
-  const btnGroup = document.getElementById(`tri-${k}-${cid}`);
-  if(btnGroup) {
-    const btnSi = btnGroup.querySelector('.btn-si');
-    const btnNo = btnGroup.querySelector('.btn-no');
-    const btnNa = btnGroup.querySelector('.btn-na');
-
-    btnSi.className = 'tri-btn btn-si' + (state === 'SI' ? ' sel-si' : '');
-    btnNo.className = 'tri-btn btn-no' + (state === 'NO' ? ' sel-no' : '');
-    btnNa.className = 'tri-btn btn-na' + (state === 'NA' ? ' sel-na' : '');
-  }
-  updateUI(k);
-}
-
-function getScore(k) {
-  const aRef = ATTRS.find(a => a.k === k);
-  if(!aRef) return 0;
-  
-  const totalConds = aRef.conds.length;
-  let siCount = 0;
-  let naCount = 0;
-
-  aRef.conds.forEach(c => {
-    const val = checks[k][c.id];
-    if(val === 'SI') siCount++;
-    if(val === 'NA') naCount++;
-  });
-
-  const evaluables = totalConds - naCount;
-  if(evaluables <= 0) return 100;
-  return Math.round((siCount / evaluables) * 100);
-}
-
-function getStats(k) {
-  const aRef = ATTRS.find(a => a.k === k);
-  if(!aRef) return {si:0, no:0, na:0, total:0};
-  
-  let si=0, no=0, na=0;
-  aRef.conds.forEach(c => {
-    const val = checks[k][c.id];
-    if(val === 'SI') si++;
-    else if(val === 'NA') na++;
-    else no++;
-  });
-  return {si, no, na, total: aRef.conds.length};
-}
-
-function buildAttrs() {
-  const plantilla = document.getElementById('plantilla').value;
-  const tipoSeleccionado = document.getElementById('tipo').value;
-  const esWA = (tipoSeleccionado === "WhatsApp");
-
-  document.getElementById('sec-title-attrs').textContent = (plantilla === 'p2') 
-    ? 'Atributos evaluados — Plantilla Ponderada por Secciones' 
-    : esWA ? 'Atributos — WhatsApp (16 Indicadores)' : 'Atributos cuantitativos — Plantilla Estándar';
-
-  document.getElementById('attrs-container').innerHTML = ATTRS.map(a => `
-    <div class="card">
-      <div class="card-head">
-        <h3>${a.l} ${a.weight ? `<span style="font-size:12px;color:var(--color-info)">[Peso: ${a.weight}%]</span>` : ''}</h3>
-        <span class="badge b-no" id="sc-${a.k}">0%</span>
-      </div>
-      <div>
-        ${a.conds.map(c => `
-          <div class="rubric-row">
-            <div class="rubric-info">
-              <div class="rcheck-label">${c.l}</div>
-              <div class="rcheck-sub">${c.s}</div>
-            </div>
-            <div class="tri-btn-group" id="tri-${a.k}-${c.id}">
-              <button class="tri-btn btn-si" onclick="setCheckState('${a.k}','${c.id}','SI')">Cumple</button>
-              <button class="tri-btn btn-no sel-no" onclick="setCheckState('${a.k}','${c.id}','NO')">No cumple</button>
-              <button class="tri-btn btn-na" onclick="setCheckState('${a.k}','${c.id}','NA')">N/A</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <div class="score-pill">
-        <span class="score-pill-lbl">Resultado del bloque</span>
-        <span class="score-pill-val" id="sp-${a.k}">0% (0 cumplen, ${a.conds.length} no cumplen)</span>
-      </div>
-      <div class="field-label" style="margin-top:14px">Observaciones específicas del bloque</div>
-      <textarea id="fb-${a.k}" placeholder="Detalles u observaciones de este ítem..."></textarea>
-    </div>`).join('');
-}
-
-function updateUI(k) {
-  const score = getScore(k);
-  const stats = getStats(k);
-  
-  const badge = document.getElementById('sc-' + k);
-  if(badge) {
-    badge.textContent = score + '%';
-    badge.className = 'badge ' + (score >= 70 ? 'b-ok' : score >= 40 ? 'b-mid' : 'b-no');
-  }
-  
-  const sp = document.getElementById('sp-' + k);
-  if(sp) {
-    sp.textContent = `${score}% (${stats.si} cumplen, ${stats.no} no cumplen${stats.na > 0 ? `, ${stats.na} N/A` : ''})`;
-  }
-}
-
-function buildOps() {
-  document.getElementById('ops-card').innerHTML = OPS.map(o => `
-    <div class="op-row">
-      <div><div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div><div style="font-size:12px;color:var(--text-muted)">${o.d}</div></div>
-      <div class="yn-wrap" style="flex-shrink:0;margin-left:16px">
-        <button class="yn-btn" onclick="opv('${o.k}','SI',this)">Sí</button>
-        <button class="yn-btn" onclick="opv('${o.k}','NO',this)">No</button>
-      </div>
-    </div>`).join('');
-}
-
-function err(a,v,btn){
-  E[a]=v;
-  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
-  btn.classList.add(v==='SI'?'y':'n');
-}
-
-function opv(k,v,btn){
-  OV[k]=v;
-  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
-  btn.classList.add(v==='SI'?'y':'n');
-}
-
-function go(n){
-  if (n === 2) {
-    const asesor = document.getElementById('asesor').value;
-    const tipoSeleccionado = document.getElementById('tipo').value;
-    const plantilla = document.getElementById('plantilla').value;
-    
-    if (!asesor.trim()) {
-      alert("Por favor, ingresá o seleccioná un Asesor antes de continuar.");
-      return;
-    }
-
-    if (!tipoSeleccionado) {
-      alert("Por favor, seleccioná el Canal / Tipo de gestión primero.");
-      return;
-    }
-
-    if (plantilla === 'p2') {
-      ATTRS = ATTRS_PLANTILLA2;
-    } else {
-      if (tipoSeleccionado === "Remarketing") ATTRS = ATTRS_REMARKETING;
-      else if (tipoSeleccionado === "WhatsApp") ATTRS = ATTRS_WHATSAPP;
-      else ATTRS = ATTRS_NEW_LEAD;
-    }
-    
-    document.getElementById('attrs-container').innerHTML = '';
-    inicializarChecks();
-    buildAttrs();
-  }
-
-  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('step'+n).classList.add('active');
-  const labels=['','Paso 1 de 3 — Datos de la evaluación','Paso 2 de 3 — Evaluación','Paso 3 de 3 — Devolución al asesor'];
-  document.getElementById('step-lbl').textContent = labels[n];
-  document.getElementById('prog').style.width = (n*33.3) + '%';
-  
-  if(n===1 && textReportCache !== "") {
-    resetForm();
-  } else if(n===3) {
-    buildDev();
-  }
-  window.scrollTo(0,0);
-}
-
-function resetForm() {
-  document.getElementById('asesor').value = '';
-  document.getElementById('depto').value = '';
-  document.getElementById('super').value = ''; 
-  document.getElementById('tipo').value = '';
-  
-  const audioField = document.getElementById('audio-llamada')?.closest('.fw');
-  if (audioField) audioField.style.display = 'block';
-  if (document.getElementById('audio-llamada')) document.getElementById('audio-llamada').value = '';
-
-  setTodayDate();
-
-  ATTRS.forEach(a => {
-    a.conds.forEach(c => { checks[a.k][c.id] = 'NO'; });
-    updateUI(a.k);
-    const fb = document.getElementById(`fb-${a.k}`);
-    if(fb) fb.value = '';
-  });
-
-  OPS.forEach(o => { delete OV[o.k]; });
-  E.respeto = null;
-  E.fraude = null;
-
-  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => { b.className = 'yn-btn'; });
-  document.getElementById('fortalezas').value = '';
-  document.getElementById('mejoras').value = '';
-  document.getElementById('acciones').value = '';
-  textReportCache = "";
+  $('fecha').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function initials(n){ if(!n) return '?'; return n.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
@@ -727,46 +705,420 @@ function svgRing(pct, color){
   return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>`;
 }
 
-function generateTextReport() {
-  const asesor = document.getElementById('asesor').value || 'Asesor';
-  const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '—';
-  const depto = document.getElementById('depto').value || '—';
-  const sup = document.getElementById('super').value || '—';
-  const tipo = document.getElementById('tipo').value || '—';
-  const plantilla = document.getElementById('plantilla').value;
+/* =====================================================================
+   PLANTILLA / CANAL SEGÚN EVALUADOR
+   ===================================================================== */
+function plantillasPermitidas() {
+  return PLANTILLAS_POR_EVALUADOR[norm($('super').value)] || PLANTILLAS_BASE;
+}
 
+function refreshPlantillas() {
+  const sel = $('plantilla');
+  const permitidas = plantillasPermitidas();
+  if (Array.from(sel.options).map(o => o.value).join() === permitidas.join()) return;
+  const previa = sel.value;
+  sel.innerHTML = permitidas.map(id => `<option value="${id}">${esc(PLANTILLAS[id].nombre)}</option>`).join('');
+  sel.value = permitidas.includes(previa) ? previa : permitidas[0];
+  onPlantillaChange();
+}
+
+function onPlantillaChange() {
+  const t = PLANTILLAS[$('plantilla').value];
+  if (!t) return;
+  const canalSel = $('tipo');
+  const previo = canalSel.value;
+  if (t.canales.length === 1) {
+    // Las plantillas nuevas tienen un único canal: se completa solo y queda fijo
+    canalSel.innerHTML = `<option value="${t.canales[0]}">${t.canales[0]}</option>`;
+    canalSel.value = t.canales[0];
+    canalSel.disabled = true;
+  } else {
+    canalSel.disabled = false;
+    canalSel.innerHTML = '<option value="">-- Seleccionar --</option>' +
+      t.canales.map(c => `<option value="${c}">${c}</option>`).join('');
+    canalSel.value = t.canales.includes(previo) ? previo : '';
+  }
+  syncAudioField();
+}
+
+function syncAudioField() {
+  const field = $('audio-llamada')?.closest('.fw');
+  if (field) field.style.display = $('tipo').value === 'WhatsApp' ? 'none' : 'block';
+}
+
+function currentSig() {
+  const id = $('plantilla').value;
+  return PLANTILLAS[id].ponderada ? id : id + '|' + $('tipo').value;
+}
+
+/* =====================================================================
+   MOTOR DE PUNTAJE
+   ===================================================================== */
+function initChecks() {
+  Object.keys(checks).forEach(k => delete checks[k]);
+  Object.keys(touched).forEach(k => delete touched[k]);
+  ATTRS.forEach(a => {
+    checks[a.k] = {}; touched[a.k] = {};
+    a.conds.forEach(c => { checks[a.k][c.id] = 'NO'; touched[a.k][c.id] = false; });
+  });
+}
+
+/* Peso de un ítem dentro de su sección (la sección tiene peso solo en plantillas ponderadas) */
+function itemW(a, c) { return a.weight ? (c.w ?? a.weight / a.conds.length) : 1; }
+
+/* Puntaje exacto (0-100) del bloque. Los N/A se excluyen y su peso se reparte dentro de la misma sección. */
+function rawScore(k) {
+  const a = ATTRS.find(x => x.k === k);
+  if (!a) return 0;
+  let ganado = 0, evaluable = 0;
+  a.conds.forEach(c => {
+    const v = checks[k][c.id];
+    if (v === 'NA') return;
+    const w = itemW(a, c);
+    evaluable += w;
+    if (v === 'SI') ganado += w;
+  });
+  return evaluable <= 0 ? 100 : (ganado / evaluable) * 100;
+}
+const getScore = k => Math.round(rawScore(k));
+
+function getStats(k) {
+  const a = ATTRS.find(x => x.k === k);
+  if (!a) return {si:0, no:0, na:0, total:0};
+  let si = 0, no = 0, na = 0;
+  a.conds.forEach(c => {
+    const v = checks[k][c.id];
+    if (v === 'SI') si++; else if (v === 'NA') na++; else no++;
+  });
+  return {si, no, na, total: a.conds.length};
+}
+
+function untouchedCount() {
+  let n = 0;
+  ATTRS.forEach(a => a.conds.forEach(c => { if (!touched[a.k][c.id]) n++; }));
+  return n;
+}
+
+function totalItems() { return ATTRS.reduce((acc, a) => acc + a.conds.length, 0); }
+
+function computeResult() {
   const hasCrit = E.respeto === 'SI' || E.fraude === 'SI';
   const arancelado = OV['lead'] === 'SI';
-  
-  let notaCalculada = 0;
-  if (plantilla === 'p2') {
-    let sumaPonderada = 0;
-    let pesoTotalEvaluado = 0;
+  let nota = 0;
+  if (TPL && TPL.ponderada) {
+    let suma = 0, peso = 0;
     ATTRS.forEach(a => {
-      const stats = getStats(a.k);
-      if (stats.si + stats.no > 0) {
-        sumaPonderada += (getScore(a.k) * (a.weight / 100));
-        pesoTotalEvaluado += a.weight;
-      }
+      const st = getStats(a.k);
+      if (st.si + st.no > 0) { suma += rawScore(a.k) * a.weight; peso += a.weight; }
     });
-    notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
-  } else {
-    let totalScore = 0;
-    ATTRS.forEach(a => { totalScore += getScore(a.k); });
-    notaCalculada = Math.round(totalScore / ATTRS.length);
+    nota = peso > 0 ? Math.round(suma / peso) : 100;
+  } else if (ATTRS.length) {
+    nota = Math.round(ATTRS.reduce((acc, a) => acc + getScore(a.k), 0) / ATTRS.length);
+  }
+  const final = hasCrit ? 0 : arancelado ? 100 : nota;
+  return {
+    hasCrit, arancelado, nota, final,
+    estadoTxt: final >= 70 ? 'Aprobado' : final >= 40 ? 'En desarrollo' : 'No cumple',
+    estadoCls: final >= 70 ? 'b-ok' : final >= 40 ? 'b-mid' : 'b-no',
+    ringColor: final >= 70 ? '#10b981' : final >= 40 ? '#f59e0b' : '#ef4444'
+  };
+}
+
+/* =====================================================================
+   CONSTRUCCIÓN DE LA EVALUACIÓN
+   ===================================================================== */
+function paintTri(k, cid) {
+  const g = $(`tri-${k}-${cid}`);
+  if (!g) return;
+  const st = checks[k][cid], tc = touched[k][cid];
+  const set = (sel, cls, on) => { const b = g.querySelector(sel); b.className = `tri-btn ${sel.slice(1)}` + (on ? ' ' + cls : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false'); };
+  set('.btn-si', 'sel-si', tc && st === 'SI');
+  set('.btn-no', 'sel-no', tc && st === 'NO');
+  set('.btn-na', 'sel-na', tc && st === 'NA');
+  g.closest('.rubric-row').classList.toggle('pending', !tc);
+}
+
+function setCheckState(k, cid, state) {
+  checks[k][cid] = state;
+  touched[k][cid] = true;
+  paintTri(k, cid);
+  updateUI(k);
+  updateSummary();
+  markDirty();
+}
+
+function updateUI(k) {
+  const a = ATTRS.find(x => x.k === k);
+  if (!a) return;
+  const score = getScore(k), st = getStats(k);
+  const badge = $('sc-' + k);
+  if (badge) {
+    badge.textContent = score + '%';
+    badge.className = 'badge ' + (score >= 70 ? 'b-ok' : score >= 40 ? 'b-mid' : 'b-no');
+  }
+  const sp = $('sp-' + k);
+  if (sp) {
+    const pts = a.weight ? ` · aporta ${fmt(rawScore(k) / 100 * a.weight)} de ${fmt(a.weight)} pts` : '';
+    sp.textContent = `${score}% (${st.si} cumplen, ${st.no} no cumplen${st.na > 0 ? `, ${st.na} N/A` : ''})${pts}`;
+  }
+}
+
+function buildAttrs() {
+  const esWA = $('tipo').value === 'WhatsApp';
+  $('sec-title-attrs').textContent = TPL.ponderada
+    ? `Atributos evaluados — ${TPL.nombre}`
+    : esWA ? 'Atributos — WhatsApp (16 Indicadores)' : 'Atributos cuantitativos — Plantilla Estándar';
+
+  $('attrs-container').innerHTML = ATTRS.map(a => `
+    <div class="card" id="card-${a.k}">
+      <div class="card-head">
+        <h3>${esc(a.l)} ${a.weight ? `<span class="w-sec">[Peso: ${fmt(a.weight)}%]</span>` : ''}</h3>
+        <span class="badge b-no" id="sc-${a.k}">0%</span>
+      </div>
+      <div>
+        ${a.conds.map(c => `
+          <div class="rubric-row pending">
+            <div class="rubric-info">
+              <div class="rcheck-label">${esc(c.l)}${a.weight ? ` <span class="w-chip" title="Peso del ítem dentro de la sección">${fmt(itemW(a, c))}%</span>` : ''}</div>
+              <div class="rcheck-sub">${esc(c.s)}</div>
+            </div>
+            <div class="tri-btn-group" id="tri-${a.k}-${c.id}">
+              <button type="button" class="tri-btn btn-si" aria-pressed="false" onclick="setCheckState('${a.k}','${c.id}','SI')">Cumple</button>
+              <button type="button" class="tri-btn btn-no" aria-pressed="false" onclick="setCheckState('${a.k}','${c.id}','NO')">No cumple</button>
+              <button type="button" class="tri-btn btn-na" aria-pressed="false" onclick="setCheckState('${a.k}','${c.id}','NA')">N/A</button>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="score-pill">
+        <span class="score-pill-lbl">Resultado del bloque</span>
+        <span class="score-pill-val" id="sp-${a.k}"></span>
+      </div>
+      <div class="field-label" style="margin-top:14px">Observaciones específicas del bloque</div>
+      <textarea id="fb-${a.k}" placeholder="Detalles u observaciones de este ítem..."></textarea>
+    </div>`).join('');
+
+  ATTRS.forEach(a => { a.conds.forEach(c => paintTri(a.k, c.id)); updateUI(a.k); });
+}
+
+function construir() {
+  TPL_ID = $('plantilla').value;
+  TPL = PLANTILLAS[TPL_ID];
+  ATTRS = TPL.attrs($('tipo').value);
+  initChecks();
+  buildAttrs();
+  buildNav();
+  updateSummary();
+  builtSig = currentSig();
+}
+
+/* ¿Hay algo cargado en los bloques que se perdería al reconstruir? */
+function hasBlockData() {
+  const hayMarcas = ATTRS.some(a => a.conds.some(c => touched[a.k]?.[c.id]));
+  const hayObs = ATTRS.some(a => ($('fb-' + a.k)?.value || '').trim() !== '');
+  return hayMarcas || hayObs;
+}
+
+/* =====================================================================
+   NAVEGACIÓN ENTRE SECCIONES
+   ===================================================================== */
+function buildNav() {
+  const chips = [{t:'crit', n:'', txt:'Críticos', always:true}];
+  ATTRS.forEach((a, i) => chips.push({
+    t: a.k,
+    n: (a.l.match(/^(\d+)/) || [0, i + 1])[1],
+    txt: a.l.replace(/^\d+\.\s*/, ''),
+    always: false
+  }));
+  chips.push({t:'ops', n:'', txt:'Procesos', always:true}, {t:'dev', n:'', txt:'Devolución', always:true});
+
+  $('nav-chips').innerHTML = chips.map(c => `
+    <button type="button" class="nav-chip" data-t="${c.t}" data-target="card-${c.t}" title="${esc(c.txt)}" onclick="irA('card-${c.t}')">
+      ${c.n ? `<span class="chip-n">${esc(c.n)}</span>` : ''}<span class="chip-t${c.always ? ' always' : ''}">${esc(c.txt)}</span>
+    </button>`).join('');
+  refreshNavState();
+}
+
+function irA(id) {
+  const el = $(id);
+  if (!el) return;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+}
+
+function refreshNavState() {
+  document.querySelectorAll('#nav-chips .nav-chip').forEach(ch => {
+    const t = ch.dataset.t;
+    let done = false;
+    if (t === 'crit') done = E.respeto !== null && E.fraude !== null;
+    else if (t === 'ops') done = OPS.every(o => OV[o.k]);
+    else if (t !== 'dev' && touched[t]) done = ATTRS.find(a => a.k === t).conds.every(c => touched[t][c.id]);
+    ch.classList.toggle('done', done);
+  });
+}
+
+function updateSummary() {
+  const total = totalItems();
+  const marcados = total - untouchedCount();
+  const r = computeResult();
+  const prog = $('nav-prog');
+  if (prog) prog.textContent = `${marcados}/${total} ítems marcados`;
+  const sc = $('nav-score');
+  if (sc) { sc.textContent = r.final + '%'; sc.className = 'badge ' + r.estadoCls; }
+  refreshNavState();
+}
+
+let spyBusy = false;
+function spy() {
+  if (spyBusy || currentStep !== 2) return;
+  spyBusy = true;
+  requestAnimationFrame(() => {
+    spyBusy = false;
+    let activo = null;
+    const chips = document.querySelectorAll('#nav-chips .nav-chip');
+    chips.forEach(ch => {
+      const el = $(ch.dataset.target);
+      if (el && el.getBoundingClientRect().top <= 140) activo = ch;
+    });
+    chips.forEach(ch => ch.classList.toggle('active', ch === activo));
+    const cont = $('nav-chips');
+    if (activo && cont) cont.scrollLeft = activo.offsetLeft - cont.clientWidth / 2 + activo.clientWidth / 2;
+  });
+}
+
+/* =====================================================================
+   PASOS
+   ===================================================================== */
+function validarPaso1() {
+  if (!$('asesor').value.trim()) {
+    alert("Por favor, ingresá o seleccioná un Asesor antes de continuar.");
+    return false;
+  }
+  if (!$('tipo').value) {
+    alert("Por favor, seleccioná el Canal / Tipo de gestión primero.");
+    return false;
+  }
+  return true;
+}
+
+function showStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  $('step' + n).classList.add('active');
+  document.querySelectorAll('.step-tab').forEach(t => {
+    const on = Number(t.dataset.step) === n;
+    t.classList.toggle('active', on);
+    if (on) t.setAttribute('aria-current', 'step'); else t.removeAttribute('aria-current');
+  });
+  $('prog').style.width = (n * 33.3) + '%';
+  if (n === 3) buildDev();
+  if (n === 2) spy();
+  window.scrollTo(0, 0);
+}
+
+function go(n) {
+  if (n === 1) { showStep(1); return; }
+
+  if (!validarPaso1()) { if (currentStep !== 1) showStep(1); return; }
+
+  // Solo se reconstruye el formulario si cambió la plantilla (o el canal en la Estándar).
+  // Si no cambió, se conserva todo lo marcado y escrito.
+  if (currentSig() !== builtSig) {
+    if (builtSig !== null && hasBlockData() &&
+        !confirm('Cambiaste la plantilla o el canal. Los ítems y observaciones ya cargados en los bloques se van a reiniciar. ¿Continuar?')) {
+      return;
+    }
+    construir();
   }
 
-  let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
-  const estadoTxt = final >= 70 ? 'Aprobado' : final >= 40 ? 'En desarrollo' : 'No cumple';
+  if (n === 3 && currentStep !== 3) {
+    const sin = untouchedCount();
+    if (sin > 0 && !confirm(`Quedan ${sin} ítem(s) sin marcar. Se van a contar como "No cumple". ¿Generar la devolución igual?`)) {
+      showStep(2);
+      return;
+    }
+  }
+  showStep(n);
+}
 
-  const fortalezas = document.getElementById('fortalezas').value;
-  const mejoras = document.getElementById('mejoras').value;
-  const acciones = document.getElementById('acciones').value;
+function err(a, v, btn) {
+  E[a] = v;
+  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b => b.className = 'yn-btn');
+  btn.classList.add(v === 'SI' ? 'y' : 'n');
+  markDirty(); updateSummary();
+}
 
-  let blocks = [];
+function opv(k, v, btn) {
+  OV[k] = v;
+  btn.closest('.yn-wrap').querySelectorAll('.yn-btn').forEach(b => b.className = 'yn-btn');
+  btn.classList.add(v === 'SI' ? 'y' : 'n');
+  markDirty(); updateSummary();
+}
 
-  if (plantilla === 'p2') {
+function buildOps() {
+  $('ops-card').innerHTML = OPS.map(o => `
+    <div class="op-row">
+      <div><div style="font-size:13px;font-weight:600;color:var(--color-primary)">${o.l}</div><div style="font-size:12px;color:var(--text-muted)">${o.d}</div></div>
+      <div class="yn-wrap" style="flex-shrink:0;margin-left:16px">
+        <button type="button" class="yn-btn" onclick="opv('${o.k}','SI',this)">Sí</button>
+        <button type="button" class="yn-btn" onclick="opv('${o.k}','NO',this)">No</button>
+      </div>
+    </div>`).join('');
+}
+
+function newEval() {
+  if (dirty && !confirm('Vas a empezar una evaluación nueva. Lo cargado en esta se va a borrar (asegurate de haberla guardado o enviado). ¿Continuar?')) return;
+  resetForm();
+  showStep(1);
+}
+
+function resetForm() {
+  // Se conservan el evaluador y la plantilla elegidos, porque lo habitual es auditar varias llamadas seguidas.
+  $('asesor').value = '';
+  $('depto').value = '';
+  $('tipo').value = '';
+  if ($('audio-llamada')) $('audio-llamada').value = '';
+  setTodayDate();
+  onPlantillaChange();
+
+  Object.keys(checks).forEach(k => delete checks[k]);
+  Object.keys(touched).forEach(k => delete touched[k]);
+  ATTRS = []; TPL = null; TPL_ID = null; builtSig = null;
+  $('attrs-container').innerHTML = '';
+  $('nav-chips').innerHTML = '';
+
+  OPS.forEach(o => { delete OV[o.k]; });
+  E.respeto = null; E.fraude = null;
+  document.querySelectorAll('.yn-wrap .yn-btn').forEach(b => { b.className = 'yn-btn'; });
+  $('fortalezas').value = '';
+  $('mejoras').value = '';
+  $('acciones').value = '';
+  textReportCache = "";
+  dirty = false;
+}
+
+/* =====================================================================
+   DEVOLUCIÓN (vista) Y REPORTE DE TEXTO
+   ===================================================================== */
+function datosCabecera() {
+  const fechaRaw = $('fecha').value;
+  return {
+    asesor: $('asesor').value || 'Asesor',
+    fechaFmt: fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'}) : '—',
+    depto: $('depto').value || '—',
+    sup: $('super').value || '—',
+    tipo: $('tipo').value || '—'
+  };
+}
+
+function generateTextReport() {
+  const {asesor, fechaFmt, depto, sup, tipo} = datosCabecera();
+  const {final, estadoTxt} = computeResult();
+  const fortalezas = $('fortalezas').value;
+  const mejoras = $('mejoras').value;
+  const acciones = $('acciones').value;
+  const blocks = [];
+
+  if (TPL.ponderada) {
     blocks.push(
       `📋 EVALUACIÓN DE CALIDAD — SIGLO 21\r\n` +
       `Asesor: ${asesor}\r\n` +
@@ -781,17 +1133,13 @@ function generateTextReport() {
       const score = getScore(a.k);
       const scoreIcon = score >= 70 ? '🟢' : score >= 40 ? '🟡' : '🔴';
       condsText += `\r\n▶ ${a.l.toUpperCase()} — ${scoreIcon} ${score}%\r\n`;
-      
       a.conds.forEach(c => {
         const v = checks[a.k][c.id];
         const icon = v === 'SI' ? '✅' : v === 'NA' ? '⚪' : '❌';
         condsText += `${icon} ${c.l}\r\n`;
       });
-
-      const fbEl = document.getElementById('fb-' + a.k);
-      if (fbEl && fbEl.value) {
-        condsText += `💬 Observación: ${fbEl.value}\r\n`;
-      }
+      const fbEl = $('fb-' + a.k);
+      if (fbEl && fbEl.value) condsText += `💬 Observación: ${fbEl.value}\r\n`;
     });
     blocks.push(condsText.trim());
 
@@ -801,19 +1149,11 @@ function generateTextReport() {
       `Objetivo de Calidad: 70%\r\n` +
       `Estado: ${estadoTxt}`
     );
-
-    if (fortalezas) {
-      blocks.push(`💪 FORTALEZAS IDENTIFICADAS:\r\n${fortalezas}`);
-    }
-
-    if (mejoras) {
-      blocks.push(`🎯 OPORTUNIDADES DE MEJORA:\r\n${mejoras}`);
-    }
-
+    if (fortalezas) blocks.push(`💪 FORTALEZAS IDENTIFICADAS:\r\n${fortalezas}`);
+    if (mejoras) blocks.push(`🎯 OPORTUNIDADES DE MEJORA:\r\n${mejoras}`);
     if (acciones) {
-      let accTxt = `📌 PLAN DE ACCIÓN / COMPROMISOS:\r\n`;
-      accTxt += acciones.split('\n').filter(l => l.trim()).map((l, i) => `${i + 1}. ${l}`).join('\r\n');
-      blocks.push(accTxt);
+      blocks.push(`📌 PLAN DE ACCIÓN / COMPROMISOS:\r\n` +
+        acciones.split('\n').filter(l => l.trim()).map((l, i) => `${i + 1}. ${l}`).join('\r\n'));
     }
   } else {
     blocks.push(
@@ -828,17 +1168,14 @@ function generateTextReport() {
 
     let condsText = `DETALLE DE ATRIBUTOS EVALUADOS:`;
     ATTRS.forEach(a => {
-      const score = getScore(a.k);
-      condsText += `\r\n\r\n* ${a.l}: ${score}%\r\n`;
+      condsText += `\r\n\r\n* ${a.l}: ${getScore(a.k)}%\r\n`;
       a.conds.forEach(c => {
         const v = checks[a.k][c.id];
         const st = v === 'SI' ? '[CUMPLE]' : v === 'NA' ? '[N/A]' : '[NO CUMPLE]';
         condsText += `  - ${st} ${c.l}\r\n`;
       });
-      const fbEl = document.getElementById('fb-' + a.k);
-      if (fbEl && fbEl.value) {
-        condsText += `    Notas: ${fbEl.value}\r\n`;
-      }
+      const fbEl = $('fb-' + a.k);
+      if (fbEl && fbEl.value) condsText += `    Notas: ${fbEl.value}\r\n`;
     });
     blocks.push(condsText);
 
@@ -850,103 +1187,65 @@ function generateTextReport() {
   textReportCache = blocks.join('\r\n\r\n------------------------------------------\r\n\r\n');
 }
 
-function buildDev(){
-  const asesor = document.getElementById('asesor').value || 'Asesor';
-  const fechaRaw = document.getElementById('fecha').value;
-  const fechaFmt = fechaRaw ? new Date(fechaRaw+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}) : '—';
-  const depto = document.getElementById('depto').value || '—';
-  const sup = document.getElementById('super').value || '—';
-  const tipo = document.getElementById('tipo').value || '—';
-  const plantilla = document.getElementById('plantilla').value;
+function buildDev() {
+  const {asesor, fechaFmt, depto, sup, tipo} = datosCabecera();
+  const r = computeResult();
+  const {hasCrit, arancelado, final, ringColor, estadoTxt, estadoCls} = r;
 
-  const hasCrit = E.respeto==='SI' || E.fraude==='SI';
-  const arancelado = OV['lead']==='SI';
-  
-  let notaCalculada = 0;
-
-  if (plantilla === 'p2') {
-    let sumaPonderada = 0;
-    let pesoTotalEvaluado = 0;
-
-    ATTRS.forEach(a => {
-      const stats = getStats(a.k);
-      if (stats.si + stats.no > 0) {
-        const scoreBloque = getScore(a.k);
-        sumaPonderada += (scoreBloque * (a.weight / 100));
-        pesoTotalEvaluado += a.weight;
-      }
-    });
-
-    notaCalculada = pesoTotalEvaluado > 0 ? Math.round((sumaPonderada / pesoTotalEvaluado) * 100) : 100;
-  } else {
-    let totalScore = 0;
-    ATTRS.forEach(a => { totalScore += getScore(a.k); });
-    notaCalculada = Math.round(totalScore / ATTRS.length);
-  }
-
-  let final = hasCrit ? 0 : arancelado ? 100 : notaCalculada;
-
-  const ringColor = final>=70 ? '#10b981' : final>=40 ? '#f59e0b' : '#ef4444';
-  const estadoTxt = final>=70 ? 'Aprobado' : final>=40 ? 'En desarrollo' : 'No cumple';
-  const estadoCls = final>=70 ? 'b-ok' : final>=40 ? 'b-mid' : 'b-no';
-
-  const dBtn = document.getElementById('drive-btn');
+  const dBtn = $('drive-btn');
   dBtn.className = "drive-btn";
   dBtn.innerHTML = '<i class="ti ti-brand-google-drive"></i> Guardar en Google Drive';
   dBtn.onclick = sendToDrive;
 
+  const barStyle = (c) => `background:var(--color-${c}-bg);border:1px solid var(--color-${c === 'danger' ? 'danger' : 'success'});color:var(--color-${c}-text);padding:10px;border-radius:6px;margin-bottom:10px`;
   let errBars = '';
-  if(E.respeto==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text);padding:10px;border-radius:6px;margin-bottom:10px"><i class="ti ti-alert-triangle"></i> Error crítico: Falta de respeto — Nota 0%</div>`;
-  if(E.fraude==='SI') errBars += `<div class="err-bar" style="background:var(--color-danger-bg);border:1px solid var(--color-danger);color:var(--color-danger-text);padding:10px;border-radius:6px;margin-bottom:10px"><i class="ti ti-alert-triangle"></i> Error crítico: Venta fraudulenta — Nota 0%</div>`;
-  if(arancelado && !hasCrit) errBars = `<div class="err-bar" style="background:var(--color-success-bg);border:1px solid var(--color-success);color:var(--color-success-text);padding:10px;border-radius:6px;margin-bottom:10px"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Gestión arancelada — Calificación: 100%</div>`;
+  if (E.respeto === 'SI') errBars += `<div class="err-bar" style="${barStyle('danger')}"><i class="ti ti-alert-triangle"></i> Error crítico: Falta de respeto — Nota 0%</div>`;
+  if (E.fraude === 'SI') errBars += `<div class="err-bar" style="${barStyle('danger')}"><i class="ti ti-alert-triangle"></i> Error crítico: Venta fraudulenta — Nota 0%</div>`;
+  if (arancelado && !hasCrit) errBars = `<div class="err-bar" style="${barStyle('success')}"><i class="ti ti-trophy"></i> ¡Cierre Efectivo! Gestión arancelada — Calificación: 100%</div>`;
 
   const attrRows = ATTRS.map(a => {
-    const score = getScore(a.k); 
-    const barColor = score>=70 ? 'var(--color-success)' : score>=40 ? 'var(--color-warning)' : 'var(--color-danger)';
-    
-    const fbEl = document.getElementById('fb-'+a.k);
-    const fb = fbEl ? fbEl.value : '';
-    
+    const score = getScore(a.k);
+    const barColor = score >= 70 ? 'var(--color-success)' : score >= 40 ? 'var(--color-warning)' : 'var(--color-danger)';
+    const fb = $('fb-' + a.k)?.value || '';
     const tags = a.conds.map(c => {
-      const val = checks[a.k][c.id];
-      const cls = val === 'SI' ? 'ok' : val === 'NA' ? 'na' : 'no';
-      const txt = val === 'SI' ? '✓ ' + c.l : val === 'NA' ? 'N/A ' + c.l : '✗ ' + c.l;
-      return `<span class="cond-tag ${cls}">${txt}</span>`;
+      const v = checks[a.k][c.id];
+      const cls = v === 'SI' ? 'ok' : v === 'NA' ? 'na' : 'no';
+      const txt = v === 'SI' ? '✓ ' + c.l : v === 'NA' ? 'N/A ' + c.l : '✗ ' + c.l;
+      return `<span class="cond-tag ${cls}">${esc(txt)}</span>`;
     }).join('');
-    
     return `<div class="dattr">
       <div class="dattr-top">
-        <span class="dattr-name">${a.l} ${a.weight ? `<small style="color:var(--text-light)">(${a.weight}%)</small>` : ''}</span>
+        <span class="dattr-name">${esc(a.l)} ${a.weight ? `<small style="color:var(--text-light)">(${fmt(a.weight)}%)</small>` : ''}</span>
         <div class="bar-bg"><div class="bar-fill" style="width:${score}%;background:${barColor}"></div></div>
         <span class="dattr-pct" style="color:${barColor}">${score}%</span>
       </div>
       <div class="cond-grid">${tags}</div>
-      ${fb ? `<div class="dattr-fb">${fb}</div>` : ''}
+      ${fb ? `<div class="dattr-fb">${esc(fb)}</div>` : ''}
     </div>`;
   }).join('');
 
   const opsRows = OPS.map(o => {
     const v = OV[o.k];
-    return `<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${v==='SI'?`<span class="badge b-ok">Sí</span>`:v==='NO'?`<span class="badge b-no">No</span>`:`<span class="badge b-neu">—</span>`}</div>`;
+    return `<div class="op-row"><span style="color:var(--text-main); font-weight:500">${o.l}</span>${v === 'SI' ? `<span class="badge b-ok">Sí</span>` : v === 'NO' ? `<span class="badge b-no">No</span>` : `<span class="badge b-neu">—</span>`}</div>`;
   }).join('');
 
-  const fortalezas = document.getElementById('fortalezas').value;
-  const mejoras = document.getElementById('mejoras').value;
-  const acciones = document.getElementById('acciones').value;
+  const fortalezas = $('fortalezas').value;
+  const mejoras = $('mejoras').value;
+  const acciones = $('acciones').value;
 
-  document.getElementById('dev-doc').innerHTML = `
+  $('dev-doc').innerHTML = `
     <div class="dev-hbar">
-      <div class="dev-logo-row"><span class="dev-logo-txt">Reporte de Calidad (${plantilla==='p2'?'Plantilla Ponderada':'Plantilla Estándar'})</span><span class="badge b-info">${tipo}</span></div>
+      <div class="dev-logo-row"><span class="dev-logo-txt">Reporte de Calidad (${esc(TPL.nombre)})</span><span class="badge b-info">${esc(tipo)}</span></div>
       <div class="dev-asesor-row">
-        <div class="dev-av">${initials(asesor)}</div>
+        <div class="dev-av">${esc(initials(asesor))}</div>
         <div style="flex:1">
-          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:2px">${asesor}</div>
-          <div style="font-size:13px;color:var(--text-light)">${depto}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px"><i class="ti ti-calendar"></i> ${fechaFmt} · <i class="ti ti-user-check"></i> Auditado por ${sup}</div>
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:2px">${esc(asesor)}</div>
+          <div style="font-size:13px;color:var(--text-light)">${esc(depto)}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px"><i class="ti ti-calendar"></i> ${fechaFmt} · <i class="ti ti-user-check"></i> Auditado por ${esc(sup)}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
           <div style="position:relative;width:64px;height:64px">
-            ${svgRing(final,ringColor)}
+            ${svgRing(final, ringColor)}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:14px;font-weight:700;color:#fff">${final}%</span></div>
           </div>
           <span class="badge ${estadoCls}">${estadoTxt}</span>
@@ -964,18 +1263,20 @@ function buildDev(){
         </div>
       </div>
       <div class="dsec"><div class="dsec-title">Criterios Evaluados</div>${attrRows}</div>
-      ${fortalezas ? `<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${fortalezas}</div></div>` : ''}
-      ${mejoras ? `<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${mejoras}</div></div>` : ''}
-      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos</div>${acciones.split('\n').filter(l=>l.trim()).map((l,i)=>`<div class="plan-li"><b>${i+1}.</b> <span>${l}</span></div>`).join('')}</div>` : ''}
+      ${fortalezas ? `<div class="dsec"><div class="dsec-title">Fortalezas Identificadas</div><div class="txt-blk">${esc(fortalezas)}</div></div>` : ''}
+      ${mejoras ? `<div class="dsec"><div class="dsec-title">Oportunidades de Mejora</div><div class="txt-blk">${esc(mejoras)}</div></div>` : ''}
+      ${acciones ? `<div class="dsec"><div class="dsec-title">Plan de Acción / Compromisos</div>${acciones.split('\n').filter(l => l.trim()).map((l, i) => `<div class="plan-li"><b>${i + 1}.</b> <span>${esc(l)}</span></div>`).join('')}</div>` : ''}
       <div class="dsec"><div class="dsec-title">Gestión de Procesos y Sistemas</div>${opsRows}</div>
     </div>`;
 
   generateTextReport();
 }
 
+/* =====================================================================
+   EXPORTACIÓN: COPIAR, EMAIL, GOOGLE DRIVE (sin cambios de comportamiento)
+   ===================================================================== */
 function copyDev() {
-  const devElement = document.getElementById('dev-doc');
-  const clone = devElement.cloneNode(true);
+  const clone = $('dev-doc').cloneNode(true);
   const container = document.createElement('div');
   container.style.position = 'absolute';
   container.style.left = '-9999px';
@@ -990,9 +1291,10 @@ function copyDev() {
 
   try {
     document.execCommand('copy');
-    const btn = document.getElementById('copy-btn');
+    const btn = $('copy-btn');
     btn.className = 'copy-btn copied';
     btn.innerHTML = '<i class="ti ti-check"></i> ¡Formato copiado!';
+    dirty = false;
     setTimeout(() => {
       btn.className = 'copy-btn';
       btn.innerHTML = '<i class="ti ti-copy"></i> Copiar devolución';
@@ -1005,23 +1307,57 @@ function copyDev() {
   }
 }
 
+/* Datos ya calculados para el Sheet (el script de Drive los usa en lugar de parsear el texto) */
+function buildDatos() {
+  const r = computeResult();
+  const bloques = ['—','—','—','—','—'];
+  let wa = '—';
+  ATTRS.forEach((a, i) => {
+    if (a.k === 'wa_gestion') { wa = getScore(a.k); return; }
+    const n = parseInt((a.l.match(/^(\d+)/) || [])[1], 10) || (i + 1);
+    if (n >= 1 && n <= 5) bloques[n - 1] = getScore(a.k);
+  });
+  const ops = {};
+  OPS.forEach(o => { ops[o.k] = OV[o.k] || '—'; });
+  return {
+    depto: $('depto').value.trim() || '—',
+    supervisor: $('super').value.trim() || '—',
+    notaFinal: r.final,
+    puntajeTecnico: r.nota,
+    estado: r.estadoTxt,
+    respeto: E.respeto === 'SI' ? 'SI' : 'NO',
+    fraude: E.fraude === 'SI' ? 'SI' : 'NO',
+    arancelado: r.arancelado ? 'SI' : 'NO',
+    bloques, bWa: wa,
+    fortalezas: $('fortalezas').value.trim() || '—',
+    mejoras: $('mejoras').value.trim() || '—',
+    compromisos: $('acciones').value.split('\n').map(l => l.trim()).filter(Boolean),
+    ops
+  };
+}
+
 function sendToDrive() {
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec"; 
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLBxpMe3Odp4uw_6Ra4_tDI3eZfFlUnSjZsKEdppI_cV4wJUTgSN48jBg-R2N6CY_cRw/exec";
 
-  const btn = document.getElementById('drive-btn');
+  const btn = $('drive-btn');
   btn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Guardando datos...';
-  btn.onclick = null; 
+  btn.onclick = null;
 
-  const fileInput = document.getElementById('audio-llamada');
+  const fileInput = $('audio-llamada');
   const file = fileInput ? fileInput.files[0] : null;
-  const tipoGestion = document.getElementById('tipo').value || 'General';
+  const tipoGestion = $('tipo').value || 'General';
 
   const payload = {
-    asesor: document.getElementById('asesor').value || 'Asesor Anónimo',
-    fecha: document.getElementById('fecha').value || 'Sin-Fecha',
+    asesor: $('asesor').value || 'Asesor Anónimo',
+    fecha: $('fecha').value || 'Sin-Fecha',
     tipo: tipoGestion,
-    plantilla: document.getElementById('plantilla').value,
+    // Se mantiene el mismo valor de siempre ('p2' o 'std') para no romper el script de Drive;
+    // las plantillas nuevas son ponderadas, así que viajan como 'p2'. El detalle va en campos extra.
+    plantilla: TPL && TPL.ponderada ? 'p2' : 'std',
+    plantillaId: TPL_ID,
+    plantillaNombre: TPL ? TPL.nombre : '',
     reporteTexto: textReportCache,
+    datos: buildDatos(),
     fileData: null,
     fileName: null
   };
@@ -1030,7 +1366,7 @@ function sendToDrive() {
     const reader = new FileReader();
     reader.onload = function(e) {
       const base64Parts = e.target.result.split(',');
-      payload.fileData = base64Parts[1]; 
+      payload.fileData = base64Parts[1];
       payload.fileName = `${payload.fecha}_${payload.asesor}_${payload.tipo}_llamada.${file.name.split('.').pop()}`;
       ejecutarEnvio(SCRIPT_URL, payload, btn);
     };
@@ -1043,14 +1379,15 @@ function sendToDrive() {
 function ejecutarEnvio(url, payload, btn) {
   fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   })
   .then(res => res.json())
   .then(data => {
-    if(data.status === "success") {
+    if (data.status === "success") {
       btn.className = 'drive-btn success';
       btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado en Google Drive!';
+      dirty = false;
     } else {
       throw new Error(data.message);
     }
@@ -1064,14 +1401,14 @@ function ejecutarEnvio(url, payload, btn) {
 }
 
 function sendByEmail() {
-  const asesor = document.getElementById('asesor').value || 'Asesor';
-  const fechaRaw = document.getElementById('fecha').value;
+  const asesor = $('asesor').value || 'Asesor';
+  const fechaRaw = $('fecha').value;
   const fechaFmt = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) : '';
-  
   const subject = encodeURIComponent(`Devolución de Auditoría de Calidad — ${asesor} (${fechaFmt})`);
 
   // 1. Copiamos el contenido del reporte directamente al portapapeles
   navigator.clipboard.writeText(textReportCache).then(() => {
+    dirty = false;
     alert("El reporte se copió al portapapeles. Se abrirá Outlook; solo tenés que pegar (Ctrl + V) el contenido en el cuerpo del mail.");
     // 2. Abrimos la ventana de correo únicamente con el asunto para no saturar la URL
     window.location.href = `mailto:?subject=${subject}`;
@@ -1082,20 +1419,29 @@ function sendByEmail() {
   });
 }
 
-// Inicialización de la app
+/* =====================================================================
+   INICIO
+   ===================================================================== */
 document.addEventListener("DOMContentLoaded", function() {
   setTodayDate();
   buildOps();
+  refreshPlantillas();
+  onPlantillaChange();
 
-  document.getElementById('tipo').addEventListener('change', function() {
-    const audioField = document.getElementById('audio-llamada')?.closest('.fw');
-    if(this.value === "WhatsApp") {
-      if(audioField) audioField.style.display = 'none';
-    } else {
-      if(audioField) audioField.style.display = 'block';
-    }
+  // Al elegir evaluador se actualizan las plantillas disponibles
+  $('super').addEventListener('input', () => {
+    const v = norm($('super').value);
+    if (!v || PLANTILLAS_POR_EVALUADOR[v]) refreshPlantillas();
   });
+  $('super').addEventListener('change', refreshPlantillas);
+  $('tipo').addEventListener('change', syncAudioField);
+
+  // Cualquier dato escrito o marcado cuenta como "sin exportar" hasta guardar/enviar/copiar
+  document.querySelector('.container').addEventListener('input', markDirty);
+  window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+  window.addEventListener('scroll', spy, {passive: true});
 });
+
 </script>
 </body>
 </html>
