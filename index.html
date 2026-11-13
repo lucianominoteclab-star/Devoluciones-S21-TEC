@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoría de Calidad — Siglo 21</title>
+  <title>Auditoría de Calidad — Siglo 21 - Teclab 1.0</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
@@ -401,7 +401,7 @@ const ATTRS_PLANTILLA2 = [
     {id:'C', l:'Validar la opinión del lead', s:'Escucha activa y retroalimentación.'},
     {id:'D', l:'Consultar por tiempos para ofrecer modalidad correcta', s:'Evalúa disponibilidad horaria.'}
   ]},
-  {k:'bajada', l:'3. Bajada de Oferta', weight: 30,
+  {k:'bajada', l:'3. Bajada de Oferta', weight: 25,
    conds:[
     {id:'A', l:'Información correcta', s:'Datos precisos del programa académico.'},
     {id:'B', l:'EFIP 1 Y 2', s:'Explica exámenes de integración final.'},
@@ -410,15 +410,15 @@ const ATTRS_PLANTILLA2 = [
     {id:'E', l:'Modalidad ED', s:'Explica modelo de Educación Distribuida.'},
     {id:'F', l:'Prácticas profesional / práctica solidaria', s:'Detalla requisitos de práctica.'}
   ]},
-  {k:'objecion', l:'4. Objeción y persuasión', weight: 30,
+  {k:'objecion', l:'4. Objeción y persuasión', weight: 40,
    conds:[
-    {id:'A', l:'Hace push de cierre', s:'¿Avanzamos con la inscripción?'},
-    {id:'B', l:'Manejo de objeción', s:'Usar información de IE para rebatir.'},
-    {id:'C', l:'En caso de no avanzar preguntar por qué', s:'Busca detectar el freno real.'},
-    {id:'D', l:'Conexión con el lead', s:'Genera empatía y sintonía durante la conversación.'},
-    {id:'E', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.'}
+    {id:'A', l:'Hace push de cierre', s:'¿Avanzamos con la inscripción?', w:10},
+    {id:'B', l:'Manejo de objeción', s:'Usar información de IE para rebatir.', w:10},
+    {id:'C', l:'En caso de no avanzar preguntar por qué', s:'Busca detectar el freno real.', w:10},
+    {id:'D', l:'Conexión con el lead', s:'Genera empatía y sintonía durante la conversación.', w:5},
+    {id:'E', l:'¿Tomó pre?', s:'Intenta la preinscripción en la llamada.', w:5}
   ]},
-  {k:'cierre_p2', l:'5. Cierre', weight: 20,
+  {k:'cierre_p2', l:'5. Cierre', weight: 15,
    conds:[
     {id:'A', l:'Invitar al recontacto', s:'Deja la puerta abierta para el seguimiento.'},
     {id:'B', l:'Saludar cordial', s:'Despedida amable y profesional.'},
@@ -594,39 +594,47 @@ const ITEMS = {
 
 /* Sección ponderada: el peso de la sección se reparte en partes iguales entre sus ítems
    (se puede forzar un peso por ítem agregando "w" al ítem). */
-const sec = (k, l, weight, keys) => ({
-  k, l, weight,
-  conds: keys.map((key, i) => {
-    if (!ITEMS[key]) throw new Error('Ítem inexistente: ' + key);
-    return {id: String.fromCharCode(65 + i), l: ITEMS[key].l, s: ITEMS[key].s};
-  })
-});
+const sec = (k, l, weight, keys, rel) => {
+  // rel (opcional): peso relativo de cada ítem dentro de la sección (por defecto 1 = partes iguales)
+  const totalRel = rel ? keys.reduce((acc, key) => acc + (rel[key] || 1), 0) : 0;
+  return {
+    k, l, weight,
+    conds: keys.map((key, i) => {
+      if (!ITEMS[key]) throw new Error('Ítem inexistente: ' + key);
+      const c = {id: String.fromCharCode(65 + i), l: ITEMS[key].l, s: ITEMS[key].s};
+      if (rel) c.w = weight * (rel[key] || 1) / totalRel;
+      return c;
+    })
+  };
+};
 
+/* Objeción y persuasión: push de cierre, manejo de objeciones y motivo si no avanza valen el doble */
+const REL4 = {push:2, motivoNoAvanza:2, objeciones:2};
 const SEC4 = ['urgencia','push','motivoNoAvanza','objeciones','conexion','pre'];
 const SEC5 = ['saludo','recontacto','pacta','fideliza'];
 
-/* Pesos: 10 / 20 / 30 / 25 / 15 = 100 */
+/* Pesos: 8 / 16 / 24 / 40 / 12 = 100 */
 const ATTRS_NEW_LEAD_POND = [
-  sec('s1','1. Tipificación y sistemas',10,['pres','tip','sondCarrera','sondReq','actitud']),
-  sec('s2','2. Indagación estratégica y personalización',20,['motivo','exp','tiempos','asocia','valida','difer']),
-  sec('s3','3. Bajada de oferta',30,['infoOk','efip','tfg','perfil','practicas','modED','cierresParc']),
-  sec('s4','4. Objeción y persuasión',25,SEC4),
-  sec('s5','5. Cierre',15,SEC5)
+  sec('s1','1. Tipificación y sistemas',8,['pres','tip','sondCarrera','sondReq','actitud']),
+  sec('s2','2. Indagación estratégica y personalización',16,['motivo','exp','tiempos','asocia','valida','difer']),
+  sec('s3','3. Bajada de oferta',24,['infoOk','efip','tfg','perfil','practicas','modED','cierresParc']),
+  sec('s4','4. Objeción y persuasión',40,SEC4,REL4),
+  sec('s5','5. Cierre',12,SEC5)
 ];
 
 const ATTRS_CROSS_POND = [
-  sec('s1','1. Tipificación y sistemas',10,['pres','tip','contexto','sondReq','actitud']),
-  sec('s2','2. Indagación estratégica y personalización',20,['motivo','exp','tiempos','descartaSiglo','asocia','valida','difer']),
-  sec('s3','3. Bajada de oferta',30,['infoOk','perfil','practicas','cierresParc','articulacion']),
-  sec('s4','4. Objeción y persuasión',25,SEC4),
-  sec('s5','5. Cierre',15,SEC5)
+  sec('s1','1. Tipificación y sistemas',8,['pres','tip','contexto','sondReq','actitud']),
+  sec('s2','2. Indagación estratégica y personalización',16,['motivo','exp','tiempos','descartaSiglo','asocia','valida','difer']),
+  sec('s3','3. Bajada de oferta',24,['infoOk','perfil','practicas','cierresParc','articulacion']),
+  sec('s4','4. Objeción y persuasión',40,SEC4,REL4),
+  sec('s5','5. Cierre',12,SEC5)
 ];
 
-/* Recontacto no tiene la sección 3, por eso los pesos se reparten así: 15 / 25 / 35 / 25 = 100 */
+/* Recontacto no tiene la sección 3, por eso los pesos se reparten así: 10 / 25 / 40 / 25 = 100 */
 const ATTRS_RECONTACTO_POND = [
-  sec('s1','1. Tipificación y sistemas',15,['pres','tip','contexto','actitud']),
+  sec('s1','1. Tipificación y sistemas',10,['pres','tip','contexto','actitud']),
   sec('s2','2. Indagación estratégica y personalización',25,['qParece','pudoDefinir','dudas','asocia','valida']),
-  sec('s4','4. Objeción y persuasión',35,SEC4),
+  sec('s4','4. Objeción y persuasión',40,SEC4,REL4),
   sec('s5','5. Cierre',25,['saludo','accionVenta','pautaDia'])
 ];
 
